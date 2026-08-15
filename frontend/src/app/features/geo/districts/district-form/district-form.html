@@ -1,0 +1,62 @@
+<form class="district-form" (submit)="onSubmit($event)">
+  <div class="district-form__field">
+    <label for="district-state">State</label>
+    <p-select
+      inputId="district-state"
+      [formField]="$any(districtForm.state_id)"
+      [options]="states()"
+      optionLabel="name"
+      optionValue="id"
+      [filter]="true"
+      placeholder="Select a state"
+      [class.p-invalid]="districtForm.state_id().touched() && districtForm.state_id().invalid()"
+    />
+    @if (districtForm.state_id().touched()) {
+      @for (error of districtForm.state_id().errors(); track error.kind) {
+        <small class="district-form__error">{{ error.message }}</small>
+      }
+    }
+  </div>
+
+  <div class="district-form__field">
+    <label for="district-name">Name</label>
+    <input
+      id="district-name"
+      pInputText
+      [formField]="districtForm.name"
+      [class.p-invalid]="districtForm.name().touched() && districtForm.name().invalid()"
+    />
+    @if (districtForm.name().touched()) {
+      @for (error of districtForm.name().errors(); track error.kind) {
+        <small class="district-form__error">{{ error.message }}</small>
+      }
+    }
+  </div>
+
+  <div class="district-form__field">
+    <label for="district-slug">Slug</label>
+    <input
+      id="district-slug"
+      pInputText
+      [formField]="districtForm.slug"
+      [class.p-invalid]="districtForm.slug().touched() && districtForm.slug().invalid()"
+    />
+    @if (districtForm.slug().touched()) {
+      @for (error of districtForm.slug().errors(); track error.kind) {
+        <small class="district-form__error">{{ error.message }}</small>
+      }
+    }
+  </div>
+
+  <div class="district-form__actions">
+    <button pButton type="button" [text]="true" severity="secondary" (click)="cancelled.emit()">
+      Cancel
+    </button>
+    <button pButton type="submit" [disabled]="submitting()">
+      @if (submitting()) {
+        <i class="pi pi-spin pi-spinner" aria-hidden="true"></i>
+      }
+      Save
+    </button>
+  </div>
+</form>

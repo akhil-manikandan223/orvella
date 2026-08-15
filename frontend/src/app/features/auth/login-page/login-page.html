@@ -1,0 +1,80 @@
+<div class="login-page">
+  <div class="login-page__backdrop" aria-hidden="true">
+    <div class="login-page__grid"></div>
+    <div class="login-page__blob login-page__blob--one"></div>
+    <div class="login-page__blob login-page__blob--two"></div>
+    <div class="login-page__blob login-page__blob--three"></div>
+  </div>
+
+  <form class="login-page__card" (submit)="onSubmit($event)">
+    <div class="login-page__brand">
+      <img
+        class="login-page__logo"
+        src="assets/logos/Orvella-logo.png"
+        alt="Orvella"
+        width="60"
+        height="60"
+      />
+      <h1>Orvella</h1>
+      <p class="login-page__subtitle">Platform administration</p>
+    </div>
+
+    <div class="login-page__field">
+      <label for="email">Email</label>
+      <p-iconfield>
+        <p-inputicon class="pi pi-envelope" />
+        <input
+          id="email"
+          type="email"
+          pInputText
+          fluid
+          [formField]="loginForm.email"
+          [class.p-invalid]="loginForm.email().touched() && loginForm.email().invalid()"
+          autocomplete="email"
+          placeholder="you@company.com"
+        />
+      </p-iconfield>
+      @if (loginForm.email().touched()) {
+        @for (error of loginForm.email().errors(); track error.kind) {
+          <small class="login-page__error">{{ error.message }}</small>
+        }
+      }
+    </div>
+
+    <div class="login-page__field">
+      <label for="password">Password</label>
+      <p-iconfield>
+        <p-inputicon class="pi pi-lock" />
+        <input
+          id="password"
+          type="password"
+          pInputPassword
+          fluid
+          [formField]="loginForm.password"
+          [class.p-invalid]="loginForm.password().touched() && loginForm.password().invalid()"
+          autocomplete="current-password"
+          placeholder="••••••••"
+        />
+      </p-iconfield>
+      @if (loginForm.password().touched()) {
+        @for (error of loginForm.password().errors(); track error.kind) {
+          <small class="login-page__error">{{ error.message }}</small>
+        }
+      }
+    </div>
+
+    <button pButton type="submit" [disabled]="submitting()" class="login-page__submit">
+      @if (submitting()) {
+        <i class="pi pi-spin pi-spinner" aria-hidden="true"></i>
+      } @else {
+        <i class="pi pi-arrow-right" aria-hidden="true"></i>
+      }
+      Sign in
+    </button>
+
+    <p class="login-page__footnote">
+      <i class="pi pi-shield" aria-hidden="true"></i>
+      Secure access for platform administrators only
+    </p>
+  </form>
+</div>

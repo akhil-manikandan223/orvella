@@ -1,0 +1,43 @@
+<header class="topbar">
+  <div class="topbar__start">
+    <button
+      pButton
+      class="topbar__menu-toggle"
+      [text]="true"
+      [rounded]="true"
+      severity="secondary"
+      aria-label="Toggle navigation menu"
+      (click)="menuToggle.emit()"
+    >
+      <i class="pi pi-bars" aria-hidden="true"></i>
+    </button>
+    <img
+      [ngSrc]="
+        themeService.mode() === 'dark'
+          ? 'assets/logos/orvella-header-dark-logo.png'
+          : 'assets/logos/orvella-header-light-logo.png'
+      "
+      alt="Orvella"
+      width="120"
+      height="32"
+      priority
+    />
+  </div>
+
+  <div class="topbar__end">
+    <app-theme-toggle />
+    @if (authService.admin(); as admin) {
+      <span class="topbar__admin-email">{{ admin.email }}</span>
+    }
+    <button
+      pButton
+      [text]="true"
+      [rounded]="true"
+      severity="secondary"
+      aria-label="Log out"
+      (click)="authService.logout()"
+    >
+      <i class="pi pi-sign-out" aria-hidden="true"></i>
+    </button>
+  </div>
+</header>

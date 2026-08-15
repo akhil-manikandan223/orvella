@@ -1,0 +1,9 @@
+<p-dialog
+  [visible]="visible()"
+  (visibleChange)="visibleChange.emit($event)"
+  [modal]="true"
+  [header]="header()"
+  [style]="{ width: width() }"
+>
+  <ng-content />
+</p-dialog>

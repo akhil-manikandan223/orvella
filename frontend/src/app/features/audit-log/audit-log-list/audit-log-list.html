@@ -1,0 +1,39 @@
+<app-page-header
+  title="Audit Log"
+  subtitle="Record of platform-admin actions"
+  icon="pi pi-history"
+  [showRefresh]="true"
+  (refresh)="load()"
+/>
+
+<div class="audit-log-list__filter">
+  <input
+    pInputText
+    [formField]="entityTypeFilter"
+    placeholder="Filter by entity type (e.g. tenant, feature)"
+  />
+</div>
+
+<app-data-table
+  [columns]="columns()"
+  [value]="entries()"
+  [loading]="loading()"
+  [expandable]="true"
+  [isRowExpanded]="isRowExpandedFn"
+  [expansionTemplate]="expansionTemplate()"
+  (rowClicked)="toggleRow($event)"
+  emptyMessage="No audit log entries found."
+  emptyIcon="pi pi-history"
+/>
+
+<ng-template #expandCell let-entry>
+  <i
+    class="pi"
+    [class.pi-chevron-down]="expandedRowId() === entry.id"
+    [class.pi-chevron-right]="expandedRowId() !== entry.id"
+  ></i>
+</ng-template>
+
+<ng-template #expansionCell let-entry>
+  <pre class="audit-log-list__changes">{{ entry.changes | json }}</pre>
+</ng-template>

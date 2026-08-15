@@ -1,0 +1,34 @@
+<app-data-table
+  [columns]="columns()"
+  [value]="allFeatures()"
+  emptyMessage="No features in the catalog yet."
+  emptyIcon="pi pi-star"
+/>
+
+<ng-template #featureCell let-feature>
+  <div>{{ feature.name }}</div>
+  <code>{{ feature.key }}</code>
+</ng-template>
+
+<ng-template #statusCell let-feature>
+  <app-status-badge [status]="feature.status" />
+</ng-template>
+
+<ng-template #enabledCell let-feature>
+  <button
+    pButton
+    [text]="true"
+    [severity]="isEnabled(feature) ? 'success' : 'secondary'"
+    [disabled]="togglingFeatureId() === feature.id"
+    [attr.aria-label]="(isEnabled(feature) ? 'Disable ' : 'Enable ') + feature.name"
+    (click)="onToggleClick(feature)"
+  >
+    <i
+      class="pi"
+      [class.pi-check-circle]="isEnabled(feature)"
+      [class.pi-circle]="!isEnabled(feature)"
+      aria-hidden="true"
+    ></i>
+    {{ isEnabled(feature) ? 'Enabled' : 'Disabled' }}
+  </button>
+</ng-template>

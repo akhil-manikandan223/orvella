@@ -1,0 +1,15 @@
+<button
+  pButton
+  [text]="true"
+  [rounded]="true"
+  severity="secondary"
+  [attr.aria-label]="themeService.mode() === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'"
+  (click)="themeService.toggle()"
+>
+  <i
+    class="pi"
+    [class.pi-sun]="themeService.mode() === 'dark'"
+    [class.pi-moon]="themeService.mode() !== 'dark'"
+    aria-hidden="true"
+  ></i>
+</button>

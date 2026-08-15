@@ -1,0 +1,238 @@
+<app-page-header
+  title="New Tenant"
+  subtitle="Provision a new organization on the platform"
+  icon="pi pi-building"
+  [showBack]="true"
+/>
+
+<form class="tenant-create" (submit)="onSubmit($event)">
+  <section class="tenant-create__section">
+    <div class="tenant-create__section-title">
+      <i class="pi pi-info-circle" aria-hidden="true"></i>
+      <span>Basic Information</span>
+    </div>
+    <div class="tenant-create__card tenant-create__grid">
+      <div class="tenant-create__field">
+        <label for="tenant-name">Name</label>
+        <input
+          id="tenant-name"
+          pInputText
+          [formField]="tenantForm.name"
+          [class.p-invalid]="tenantForm.name().touched() && tenantForm.name().invalid()"
+        />
+        @if (tenantForm.name().touched()) {
+          @for (error of tenantForm.name().errors(); track error.kind) {
+            <small class="tenant-create__error">{{ error.message }}</small>
+          }
+        }
+      </div>
+
+      <div class="tenant-create__field">
+        <label for="tenant-slug">Slug</label>
+        <input
+          id="tenant-slug"
+          pInputText
+          [formField]="tenantForm.slug"
+          [class.p-invalid]="tenantForm.slug().touched() && tenantForm.slug().invalid()"
+        />
+        @if (tenantForm.slug().touched()) {
+          @for (error of tenantForm.slug().errors(); track error.kind) {
+            <small class="tenant-create__error">{{ error.message }}</small>
+          }
+        }
+      </div>
+
+      <div class="tenant-create__field">
+        <label for="tenant-org-type">Organization Type</label>
+        <p-select
+          inputId="tenant-org-type"
+          [formField]="$any(tenantForm.organization_type_id)"
+          [options]="organizationTypes()"
+          optionLabel="name"
+          optionValue="id"
+          [filter]="true"
+          placeholder="Select a type"
+          [class.p-invalid]="tenantForm.organization_type_id().touched() && tenantForm.organization_type_id().invalid()"
+        />
+        @if (tenantForm.organization_type_id().touched()) {
+          @for (error of tenantForm.organization_type_id().errors(); track error.kind) {
+            <small class="tenant-create__error">{{ error.message }}</small>
+          }
+        }
+      </div>
+
+      <div class="tenant-create__field">
+        <label for="tenant-max-users">Max Users (optional)</label>
+        <input id="tenant-max-users" type="number" pInputText [formField]="tenantForm.max_users" />
+      </div>
+    </div>
+  </section>
+
+  <section class="tenant-create__section">
+    <div class="tenant-create__section-title">
+      <i class="pi pi-map-marker" aria-hidden="true"></i>
+      <span>Address</span>
+    </div>
+    <div class="tenant-create__card tenant-create__grid">
+      <div class="tenant-create__field tenant-create__field--wide">
+        <label for="tenant-address-1">Address Line 1</label>
+        <input
+          id="tenant-address-1"
+          pInputText
+          [formField]="tenantForm.address_line_1"
+          [class.p-invalid]="tenantForm.address_line_1().touched() && tenantForm.address_line_1().invalid()"
+        />
+        @if (tenantForm.address_line_1().touched()) {
+          @for (error of tenantForm.address_line_1().errors(); track error.kind) {
+            <small class="tenant-create__error">{{ error.message }}</small>
+          }
+        }
+      </div>
+
+      <div class="tenant-create__field tenant-create__field--wide">
+        <label for="tenant-address-2">Address Line 2 (optional)</label>
+        <input id="tenant-address-2" pInputText [formField]="tenantForm.address_line_2" />
+      </div>
+
+      <div class="tenant-create__field">
+        <label for="tenant-country">Country</label>
+        <p-select
+          inputId="tenant-country"
+          [formField]="$any(tenantForm.country_id)"
+          [options]="countries()"
+          optionLabel="name"
+          optionValue="id"
+          [filter]="true"
+          placeholder="Select a country"
+          (onChange)="onCountryChanged($event.value)"
+          [class.p-invalid]="tenantForm.country_id().touched() && tenantForm.country_id().invalid()"
+        />
+        @if (tenantForm.country_id().touched()) {
+          @for (error of tenantForm.country_id().errors(); track error.kind) {
+            <small class="tenant-create__error">{{ error.message }}</small>
+          }
+        }
+      </div>
+
+      <div class="tenant-create__field">
+        <label for="tenant-state">State (optional)</label>
+        <p-select
+          inputId="tenant-state"
+          [formField]="$any(tenantForm.state_id)"
+          [options]="states()"
+          optionLabel="name"
+          optionValue="id"
+          [filter]="true"
+          [showClear]="true"
+          placeholder="Select a country first"
+          (onChange)="onStateChanged($event.value)"
+        />
+      </div>
+
+      <div class="tenant-create__field">
+        <label for="tenant-city">City</label>
+        <p-select
+          inputId="tenant-city"
+          [formField]="$any(tenantForm.city_id)"
+          [options]="cities()"
+          optionLabel="name"
+          optionValue="id"
+          [filter]="true"
+          placeholder="Select a state first"
+          [class.p-invalid]="tenantForm.city_id().touched() && tenantForm.city_id().invalid()"
+        />
+        @if (tenantForm.city_id().touched()) {
+          @for (error of tenantForm.city_id().errors(); track error.kind) {
+            <small class="tenant-create__error">{{ error.message }}</small>
+          }
+        }
+      </div>
+
+      <div class="tenant-create__field">
+        <label for="tenant-postal-code">Postal Code (optional)</label>
+        <input id="tenant-postal-code" pInputText [formField]="tenantForm.postal_code" />
+      </div>
+    </div>
+  </section>
+
+  <section class="tenant-create__section">
+    <div class="tenant-create__section-title">
+      <i class="pi pi-id-card" aria-hidden="true"></i>
+      <span>License &amp; Contact</span>
+    </div>
+    <div class="tenant-create__card tenant-create__grid">
+      <div class="tenant-create__field">
+        <label for="tenant-license">License Number</label>
+        <input
+          id="tenant-license"
+          pInputText
+          [formField]="tenantForm.license_number"
+          [class.p-invalid]="tenantForm.license_number().touched() && tenantForm.license_number().invalid()"
+        />
+        @if (tenantForm.license_number().touched()) {
+          @for (error of tenantForm.license_number().errors(); track error.kind) {
+            <small class="tenant-create__error">{{ error.message }}</small>
+          }
+        }
+      </div>
+
+      <div class="tenant-create__field">
+        <label for="tenant-logo-url">Logo URL (optional)</label>
+        <input id="tenant-logo-url" pInputText [formField]="tenantForm.logo_url" />
+      </div>
+
+      <div class="tenant-create__field">
+        <label for="tenant-contact-name">Key Contact Name</label>
+        <input
+          id="tenant-contact-name"
+          pInputText
+          [formField]="tenantForm.key_contact_name"
+          [class.p-invalid]="tenantForm.key_contact_name().touched() && tenantForm.key_contact_name().invalid()"
+        />
+        @if (tenantForm.key_contact_name().touched()) {
+          @for (error of tenantForm.key_contact_name().errors(); track error.kind) {
+            <small class="tenant-create__error">{{ error.message }}</small>
+          }
+        }
+      </div>
+
+      <div class="tenant-create__field">
+        <label for="tenant-contact-email">Key Contact Email</label>
+        <input
+          id="tenant-contact-email"
+          type="email"
+          pInputText
+          [formField]="tenantForm.key_contact_email"
+          [class.p-invalid]="tenantForm.key_contact_email().touched() && tenantForm.key_contact_email().invalid()"
+        />
+        @if (tenantForm.key_contact_email().touched()) {
+          @for (error of tenantForm.key_contact_email().errors(); track error.kind) {
+            <small class="tenant-create__error">{{ error.message }}</small>
+          }
+        }
+      </div>
+
+      <div class="tenant-create__field">
+        <label for="tenant-contact-phone">Key Contact Phone</label>
+        <input
+          id="tenant-contact-phone"
+          pInputText
+          [formField]="tenantForm.key_contact_phone"
+          [class.p-invalid]="tenantForm.key_contact_phone().touched() && tenantForm.key_contact_phone().invalid()"
+        />
+        @if (tenantForm.key_contact_phone().touched()) {
+          @for (error of tenantForm.key_contact_phone().errors(); track error.kind) {
+            <small class="tenant-create__error">{{ error.message }}</small>
+          }
+        }
+      </div>
+    </div>
+  </section>
+
+  <div class="tenant-create__actions">
+    <button pButton type="submit" [disabled]="submitting()">
+      <i class="pi" [class.pi-spin]="submitting()" [class.pi-spinner]="submitting()" [class.pi-check]="!submitting()" aria-hidden="true"></i>
+      Create Tenant
+    </button>
+  </div>
+</form>

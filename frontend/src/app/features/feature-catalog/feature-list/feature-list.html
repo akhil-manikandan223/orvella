@@ -1,0 +1,47 @@
+<app-page-header
+  title="Features"
+  subtitle="Platform feature catalog"
+  icon="pi pi-star"
+  [showSearch]="true"
+  [showRefresh]="true"
+  (search)="searchTerm.set($event)"
+  (refresh)="load()"
+>
+  <button pButton (click)="openCreate()">
+    <i class="pi pi-plus" aria-hidden="true"></i>
+    New
+  </button>
+</app-page-header>
+
+<app-data-table
+  [columns]="columns()"
+  [value]="features()"
+  [actions]="actions"
+  [loading]="loading()"
+  [globalFilter]="searchTerm()"
+  emptyMessage="No features yet."
+  emptyIcon="pi pi-star"
+/>
+
+<ng-template #keyCell let-feature>
+  <code>{{ feature.key }}</code>
+</ng-template>
+
+<ng-template #statusCell let-feature>
+  <app-status-badge [status]="feature.status" />
+</ng-template>
+
+<app-edit-dialog
+  [visible]="dialogVisible()"
+  (visibleChange)="dialogVisible.set($event)"
+  [header]="editingFeature() ? 'Edit Feature' : 'New Feature'"
+  width="30rem"
+>
+  @if (dialogVisible()) {
+    <app-feature-form
+      [feature]="editingFeature()"
+      (saved)="onSaved()"
+      (cancelled)="dialogVisible.set(false)"
+    />
+  }
+</app-edit-dialog>

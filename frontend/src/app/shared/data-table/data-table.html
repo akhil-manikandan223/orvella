@@ -1,0 +1,96 @@
+<div class="data-table__wrapper">
+  <p-table
+    [value]="value()"
+    [loading]="loading()"
+    [paginator]="true"
+    [rows]="rowsPerPage()"
+    [rowsPerPageOptions]="rowsPerPageOptions()"
+    [dataKey]="dataKey()"
+    [globalFilterFields]="globalFilterFields()"
+    [scrollable]="true"
+    scrollHeight="flex"
+  >
+    <ng-template #header>
+      <tr>
+        @for (column of columns(); track column.field) {
+          @if (column.sortable) {
+            <th [pSortableColumn]="column.field" [style.width]="column.width" [style.text-align]="column.align">
+              {{ column.header }}
+              <p-sort-icon [field]="column.field" />
+            </th>
+          } @else {
+            <th [style.width]="column.width" [style.text-align]="column.align">{{ column.header }}</th>
+          }
+        }
+        @if (hasActions()) {
+          <th style="width: 8rem"></th>
+        }
+      </tr>
+    </ng-template>
+
+    <ng-template #body let-row>
+      <tr
+        [class.data-table__row--clickable]="expandable()"
+        (click)="onRowClick(row)"
+      >
+        @for (column of columns(); track column.field) {
+          <td [style.text-align]="column.align">
+            @if (column.template) {
+              <ng-container *ngTemplateOutlet="column.template; context: { $implicit: row }" />
+            } @else {
+              {{ cellValue(row, column) }}
+            }
+          </td>
+        }
+        @if (hasActions()) {
+          <td>
+            <div class="data-table__actions">
+              @for (action of actions(); track action.label) {
+                @if (isActionVisible(action, row)) {
+                  @if (action.routerLink) {
+                    <a
+                      pButton
+                      [text]="true"
+                      [severity]="action.severity ?? 'secondary'"
+                      [routerLink]="action.routerLink!(row)"
+                      [attr.aria-label]="action.label"
+                      (click)="$event.stopPropagation()"
+                    >
+                      <i [class]="action.icon" aria-hidden="true"></i>
+                    </a>
+                  } @else {
+                    <button
+                      pButton
+                      [text]="true"
+                      [severity]="action.severity ?? 'secondary'"
+                      [disabled]="isActionDisabled(action, row)"
+                      [attr.aria-label]="action.label"
+                      (click)="$event.stopPropagation(); action.onClick!(row)"
+                    >
+                      <i [class]="action.icon" aria-hidden="true"></i>
+                    </button>
+                  }
+                }
+              }
+            </div>
+          </td>
+        }
+      </tr>
+      @if (expandable() && isRowExpanded()(row) && expansionTemplate(); as expansionTpl) {
+        <tr>
+          <td [attr.colspan]="columnSpan()">
+            <ng-container *ngTemplateOutlet="expansionTpl; context: { $implicit: row }" />
+          </td>
+        </tr>
+      }
+    </ng-template>
+
+    <ng-template #emptymessage>
+      <tr>
+        <td [attr.colspan]="columnSpan()">
+          <app-empty-state [message]="emptyMessage()" [icon]="emptyIcon()" />
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>

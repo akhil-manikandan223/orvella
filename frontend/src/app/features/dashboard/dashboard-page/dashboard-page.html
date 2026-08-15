@@ -1,0 +1,118 @@
+<div class="dashboard-page">
+  <!-- Active tenants -->
+  <div class="dashboard-page__card active-tenants-card">
+    <div class="dashboard-page__card-header">
+      <span class="dashboard-page__card-label">Active tenants</span>
+      <span class="dashboard-page__card-icon dashboard-page__card-icon--violet">
+        <i class="pi pi-building" aria-hidden="true"></i>
+      </span>
+    </div>
+    <span class="dashboard-page__card-value">{{ activeTenantCount() }} / {{ totalTenantCount() }}</span>
+    <span class="dashboard-page__card-note">{{ inactiveTenantCount() }} inactive</span>
+  </div>
+
+  <!-- Organization types -->
+  <div class="dashboard-page__card organization-types-card">
+    <div class="dashboard-page__card-header">
+      <span class="dashboard-page__card-label">Organization types</span>
+      <span class="dashboard-page__card-icon dashboard-page__card-icon--indigo">
+        <i class="pi pi-tags" aria-hidden="true"></i>
+      </span>
+    </div>
+    <span class="dashboard-page__card-value">{{ organizationTypeCount() }}</span>
+    <span class="dashboard-page__card-note">across {{ organizationCategoryCount() }} categories</span>
+  </div>
+
+  <!-- Features -->
+  <div class="dashboard-page__card features-card">
+    <div class="dashboard-page__card-header">
+      <span class="dashboard-page__card-label">Features</span>
+      <span class="dashboard-page__card-icon dashboard-page__card-icon--teal">
+        <i class="pi pi-star" aria-hidden="true"></i>
+      </span>
+    </div>
+    <span class="dashboard-page__card-value">{{ featureCount() }}</span>
+    <span class="dashboard-page__card-note">{{ deprecatedFeatureCount() }} deprecated</span>
+  </div>
+
+  <!-- Recent activity / audit log -->
+  <div class="dashboard-page__card recent-activity-card">
+    <div class="dashboard-page__card-title">
+      <i class="pi pi-history" aria-hidden="true"></i>
+      <span>Recent activity</span>
+    </div>
+    @if (recentActivity().length === 0) {
+      <app-empty-state message="No audit activity yet." icon="pi pi-history" />
+    } @else {
+      <ul class="dashboard-page__activity-list">
+        @for (item of recentActivity(); track item.entry.id) {
+          <li class="dashboard-page__activity-item">
+            <span class="dashboard-page__activity-dot" [class]="'dashboard-page__activity-dot--' + item.kind"></span>
+            <span class="dashboard-page__activity-action">{{ item.verb }} {{ item.detail }}</span>
+            <span class="dashboard-page__activity-time">{{ item.entry.created_at | date: 'medium' }}</span>
+          </li>
+        }
+      </ul>
+    }
+  </div>
+
+  <!-- Audit events today -->
+  <div class="dashboard-page__card dashboard-page__card--compact checkins-card">
+    <span class="dashboard-page__card-icon dashboard-page__card-icon--plum">
+      <i class="pi pi-bolt" aria-hidden="true"></i>
+    </span>
+    <span class="dashboard-page__compact-value">{{ auditEventsTodayCount() }}</span>
+    <span class="dashboard-page__compact-label">Audit events today</span>
+  </div>
+
+  <!-- Inactive tenants -->
+  <div class="dashboard-page__card dashboard-page__card--compact dashboard-page__card--warning membership-expiry-card">
+    <i class="pi pi-exclamation-triangle" aria-hidden="true"></i>
+    <span class="dashboard-page__compact-value">{{ inactiveTenantCount() }}</span>
+    <span class="dashboard-page__compact-label">Inactive tenants</span>
+  </div>
+
+  <!-- Calendar -->
+  <div class="dashboard-page__card calendar-card">
+    <span class="dashboard-page__calendar-month">{{ monthLabel }}</span>
+    <div class="dashboard-page__calendar-weekdays">
+      @for (label of weekdayLabels; track label) {
+        <span>{{ label }}</span>
+      }
+    </div>
+    @for (week of calendarWeeks; track $index) {
+      <div class="dashboard-page__calendar-week">
+        @for (cell of week; track $index) {
+          <span class="dashboard-page__calendar-cell" [class.dashboard-page__calendar-cell--today]="cell.isToday">
+            {{ cell.day ?? '' }}
+          </span>
+        }
+      </div>
+    }
+  </div>
+
+  <!-- Tenant growth (chart placeholder, pending real data) -->
+  <div class="dashboard-page__card dashboard-page__card--placeholder tenant-growth-chart">
+    <i class="pi pi-chart-bar" aria-hidden="true"></i>
+    <span class="dashboard-page__placeholder-title">Tenant growth</span>
+    <span class="dashboard-page__placeholder-note">
+      A trend chart will appear here once historical tenant data is tracked.
+    </span>
+  </div>
+
+  <!-- Quick actions -->
+  <div class="dashboard-page__card dashboard-page__card--actions quick-actions-card">
+    <a pButton severity="secondary" size="small" routerLink="/tenants/new">
+      <i class="pi pi-building" aria-hidden="true"></i>
+      Add tenant
+    </a>
+    <a pButton severity="secondary" size="small" routerLink="/features">
+      <i class="pi pi-star" aria-hidden="true"></i>
+      Add feature
+    </a>
+    <a pButton severity="secondary" size="small" routerLink="/organization-types">
+      <i class="pi pi-tags" aria-hidden="true"></i>
+      Add type
+    </a>
+  </div>
+</div>

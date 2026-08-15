@@ -1,0 +1,48 @@
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  padding: 1rem 0.75rem;
+
+  &__group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+  }
+
+  &__group-label {
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--p-text-muted-color);
+    padding: 0.5rem 0.75rem 0.25rem;
+  }
+
+  &__link {
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+    padding: 0.5rem 0.75rem;
+    border-radius: var(--p-content-border-radius);
+    color: var(--p-text-color);
+    text-decoration: none;
+    font-size: 0.9rem;
+
+    i {
+      font-size: 1rem;
+      width: 1rem;
+      text-align: center;
+    }
+
+    &:hover {
+      background: var(--p-content-hover-background);
+    }
+
+    &--active {
+      background: var(--p-highlight-background);
+      color: var(--p-highlight-color);
+      font-weight: 600;
+    }
+  }
+}

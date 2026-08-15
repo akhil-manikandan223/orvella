@@ -1,0 +1,43 @@
+<form class="category-form" (submit)="onSubmit($event)">
+  <div class="category-form__field">
+    <label for="category-name">Name</label>
+    <input
+      id="category-name"
+      pInputText
+      [formField]="categoryForm.name"
+      [class.p-invalid]="categoryForm.name().touched() && categoryForm.name().invalid()"
+    />
+    @if (categoryForm.name().touched()) {
+      @for (error of categoryForm.name().errors(); track error.kind) {
+        <small class="category-form__error">{{ error.message }}</small>
+      }
+    }
+  </div>
+
+  <div class="category-form__field">
+    <label for="category-slug">Slug</label>
+    <input
+      id="category-slug"
+      pInputText
+      [formField]="categoryForm.slug"
+      [class.p-invalid]="categoryForm.slug().touched() && categoryForm.slug().invalid()"
+    />
+    @if (categoryForm.slug().touched()) {
+      @for (error of categoryForm.slug().errors(); track error.kind) {
+        <small class="category-form__error">{{ error.message }}</small>
+      }
+    }
+  </div>
+
+  <div class="category-form__actions">
+    <button pButton type="button" [text]="true" severity="secondary" (click)="cancelled.emit()">
+      Cancel
+    </button>
+    <button pButton type="submit" [disabled]="submitting()">
+      @if (submitting()) {
+        <i class="pi pi-spin pi-spinner" aria-hidden="true"></i>
+      }
+      Save
+    </button>
+  </div>
+</form>

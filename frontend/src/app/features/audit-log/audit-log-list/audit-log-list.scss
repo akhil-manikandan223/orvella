@@ -1,0 +1,25 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.audit-log-list__filter {
+  flex-shrink: 0;
+  margin-bottom: 1rem;
+  max-width: 24rem;
+
+  input {
+    width: 100%;
+  }
+}
+
+.audit-log-list__changes {
+  margin: 0;
+  padding: 0.75rem;
+  background: var(--p-content-hover-background);
+  border-radius: var(--p-content-border-radius);
+  font-size: 0.8rem;
+  white-space: pre-wrap;
+  word-break: break-word;
+}

@@ -1,0 +1,162 @@
+<form class="tenant-edit-form" (submit)="onSubmit($event)">
+  <div class="tenant-edit-form__grid">
+    <div class="tenant-edit-form__field">
+      <label for="edit-max-users">Max Users (optional)</label>
+      <input id="edit-max-users" type="number" pInputText [formField]="tenantForm.max_users" />
+    </div>
+
+    <div class="tenant-edit-form__field tenant-edit-form__field--wide">
+      <label for="edit-address-1">Address Line 1</label>
+      <input
+        id="edit-address-1"
+        pInputText
+        [formField]="tenantForm.address_line_1"
+        [class.p-invalid]="tenantForm.address_line_1().touched() && tenantForm.address_line_1().invalid()"
+      />
+      @if (tenantForm.address_line_1().touched()) {
+        @for (error of tenantForm.address_line_1().errors(); track error.kind) {
+          <small class="tenant-edit-form__error">{{ error.message }}</small>
+        }
+      }
+    </div>
+
+    <div class="tenant-edit-form__field tenant-edit-form__field--wide">
+      <label for="edit-address-2">Address Line 2 (optional)</label>
+      <input id="edit-address-2" pInputText [formField]="tenantForm.address_line_2" />
+    </div>
+
+    <div class="tenant-edit-form__field">
+      <label for="edit-country">Country</label>
+      <p-select
+        inputId="edit-country"
+        [formField]="$any(tenantForm.country_id)"
+        [options]="countries()"
+        optionLabel="name"
+        optionValue="id"
+        [filter]="true"
+        (onChange)="onCountryChanged($event.value)"
+        [class.p-invalid]="tenantForm.country_id().touched() && tenantForm.country_id().invalid()"
+      />
+      @if (tenantForm.country_id().touched()) {
+        @for (error of tenantForm.country_id().errors(); track error.kind) {
+          <small class="tenant-edit-form__error">{{ error.message }}</small>
+        }
+      }
+    </div>
+
+    <div class="tenant-edit-form__field">
+      <label for="edit-state">State (optional)</label>
+      <p-select
+        inputId="edit-state"
+        [formField]="$any(tenantForm.state_id)"
+        [options]="states()"
+        optionLabel="name"
+        optionValue="id"
+        [filter]="true"
+        [showClear]="true"
+        (onChange)="onStateChanged($event.value)"
+      />
+    </div>
+
+    <div class="tenant-edit-form__field">
+      <label for="edit-city">City</label>
+      <p-select
+        inputId="edit-city"
+        [formField]="$any(tenantForm.city_id)"
+        [options]="cities()"
+        optionLabel="name"
+        optionValue="id"
+        [filter]="true"
+        [class.p-invalid]="tenantForm.city_id().touched() && tenantForm.city_id().invalid()"
+      />
+      @if (tenantForm.city_id().touched()) {
+        @for (error of tenantForm.city_id().errors(); track error.kind) {
+          <small class="tenant-edit-form__error">{{ error.message }}</small>
+        }
+      }
+    </div>
+
+    <div class="tenant-edit-form__field">
+      <label for="edit-postal-code">Postal Code (optional)</label>
+      <input id="edit-postal-code" pInputText [formField]="tenantForm.postal_code" />
+    </div>
+
+    <div class="tenant-edit-form__field">
+      <label for="edit-license">License Number</label>
+      <input
+        id="edit-license"
+        pInputText
+        [formField]="tenantForm.license_number"
+        [class.p-invalid]="tenantForm.license_number().touched() && tenantForm.license_number().invalid()"
+      />
+      @if (tenantForm.license_number().touched()) {
+        @for (error of tenantForm.license_number().errors(); track error.kind) {
+          <small class="tenant-edit-form__error">{{ error.message }}</small>
+        }
+      }
+    </div>
+
+    <div class="tenant-edit-form__field">
+      <label for="edit-logo-url">Logo URL (optional)</label>
+      <input id="edit-logo-url" pInputText [formField]="tenantForm.logo_url" />
+    </div>
+
+    <div class="tenant-edit-form__field">
+      <label for="edit-contact-name">Key Contact Name</label>
+      <input
+        id="edit-contact-name"
+        pInputText
+        [formField]="tenantForm.key_contact_name"
+        [class.p-invalid]="tenantForm.key_contact_name().touched() && tenantForm.key_contact_name().invalid()"
+      />
+      @if (tenantForm.key_contact_name().touched()) {
+        @for (error of tenantForm.key_contact_name().errors(); track error.kind) {
+          <small class="tenant-edit-form__error">{{ error.message }}</small>
+        }
+      }
+    </div>
+
+    <div class="tenant-edit-form__field">
+      <label for="edit-contact-email">Key Contact Email</label>
+      <input
+        id="edit-contact-email"
+        type="email"
+        pInputText
+        [formField]="tenantForm.key_contact_email"
+        [class.p-invalid]="tenantForm.key_contact_email().touched() && tenantForm.key_contact_email().invalid()"
+      />
+      @if (tenantForm.key_contact_email().touched()) {
+        @for (error of tenantForm.key_contact_email().errors(); track error.kind) {
+          <small class="tenant-edit-form__error">{{ error.message }}</small>
+        }
+      }
+    </div>
+
+    <div class="tenant-edit-form__field">
+      <label for="edit-contact-phone">Key Contact Phone</label>
+      <input
+        id="edit-contact-phone"
+        pInputText
+        [formField]="tenantForm.key_contact_phone"
+        [class.p-invalid]="tenantForm.key_contact_phone().touched() && tenantForm.key_contact_phone().invalid()"
+      />
+      @if (tenantForm.key_contact_phone().touched()) {
+        @for (error of tenantForm.key_contact_phone().errors(); track error.kind) {
+          <small class="tenant-edit-form__error">{{ error.message }}</small>
+        }
+      }
+    </div>
+  </div>
+
+  <div class="tenant-edit-form__actions">
+    <button pButton type="button" [text]="true" severity="secondary" (click)="cancelled.emit()">
+      Cancel
+    </button>
+    <button pButton type="submit" [disabled]="submitting()">
+      @if (submitting()) {
+        <i class="pi pi-spin pi-spinner" aria-hidden="true"></i>
+      }
+      Save
+    </button>
+  </div>
+</form>

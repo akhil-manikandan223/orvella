@@ -1,0 +1,32 @@
+.district-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+
+  &__field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
+
+    label {
+      font-size: 0.875rem;
+      font-weight: 600;
+    }
+
+    input,
+    p-select {
+      width: 100%;
+    }
+  }
+
+  &__error {
+    color: var(--p-red-500);
+  }
+
+  &__actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+  }
+}

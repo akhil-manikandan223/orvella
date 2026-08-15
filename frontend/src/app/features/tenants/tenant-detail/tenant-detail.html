@@ -1,0 +1,81 @@
+@if (tenant(); as t) {
+  <app-page-header [title]="t.name" [subtitle]="'/' + t.slug" icon="pi pi-building" [showBack]="true">
+    <app-status-badge
+      [status]="t.is_active ? 'active' : 'inactive'"
+      [label]="t.is_active ? 'Active' : 'Inactive'"
+    />
+    <button pButton [text]="true" (click)="editDialogVisible.set(true)">
+      <i class="pi pi-pencil" aria-hidden="true"></i>
+      Edit
+    </button>
+    @if (t.is_active) {
+      <button pButton severity="danger" (click)="confirmDeactivate()">
+        <i class="pi pi-ban" aria-hidden="true"></i>
+        Deactivate
+      </button>
+    } @else {
+      <button pButton severity="success" (click)="activate()">
+        <i class="pi pi-check" aria-hidden="true"></i>
+        Activate
+      </button>
+    }
+  </app-page-header>
+
+  <section class="tenant-detail__section">
+    <div class="tenant-detail__section-title">
+      <i class="pi pi-id-card" aria-hidden="true"></i>
+      <span>Profile</span>
+    </div>
+    <dl class="tenant-detail__card tenant-detail__grid">
+      <div>
+        <dt>Organization Type</dt>
+        <dd>{{ organizationTypeName() }}</dd>
+      </div>
+      <div>
+        <dt>Max Users</dt>
+        <dd>{{ t.max_users ?? 'Unlimited' }}</dd>
+      </div>
+      <div>
+        <dt>Address</dt>
+        <dd>{{ formattedAddress() }}</dd>
+      </div>
+      <div>
+        <dt>License Number</dt>
+        <dd>{{ t.license_number }}</dd>
+      </div>
+      <div>
+        <dt>Key Contact</dt>
+        <dd>{{ t.key_contact_name }} — {{ t.key_contact_email }}, {{ t.key_contact_phone }}</dd>
+      </div>
+    </dl>
+  </section>
+
+  <section class="tenant-detail__section tenant-detail__section--fill">
+    <div class="tenant-detail__section-title">
+      <i class="pi pi-star" aria-hidden="true"></i>
+      <span>Features</span>
+    </div>
+    <div class="tenant-detail__card tenant-detail__card--table">
+      <app-tenant-feature-toggles
+        [tenantId]="t.id"
+        [enabledFeatures]="t.features"
+        (toggled)="load()"
+      />
+    </div>
+  </section>
+
+  <app-edit-dialog
+    [visible]="editDialogVisible()"
+    (visibleChange)="editDialogVisible.set($event)"
+    header="Edit Tenant"
+    width="50rem"
+  >
+    @if (editDialogVisible()) {
+      <app-tenant-edit-form
+        [tenant]="t"
+        (saved)="onEditSaved()"
+        (cancelled)="editDialogVisible.set(false)"
+      />
+    }
+  </app-edit-dialog>
+}

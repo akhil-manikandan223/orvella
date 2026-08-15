@@ -1,0 +1,38 @@
+<app-page-header
+  title="Organization Categories"
+  subtitle="Top-level organization taxonomy"
+  icon="pi pi-sitemap"
+  [showSearch]="true"
+  [showRefresh]="true"
+  (search)="searchTerm.set($event)"
+  (refresh)="load()"
+>
+  <button pButton (click)="openCreate()">
+    <i class="pi pi-plus" aria-hidden="true"></i>
+    New
+  </button>
+</app-page-header>
+
+<app-data-table
+  [columns]="columns"
+  [value]="categories()"
+  [actions]="actions"
+  [loading]="loading()"
+  [globalFilter]="searchTerm()"
+  emptyMessage="No organization categories yet."
+  emptyIcon="pi pi-sitemap"
+/>
+
+<app-edit-dialog
+  [visible]="dialogVisible()"
+  (visibleChange)="dialogVisible.set($event)"
+  [header]="editingCategory() ? 'Edit Category' : 'New Category'"
+>
+  @if (dialogVisible()) {
+    <app-category-form
+      [category]="editingCategory()"
+      (saved)="onSaved()"
+      (cancelled)="dialogVisible.set(false)"
+    />
+  }
+</app-edit-dialog>

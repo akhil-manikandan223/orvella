@@ -1,0 +1,29 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+
+.data-table__wrapper {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+
+p-table {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+
+.data-table__row--clickable {
+  cursor: pointer;
+}
+
+.data-table__actions {
+  display: flex;
+  gap: 0.25rem;
+}

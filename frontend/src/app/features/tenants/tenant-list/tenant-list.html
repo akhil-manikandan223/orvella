@@ -1,0 +1,31 @@
+<app-page-header
+  title="Tenants"
+  subtitle="Organizations provisioned on the platform"
+  icon="pi pi-building"
+  [showSearch]="true"
+  [showRefresh]="true"
+  (search)="searchTerm.set($event)"
+  (refresh)="load()"
+>
+  <a pButton routerLink="/tenants/new">
+    <i class="pi pi-plus" aria-hidden="true"></i>
+    New
+  </a>
+</app-page-header>
+
+<app-data-table
+  [columns]="columns()"
+  [value]="tenants()"
+  [actions]="actions"
+  [loading]="loading()"
+  [globalFilter]="searchTerm()"
+  emptyMessage="No tenants yet."
+  emptyIcon="pi pi-building"
+/>
+
+<ng-template #statusCell let-tenant>
+  <app-status-badge
+    [status]="tenant.is_active ? 'active' : 'inactive'"
+    [label]="tenant.is_active ? 'Active' : 'Inactive'"
+  />
+</ng-template>

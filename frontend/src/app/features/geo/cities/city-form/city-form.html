@@ -1,0 +1,76 @@
+<form class="city-form" (submit)="onSubmit($event)">
+  <div class="city-form__field">
+    <label for="city-state">State</label>
+    <p-select
+      inputId="city-state"
+      [formField]="$any(cityForm.state_id)"
+      [options]="states()"
+      optionLabel="name"
+      optionValue="id"
+      [filter]="true"
+      placeholder="Select a state"
+      [class.p-invalid]="cityForm.state_id().touched() && cityForm.state_id().invalid()"
+    />
+    @if (cityForm.state_id().touched()) {
+      @for (error of cityForm.state_id().errors(); track error.kind) {
+        <small class="city-form__error">{{ error.message }}</small>
+      }
+    }
+  </div>
+
+  <div class="city-form__field">
+    <label for="city-district">District (optional)</label>
+    <p-select
+      inputId="city-district"
+      [formField]="$any(cityForm.district_id)"
+      [options]="filteredDistricts()"
+      optionLabel="name"
+      optionValue="id"
+      [filter]="true"
+      [showClear]="true"
+      placeholder="Select a district"
+    />
+  </div>
+
+  <div class="city-form__field">
+    <label for="city-name">Name</label>
+    <input
+      id="city-name"
+      pInputText
+      [formField]="cityForm.name"
+      [class.p-invalid]="cityForm.name().touched() && cityForm.name().invalid()"
+    />
+    @if (cityForm.name().touched()) {
+      @for (error of cityForm.name().errors(); track error.kind) {
+        <small class="city-form__error">{{ error.message }}</small>
+      }
+    }
+  </div>
+
+  <div class="city-form__field">
+    <label for="city-slug">Slug</label>
+    <input
+      id="city-slug"
+      pInputText
+      [formField]="cityForm.slug"
+      [class.p-invalid]="cityForm.slug().touched() && cityForm.slug().invalid()"
+    />
+    @if (cityForm.slug().touched()) {
+      @for (error of cityForm.slug().errors(); track error.kind) {
+        <small class="city-form__error">{{ error.message }}</small>
+      }
+    }
+  </div>
+
+  <div class="city-form__actions">
+    <button pButton type="button" [text]="true" severity="secondary" (click)="cancelled.emit()">
+      Cancel
+    </button>
+    <button pButton type="submit" [disabled]="submitting()">
+      @if (submitting()) {
+        <i class="pi pi-spin pi-spinner" aria-hidden="true"></i>
+      }
+      Save
+    </button>
+  </div>
+</form>

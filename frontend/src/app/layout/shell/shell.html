@@ -1,0 +1,22 @@
+<div class="shell" [class.shell--sidebar-open]="sidebarOpen()">
+  <app-topbar (menuToggle)="toggleSidebar()" />
+
+  <div class="shell__body">
+    <aside class="shell__sidebar">
+      <app-sidebar-nav (navigated)="closeSidebar()" />
+    </aside>
+
+    @if (sidebarOpen()) {
+      <button
+        type="button"
+        class="shell__scrim"
+        aria-label="Close navigation menu"
+        (click)="closeSidebar()"
+      ></button>
+    }
+
+    <main class="shell__content">
+      <router-outlet />
+    </main>
+  </div>
+</div>

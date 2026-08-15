@@ -1,0 +1,38 @@
+<app-page-header
+  title="Countries"
+  subtitle="Global country reference data"
+  icon="pi pi-globe"
+  [showSearch]="true"
+  [showRefresh]="true"
+  (search)="searchTerm.set($event)"
+  (refresh)="load()"
+>
+  <button pButton (click)="openCreate()">
+    <i class="pi pi-plus" aria-hidden="true"></i>
+    New
+  </button>
+</app-page-header>
+
+<app-data-table
+  [columns]="columns"
+  [value]="countries()"
+  [actions]="actions"
+  [loading]="loading()"
+  [globalFilter]="searchTerm()"
+  emptyMessage="No countries yet."
+  emptyIcon="pi pi-globe"
+/>
+
+<app-edit-dialog
+  [visible]="dialogVisible()"
+  (visibleChange)="dialogVisible.set($event)"
+  [header]="editingCountry() ? 'Edit Country' : 'New Country'"
+>
+  @if (dialogVisible()) {
+    <app-country-form
+      [country]="editingCountry()"
+      (saved)="onSaved()"
+      (cancelled)="dialogVisible.set(false)"
+    />
+  }
+</app-edit-dialog>

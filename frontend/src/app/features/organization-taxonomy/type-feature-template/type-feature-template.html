@@ -1,0 +1,46 @@
+<app-page-header
+  [title]="type() ? type()!.name + ' — Feature Template' : 'Feature Template'"
+  subtitle="Features automatically granted to new tenants of this organization type"
+  icon="pi pi-star"
+  [showBack]="true"
+/>
+
+<div class="type-feature-template__add">
+  <p-select
+    [formField]="$any(featureIdToAdd)"
+    [options]="availableFeatures()"
+    optionLabel="name"
+    optionValue="id"
+    [filter]="true"
+    placeholder="Select a feature to add"
+    class="type-feature-template__add-select"
+  />
+  <button pButton [disabled]="!featureIdToAddModel() || adding()" (click)="addFeature()">
+    <i class="pi pi-plus" aria-hidden="true"></i>
+    Add
+  </button>
+</div>
+
+@if (templateFeatures().length === 0) {
+  <app-empty-state message="No features in this template yet." icon="pi pi-star" />
+} @else {
+  <ul class="type-feature-template__list">
+    @for (feature of templateFeatures(); track feature.id) {
+      <li>
+        <div>
+          <span class="type-feature-template__feature-name">{{ feature.name }}</span>
+          <code>{{ feature.key }}</code>
+        </div>
+        <button
+          pButton
+          [text]="true"
+          severity="danger"
+          [attr.aria-label]="'Remove ' + feature.name"
+          (click)="confirmRemove(feature)"
+        >
+          <i class="pi pi-times" aria-hidden="true"></i>
+        </button>
+      </li>
+    }
+  </ul>
+}

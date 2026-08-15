@@ -1,0 +1,39 @@
+<app-page-header
+  title="States"
+  subtitle="States and provinces by country"
+  icon="pi pi-map"
+  [showSearch]="true"
+  [showRefresh]="true"
+  (search)="searchTerm.set($event)"
+  (refresh)="load()"
+>
+  <button pButton (click)="openCreate()">
+    <i class="pi pi-plus" aria-hidden="true"></i>
+    New
+  </button>
+</app-page-header>
+
+<app-data-table
+  [columns]="columns"
+  [value]="states()"
+  [actions]="actions"
+  [loading]="loading()"
+  [globalFilter]="searchTerm()"
+  emptyMessage="No states yet."
+  emptyIcon="pi pi-map"
+/>
+
+<app-edit-dialog
+  [visible]="dialogVisible()"
+  (visibleChange)="dialogVisible.set($event)"
+  [header]="editingState() ? 'Edit State' : 'New State'"
+>
+  @if (dialogVisible()) {
+    <app-state-form
+      [state]="editingState()"
+      [countries]="countries()"
+      (saved)="onSaved()"
+      (cancelled)="dialogVisible.set(false)"
+    />
+  }
+</app-edit-dialog>

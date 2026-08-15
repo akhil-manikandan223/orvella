@@ -8,7 +8,7 @@ from sqlalchemy import event, inspect
 from sqlalchemy.orm import Session
 
 from app.domains.audit_log.models import AuditLog
-from app.domains.tenant.models import Tenant
+from app.domains.tenant.models import Tenant, TenantFeature
 
 
 @dataclass(frozen=True)
@@ -85,6 +85,19 @@ def _record_audit_events(session: Session, flush_context: object) -> None:
                     'new': _to_jsonable(history.added[0]) if history.added else None,
                 }
         if changes:
+            if isinstance(obj, TenantFeature):
+                # tenant_id/feature_id are the only thing that identifies which
+                # tenant-feature pair this row is - toggling `enabled` alone
+                # (the only field that ever changes here) wouldn't otherwise
+                # appear in the diff, leaving the audit entry unattributable.
+                changes.setdefault(
+                    'tenant_id',
+                    {'old': _to_jsonable(obj.tenant_id), 'new': _to_jsonable(obj.tenant_id)},
+                )
+                changes.setdefault(
+                    'feature_id',
+                    {'old': _to_jsonable(obj.feature_id), 'new': _to_jsonable(obj.feature_id)},
+                )
             session.add(_build_audit_log(obj, action='update', changes=changes))
 
     for obj in session.deleted:
