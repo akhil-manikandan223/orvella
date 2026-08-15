@@ -37,6 +37,13 @@ export const routes: Routes = [
           import('./features/tenants/tenant-detail/tenant-detail').then((m) => m.TenantDetail),
       },
       {
+        path: 'tenants/:id/edit',
+        loadComponent: () =>
+          import('./features/tenants/tenant-edit-page/tenant-edit-page').then(
+            (m) => m.TenantEditPage,
+          ),
+      },
+      {
         path: 'geo/countries',
         loadComponent: () =>
           import('./features/geo/countries/country-list/country-list').then(

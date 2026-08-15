@@ -1,5 +1,5 @@
-import { Component, inject, signal } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, computed, inject, signal } from '@angular/core';
+import { Router, RouterLink } from '@angular/router';
 import { FormField, disabled, email, form, required } from '@angular/forms/signals';
 import { ButtonDirective } from 'primeng/button';
 import { InputText } from 'primeng/inputtext';
@@ -8,11 +8,15 @@ import { MessageService } from 'primeng/api';
 
 import { CityService } from '../../../core/data-access/city.service';
 import { CountryService } from '../../../core/data-access/country.service';
+import { OrganizationCategoryService } from '../../../core/data-access/organization-category.service';
 import { OrganizationTypeService } from '../../../core/data-access/organization-type.service';
 import { StateService } from '../../../core/data-access/state.service';
 import { TenantService } from '../../../core/data-access/tenant.service';
 import { CityRead, CountryRead, StateRead } from '../../../core/models/geo.model';
-import { OrganizationTypeRead } from '../../../core/models/organization-taxonomy.model';
+import {
+  OrganizationCategoryRead,
+  OrganizationTypeRead,
+} from '../../../core/models/organization-taxonomy.model';
 import { PageHeader } from '../../../shared/page-header/page-header';
 import { slugPattern } from '../../../shared/validators/slug.validator';
 
@@ -36,12 +40,13 @@ interface TenantCreateFormValue {
 
 @Component({
   selector: 'app-tenant-create',
-  imports: [ButtonDirective, InputText, Select, FormField, PageHeader],
+  imports: [ButtonDirective, InputText, Select, FormField, PageHeader, RouterLink],
   templateUrl: './tenant-create.html',
   styleUrl: './tenant-create.scss',
 })
 export class TenantCreate {
   private readonly tenantService = inject(TenantService);
+  private readonly organizationCategoryService = inject(OrganizationCategoryService);
   private readonly organizationTypeService = inject(OrganizationTypeService);
   private readonly countryService = inject(CountryService);
   private readonly stateService = inject(StateService);
@@ -50,10 +55,25 @@ export class TenantCreate {
   private readonly router = inject(Router);
 
   protected readonly submitting = signal(false);
+  protected readonly organizationCategories = signal<OrganizationCategoryRead[]>([]);
   protected readonly organizationTypes = signal<OrganizationTypeRead[]>([]);
   protected readonly countries = signal<CountryRead[]>([]);
   protected readonly states = signal<StateRead[]>([]);
   protected readonly cities = signal<CityRead[]>([]);
+
+  // UI-only filter: a tenant only stores organization_type_id, not a category,
+  // so this never gets submitted - it just narrows the Type dropdown below.
+  protected readonly categoryFilter = form(signal<string | null>(null));
+
+  protected readonly filteredOrganizationTypes = computed(() => {
+    const categoryId = this.categoryFilter().value();
+    if (!categoryId) {
+      return [];
+    }
+    return this.organizationTypes().filter(
+      (type) => type.organization_category_id === categoryId,
+    );
+  });
 
   protected readonly model = signal<TenantCreateFormValue>({
     name: '',
@@ -78,6 +98,7 @@ export class TenantCreate {
     required(path.slug, { message: 'Slug is required' });
     slugPattern(path.slug);
     required(path.organization_type_id, { message: 'Organization type is required' });
+    disabled(path.organization_type_id, { when: () => !this.categoryFilter().value() });
 
     required(path.address_line_1, { message: 'Address is required' });
     required(path.country_id, { message: 'Country is required' });
@@ -93,8 +114,15 @@ export class TenantCreate {
   });
 
   constructor() {
+    this.organizationCategoryService
+      .list()
+      .subscribe((categories) => this.organizationCategories.set(categories));
     this.organizationTypeService.list().subscribe((types) => this.organizationTypes.set(types));
     this.countryService.list().subscribe((countries) => this.countries.set(countries));
+  }
+
+  protected onCategoryChanged(): void {
+    this.model.update((current) => ({ ...current, organization_type_id: '' }));
   }
 
   protected onCountryChanged(countryId: string | null): void {
@@ -114,8 +142,8 @@ export class TenantCreate {
     }
   }
 
-  protected onSubmit(event: Event): void {
-    event.preventDefault();
+  protected onSubmit(event?: Event): void {
+    event?.preventDefault();
     if (this.tenantForm().invalid()) {
       this.tenantForm().markAsTouched();
       return;

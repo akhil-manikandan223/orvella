@@ -23,7 +23,7 @@
   emptyIcon="pi pi-building-columns"
 />
 
-<app-edit-dialog
+<app-form-drawer
   [visible]="dialogVisible()"
   (visibleChange)="dialogVisible.set($event)"
   [header]="editingCity() ? 'Edit City' : 'New City'"
@@ -37,4 +37,4 @@
       (cancelled)="dialogVisible.set(false)"
     />
   }
-</app-edit-dialog>
+</app-form-drawer>

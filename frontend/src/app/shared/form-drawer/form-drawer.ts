@@ -1,13 +1,13 @@
 import { Component, input, output } from '@angular/core';
-import { Dialog } from 'primeng/dialog';
+import { Drawer } from 'primeng/drawer';
 
 @Component({
-  selector: 'app-edit-dialog',
-  imports: [Dialog],
-  templateUrl: './edit-dialog.html',
-  styleUrl: './edit-dialog.scss',
+  selector: 'app-form-drawer',
+  imports: [Drawer],
+  templateUrl: './form-drawer.html',
+  styleUrl: './form-drawer.scss',
 })
-export class EditDialog {
+export class FormDrawer {
   readonly visible = input.required<boolean>();
   readonly visibleChange = output<boolean>();
   readonly header = input.required<string>();

@@ -7,12 +7,12 @@ import { DistrictRead, StateRead } from '../../../../core/models/geo.model';
 import { PageHeader } from '../../../../shared/page-header/page-header';
 import { DataTable } from '../../../../shared/data-table/data-table';
 import { DataTableAction, DataTableColumn } from '../../../../shared/data-table/data-table.model';
-import { EditDialog } from '../../../../shared/edit-dialog/edit-dialog';
+import { FormDrawer } from '../../../../shared/form-drawer/form-drawer';
 import { DistrictForm } from '../district-form/district-form';
 
 @Component({
   selector: 'app-district-list',
-  imports: [ButtonDirective, PageHeader, DataTable, EditDialog, DistrictForm],
+  imports: [ButtonDirective, PageHeader, DataTable, FormDrawer, DistrictForm],
   templateUrl: './district-list.html',
   styleUrl: './district-list.scss',
 })

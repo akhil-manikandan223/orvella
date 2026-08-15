@@ -8,12 +8,12 @@ import { CityRead, DistrictRead, StateRead } from '../../../../core/models/geo.m
 import { PageHeader } from '../../../../shared/page-header/page-header';
 import { DataTable } from '../../../../shared/data-table/data-table';
 import { DataTableAction, DataTableColumn } from '../../../../shared/data-table/data-table.model';
-import { EditDialog } from '../../../../shared/edit-dialog/edit-dialog';
+import { FormDrawer } from '../../../../shared/form-drawer/form-drawer';
 import { CityForm } from '../city-form/city-form';
 
 @Component({
   selector: 'app-city-list',
-  imports: [ButtonDirective, PageHeader, DataTable, EditDialog, CityForm],
+  imports: [ButtonDirective, PageHeader, DataTable, FormDrawer, CityForm],
   templateUrl: './city-list.html',
   styleUrl: './city-list.scss',
 })

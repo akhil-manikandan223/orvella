@@ -31,7 +31,7 @@
   <app-status-badge [status]="feature.status" />
 </ng-template>
 
-<app-edit-dialog
+<app-form-drawer
   [visible]="dialogVisible()"
   (visibleChange)="dialogVisible.set($event)"
   [header]="editingFeature() ? 'Edit Feature' : 'New Feature'"
@@ -44,4 +44,4 @@
       (cancelled)="dialogVisible.set(false)"
     />
   }
-</app-edit-dialog>
+</app-form-drawer>

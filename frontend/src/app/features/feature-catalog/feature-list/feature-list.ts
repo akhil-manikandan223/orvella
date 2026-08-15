@@ -7,12 +7,12 @@ import { PageHeader } from '../../../shared/page-header/page-header';
 import { StatusBadge } from '../../../shared/status-badge/status-badge';
 import { DataTable } from '../../../shared/data-table/data-table';
 import { DataTableAction, DataTableColumn } from '../../../shared/data-table/data-table.model';
-import { EditDialog } from '../../../shared/edit-dialog/edit-dialog';
+import { FormDrawer } from '../../../shared/form-drawer/form-drawer';
 import { FeatureForm } from '../feature-form/feature-form';
 
 @Component({
   selector: 'app-feature-list',
-  imports: [ButtonDirective, PageHeader, StatusBadge, DataTable, EditDialog, FeatureForm],
+  imports: [ButtonDirective, PageHeader, StatusBadge, DataTable, FormDrawer, FeatureForm],
   templateUrl: './feature-list.html',
   styleUrl: './feature-list.scss',
 })

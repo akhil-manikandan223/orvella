@@ -23,7 +23,7 @@
   emptyIcon="pi pi-tags"
 />
 
-<app-edit-dialog
+<app-form-drawer
   [visible]="dialogVisible()"
   (visibleChange)="dialogVisible.set($event)"
   [header]="editingType() ? 'Edit Type' : 'New Type'"
@@ -36,4 +36,4 @@
       (cancelled)="dialogVisible.set(false)"
     />
   }
-</app-edit-dialog>
+</app-form-drawer>

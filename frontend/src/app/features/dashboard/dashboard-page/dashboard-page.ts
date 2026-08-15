@@ -21,7 +21,7 @@ interface CalendarCell {
   isToday: boolean;
 }
 
-type ActivityKind = 'created' | 'updated' | 'deleted' | 'assigned' | 'removed';
+type ActivityKind = 'created' | 'updated' | 'deleted' | 'assigned' | 'removed' | 'deactivated';
 
 interface ActivityEntry {
   entry: AuditLogRead;
@@ -118,6 +118,14 @@ function describeActivity(entry: AuditLogRead, lookup: EntityNameLookup): Activi
   if (entry.action === 'delete') {
     return { entry, kind: 'deleted', verb: 'Deleted', detail: name };
   }
+
+  if (entry.entity_type === 'tenants') {
+    const isActiveChange = entry.changes['is_active'];
+    if (isUpdateDiff(isActiveChange) && isActiveChange.new === false) {
+      return { entry, kind: 'deactivated', verb: 'Deactivated', detail: name };
+    }
+  }
+
   return { entry, kind: 'updated', verb: 'Updated', detail: name };
 }
 

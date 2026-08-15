@@ -6,7 +6,7 @@ import { CountryRead } from '../../../../core/models/geo.model';
 import { PageHeader } from '../../../../shared/page-header/page-header';
 import { DataTable } from '../../../../shared/data-table/data-table';
 import { DataTableAction, DataTableColumn } from '../../../../shared/data-table/data-table.model';
-import { EditDialog } from '../../../../shared/edit-dialog/edit-dialog';
+import { FormDrawer } from '../../../../shared/form-drawer/form-drawer';
 import { CountryForm } from '../country-form/country-form';
 
 const COLUMNS: DataTableColumn<CountryRead>[] = [
@@ -16,7 +16,7 @@ const COLUMNS: DataTableColumn<CountryRead>[] = [
 
 @Component({
   selector: 'app-country-list',
-  imports: [ButtonDirective, PageHeader, DataTable, EditDialog, CountryForm],
+  imports: [ButtonDirective, PageHeader, DataTable, FormDrawer, CountryForm],
   templateUrl: './country-list.html',
   styleUrl: './country-list.scss',
 })

@@ -6,7 +6,7 @@ import { OrganizationCategoryRead } from '../../../core/models/organization-taxo
 import { PageHeader } from '../../../shared/page-header/page-header';
 import { DataTable } from '../../../shared/data-table/data-table';
 import { DataTableAction, DataTableColumn } from '../../../shared/data-table/data-table.model';
-import { EditDialog } from '../../../shared/edit-dialog/edit-dialog';
+import { FormDrawer } from '../../../shared/form-drawer/form-drawer';
 import { CategoryForm } from '../category-form/category-form';
 
 const COLUMNS: DataTableColumn<OrganizationCategoryRead>[] = [
@@ -16,7 +16,7 @@ const COLUMNS: DataTableColumn<OrganizationCategoryRead>[] = [
 
 @Component({
   selector: 'app-category-list',
-  imports: [ButtonDirective, PageHeader, DataTable, EditDialog, CategoryForm],
+  imports: [ButtonDirective, PageHeader, DataTable, FormDrawer, CategoryForm],
   templateUrl: './category-list.html',
   styleUrl: './category-list.scss',
 })

@@ -1,9 +1,9 @@
-<p-dialog
+<p-drawer
   [visible]="visible()"
   (visibleChange)="visibleChange.emit($event)"
-  [modal]="true"
+  position="right"
   [header]="header()"
   [style]="{ width: width() }"
 >
   <ng-content />
-</p-dialog>
+</p-drawer>

@@ -1,9 +1,13 @@
-<app-page-header
-  title="New Tenant"
-  subtitle="Provision a new organization on the platform"
-  icon="pi pi-building"
-  [showBack]="true"
-/>
+<app-page-header title="New" icon="pi pi-building" [showBack]="true">
+  <a pButton [text]="true" severity="secondary" routerLink="/tenants">
+    <i class="pi pi-times" aria-hidden="true"></i>
+    Cancel
+  </a>
+  <button pButton [disabled]="submitting()" (click)="onSubmit()">
+    <i class="pi" [class.pi-spin]="submitting()" [class.pi-spinner]="submitting()" [class.pi-save]="!submitting()" aria-hidden="true"></i>
+    Save
+  </button>
+</app-page-header>
 
 <form class="tenant-create" (submit)="onSubmit($event)">
   <section class="tenant-create__section">
@@ -11,7 +15,7 @@
       <i class="pi pi-info-circle" aria-hidden="true"></i>
       <span>Basic Information</span>
     </div>
-    <div class="tenant-create__card tenant-create__grid">
+    <div class="tenant-create__grid">
       <div class="tenant-create__field">
         <label for="tenant-name">Name</label>
         <input
@@ -43,15 +47,29 @@
       </div>
 
       <div class="tenant-create__field">
+        <label for="tenant-org-category">Organization Category</label>
+        <p-select
+          inputId="tenant-org-category"
+          [formField]="$any(categoryFilter)"
+          [options]="organizationCategories()"
+          optionLabel="name"
+          optionValue="id"
+          [filter]="true"
+          placeholder="Select a category"
+          (onChange)="onCategoryChanged()"
+        />
+      </div>
+
+      <div class="tenant-create__field">
         <label for="tenant-org-type">Organization Type</label>
         <p-select
           inputId="tenant-org-type"
           [formField]="$any(tenantForm.organization_type_id)"
-          [options]="organizationTypes()"
+          [options]="filteredOrganizationTypes()"
           optionLabel="name"
           optionValue="id"
           [filter]="true"
-          placeholder="Select a type"
+          [placeholder]="categoryFilter().value() ? 'Select a type' : 'Select a category first'"
           [class.p-invalid]="tenantForm.organization_type_id().touched() && tenantForm.organization_type_id().invalid()"
         />
         @if (tenantForm.organization_type_id().touched()) {
@@ -73,7 +91,7 @@
       <i class="pi pi-map-marker" aria-hidden="true"></i>
       <span>Address</span>
     </div>
-    <div class="tenant-create__card tenant-create__grid">
+    <div class="tenant-create__grid">
       <div class="tenant-create__field tenant-create__field--wide">
         <label for="tenant-address-1">Address Line 1</label>
         <input
@@ -160,7 +178,7 @@
       <i class="pi pi-id-card" aria-hidden="true"></i>
       <span>License &amp; Contact</span>
     </div>
-    <div class="tenant-create__card tenant-create__grid">
+    <div class="tenant-create__grid">
       <div class="tenant-create__field">
         <label for="tenant-license">License Number</label>
         <input
@@ -228,11 +246,4 @@
       </div>
     </div>
   </section>
-
-  <div class="tenant-create__actions">
-    <button pButton type="submit" [disabled]="submitting()">
-      <i class="pi" [class.pi-spin]="submitting()" [class.pi-spinner]="submitting()" [class.pi-check]="!submitting()" aria-hidden="true"></i>
-      Create Tenant
-    </button>
-  </div>
 </form>

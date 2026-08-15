@@ -1,6 +1,5 @@
 import { Component, OnInit, inject, input, output, signal } from '@angular/core';
 import { FormField, disabled, email, form, required } from '@angular/forms/signals';
-import { ButtonDirective } from 'primeng/button';
 import { InputText } from 'primeng/inputtext';
 import { Select } from 'primeng/select';
 import { MessageService } from 'primeng/api';
@@ -29,7 +28,7 @@ interface TenantEditFormValue {
 
 @Component({
   selector: 'app-tenant-edit-form',
-  imports: [ButtonDirective, InputText, Select, FormField],
+  imports: [InputText, Select, FormField],
   templateUrl: './tenant-edit-form.html',
   styleUrl: './tenant-edit-form.scss',
 })
@@ -42,9 +41,8 @@ export class TenantEditForm implements OnInit {
 
   readonly tenant = input<TenantRead | null>(null);
   readonly saved = output<void>();
-  readonly cancelled = output<void>();
 
-  protected readonly submitting = signal(false);
+  readonly submitting = signal(false);
   protected readonly countries = signal<CountryRead[]>([]);
   protected readonly states = signal<StateRead[]>([]);
   protected readonly cities = signal<CityRead[]>([]);
@@ -128,8 +126,8 @@ export class TenantEditForm implements OnInit {
     }
   }
 
-  protected onSubmit(event: Event): void {
-    event.preventDefault();
+  submit(event?: Event): void {
+    event?.preventDefault();
     if (this.tenantForm().invalid()) {
       this.tenantForm().markAsTouched();
       return;

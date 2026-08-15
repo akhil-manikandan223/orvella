@@ -1,4 +1,5 @@
 import { Component, computed, inject, input, OnInit, signal } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { forkJoin } from 'rxjs';
 import { ButtonDirective } from 'primeng/button';
 import { ConfirmationService, MessageService } from 'primeng/api';
@@ -13,20 +14,11 @@ import { OrganizationTypeRead } from '../../../core/models/organization-taxonomy
 import { TenantDetailRead } from '../../../core/models/tenant.model';
 import { PageHeader } from '../../../shared/page-header/page-header';
 import { StatusBadge } from '../../../shared/status-badge/status-badge';
-import { EditDialog } from '../../../shared/edit-dialog/edit-dialog';
-import { TenantEditForm } from '../tenant-edit-form/tenant-edit-form';
 import { TenantFeatureToggles } from '../tenant-feature-toggles/tenant-feature-toggles';
 
 @Component({
   selector: 'app-tenant-detail',
-  imports: [
-    ButtonDirective,
-    EditDialog,
-    PageHeader,
-    StatusBadge,
-    TenantEditForm,
-    TenantFeatureToggles,
-  ],
+  imports: [ButtonDirective, PageHeader, RouterLink, StatusBadge, TenantFeatureToggles],
   templateUrl: './tenant-detail.html',
   styleUrl: './tenant-detail.scss',
 })
@@ -47,7 +39,6 @@ export class TenantDetail implements OnInit {
   protected readonly states = signal<StateRead[]>([]);
   protected readonly cities = signal<CityRead[]>([]);
   protected readonly loading = signal(false);
-  protected readonly editDialogVisible = signal(false);
 
   protected readonly organizationTypeName = computed(() => {
     const tenant = this.tenant();
@@ -115,11 +106,6 @@ export class TenantDetail implements OnInit {
   }
 
   ngOnInit(): void {
-    this.load();
-  }
-
-  protected onEditSaved(): void {
-    this.editDialogVisible.set(false);
     this.load();
   }
 

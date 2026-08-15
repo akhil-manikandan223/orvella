@@ -7,12 +7,12 @@ import { CountryRead, StateRead } from '../../../../core/models/geo.model';
 import { PageHeader } from '../../../../shared/page-header/page-header';
 import { DataTable } from '../../../../shared/data-table/data-table';
 import { DataTableAction, DataTableColumn } from '../../../../shared/data-table/data-table.model';
-import { EditDialog } from '../../../../shared/edit-dialog/edit-dialog';
+import { FormDrawer } from '../../../../shared/form-drawer/form-drawer';
 import { StateForm } from '../state-form/state-form';
 
 @Component({
   selector: 'app-state-list',
-  imports: [ButtonDirective, PageHeader, DataTable, EditDialog, StateForm],
+  imports: [ButtonDirective, PageHeader, DataTable, FormDrawer, StateForm],
   templateUrl: './state-list.html',
   styleUrl: './state-list.scss',
 })

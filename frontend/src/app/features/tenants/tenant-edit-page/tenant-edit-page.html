@@ -1,0 +1,19 @@
+@if (tenant(); as t) {
+  <app-page-header [title]="t.name" icon="pi pi-building" [showBack]="true">
+    <a pButton [text]="true" severity="secondary" [routerLink]="['/tenants', t.id]">
+      <i class="pi pi-times" aria-hidden="true"></i>
+      Cancel
+    </a>
+    <button pButton [disabled]="formRef()?.submitting() ?? false" (click)="save()">
+      <i
+        class="pi"
+        [class.pi-spin]="formRef()?.submitting()"
+        [class.pi-spinner]="formRef()?.submitting()"
+        [class.pi-save]="!formRef()?.submitting()"
+        aria-hidden="true"
+      ></i>
+      Save
+    </button>
+  </app-page-header>
+  <app-tenant-edit-form [tenant]="t" (saved)="onSaved()" />
+}

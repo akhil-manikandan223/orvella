@@ -23,7 +23,7 @@
   emptyIcon="pi pi-sitemap"
 />
 
-<app-edit-dialog
+<app-form-drawer
   [visible]="dialogVisible()"
   (visibleChange)="dialogVisible.set($event)"
   [header]="editingCategory() ? 'Edit Category' : 'New Category'"
@@ -35,4 +35,4 @@
       (cancelled)="dialogVisible.set(false)"
     />
   }
-</app-edit-dialog>
+</app-form-drawer>

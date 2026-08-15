@@ -4,10 +4,10 @@
       [status]="t.is_active ? 'active' : 'inactive'"
       [label]="t.is_active ? 'Active' : 'Inactive'"
     />
-    <button pButton [text]="true" (click)="editDialogVisible.set(true)">
+    <a pButton [text]="true" [routerLink]="['/tenants', t.id, 'edit']">
       <i class="pi pi-pencil" aria-hidden="true"></i>
       Edit
-    </button>
+    </a>
     @if (t.is_active) {
       <button pButton severity="danger" (click)="confirmDeactivate()">
         <i class="pi pi-ban" aria-hidden="true"></i>
@@ -63,19 +63,4 @@
       />
     </div>
   </section>
-
-  <app-edit-dialog
-    [visible]="editDialogVisible()"
-    (visibleChange)="editDialogVisible.set($event)"
-    header="Edit Tenant"
-    width="50rem"
-  >
-    @if (editDialogVisible()) {
-      <app-tenant-edit-form
-        [tenant]="t"
-        (saved)="onEditSaved()"
-        (cancelled)="editDialogVisible.set(false)"
-      />
-    }
-  </app-edit-dialog>
 }

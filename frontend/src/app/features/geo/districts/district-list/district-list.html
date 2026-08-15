@@ -23,7 +23,7 @@
   emptyIcon="pi pi-map-marker"
 />
 
-<app-edit-dialog
+<app-form-drawer
   [visible]="dialogVisible()"
   (visibleChange)="dialogVisible.set($event)"
   [header]="editingDistrict() ? 'Edit District' : 'New District'"
@@ -36,4 +36,4 @@
       (cancelled)="dialogVisible.set(false)"
     />
   }
-</app-edit-dialog>
+</app-form-drawer>
