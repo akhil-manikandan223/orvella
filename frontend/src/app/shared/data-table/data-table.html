@@ -1,14 +1,19 @@
 <div class="data-table__wrapper">
   <p-table
-    [value]="value()"
+    [value]="filteredValue()"
     [loading]="loading()"
     [paginator]="true"
     [rows]="rowsPerPage()"
     [rowsPerPageOptions]="rowsPerPageOptions()"
+    [totalRecords]="filteredValue().length"
+    [first]="firstRow()"
+    (onPage)="onPageChange($event)"
     [dataKey]="dataKey()"
-    [globalFilterFields]="globalFilterFields()"
     [scrollable]="true"
     scrollHeight="flex"
+    [stripedRows]="true"
+    [showCurrentPageReport]="true"
+    currentPageReportTemplate="{totalRecords} records"
   >
     <ng-template #header>
       <tr>

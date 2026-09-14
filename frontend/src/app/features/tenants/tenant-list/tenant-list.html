@@ -11,6 +11,11 @@
     <i class="pi pi-plus" aria-hidden="true"></i>
     New
   </a>
+  <app-table-settings
+    tableKey="tenants"
+    [columns]="allColumns()"
+    (visibleFieldsChange)="visibleFields.set($event)"
+  />
 </app-page-header>
 
 <app-data-table

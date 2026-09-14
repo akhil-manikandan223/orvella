@@ -10,10 +10,11 @@ import { PageHeader } from '../../../shared/page-header/page-header';
 import { StatusBadge } from '../../../shared/status-badge/status-badge';
 import { DataTable } from '../../../shared/data-table/data-table';
 import { DataTableAction, DataTableColumn } from '../../../shared/data-table/data-table.model';
+import { TableSettings } from '../../../shared/table-settings/table-settings';
 
 @Component({
   selector: 'app-tenant-list',
-  imports: [ButtonDirective, RouterLink, PageHeader, StatusBadge, DataTable],
+  imports: [ButtonDirective, RouterLink, PageHeader, StatusBadge, DataTable, TableSettings],
   templateUrl: './tenant-list.html',
   styleUrl: './tenant-list.scss',
 })
@@ -34,7 +35,7 @@ export class TenantList {
   private readonly statusCellTpl =
     viewChild.required<TemplateRef<{ $implicit: TenantRead }>>('statusCell');
 
-  protected readonly columns = computed<DataTableColumn<TenantRead>[]>(() => {
+  protected readonly allColumns = computed<DataTableColumn<TenantRead>[]>(() => {
     const columns: DataTableColumn<TenantRead>[] = [
       { field: 'name', header: 'Name', sortable: true },
       { field: 'slug', header: 'Slug', sortable: true },
@@ -47,6 +48,12 @@ export class TenantList {
     }
     columns.push({ field: 'is_active', header: 'Status', template: this.statusCellTpl() });
     return columns;
+  });
+  protected readonly visibleFields = signal<Set<string>>(new Set());
+  protected readonly columns = computed(() => {
+    const visible = this.visibleFields();
+    const all = this.allColumns();
+    return visible.size === 0 ? all : all.filter((c) => visible.has(c.field));
   });
 
   protected readonly actions: DataTableAction<TenantRead>[] = [

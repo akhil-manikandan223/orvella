@@ -8,11 +8,12 @@ import { StatusBadge } from '../../../shared/status-badge/status-badge';
 import { DataTable } from '../../../shared/data-table/data-table';
 import { DataTableAction, DataTableColumn } from '../../../shared/data-table/data-table.model';
 import { FormDrawer } from '../../../shared/form-drawer/form-drawer';
+import { TableSettings } from '../../../shared/table-settings/table-settings';
 import { FeatureForm } from '../feature-form/feature-form';
 
 @Component({
   selector: 'app-feature-list',
-  imports: [ButtonDirective, PageHeader, StatusBadge, DataTable, FormDrawer, FeatureForm],
+  imports: [ButtonDirective, PageHeader, StatusBadge, DataTable, FormDrawer, TableSettings, FeatureForm],
   templateUrl: './feature-list.html',
   styleUrl: './feature-list.scss',
 })
@@ -30,12 +31,18 @@ export class FeatureList {
   private readonly statusCellTpl =
     viewChild.required<TemplateRef<{ $implicit: FeatureRead }>>('statusCell');
 
-  protected readonly columns = computed<DataTableColumn<FeatureRead>[]>(() => [
+  protected readonly allColumns = computed<DataTableColumn<FeatureRead>[]>(() => [
     { field: 'key', header: 'Key', template: this.keyCellTpl() },
     { field: 'name', header: 'Name', sortable: true },
     { field: 'description', header: 'Description', cell: (feature) => feature.description || '—' },
     { field: 'status', header: 'Status', template: this.statusCellTpl() },
   ]);
+  protected readonly visibleFields = signal<Set<string>>(new Set());
+  protected readonly columns = computed(() => {
+    const visible = this.visibleFields();
+    const all = this.allColumns();
+    return visible.size === 0 ? all : all.filter((c) => visible.has(c.field));
+  });
 
   protected readonly actions: DataTableAction<FeatureRead>[] = [
     { icon: 'pi pi-pencil', label: 'Edit', onClick: (feature) => this.openEdit(feature) },

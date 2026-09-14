@@ -8,11 +8,12 @@ import { PageHeader } from '../../../../shared/page-header/page-header';
 import { DataTable } from '../../../../shared/data-table/data-table';
 import { DataTableAction, DataTableColumn } from '../../../../shared/data-table/data-table.model';
 import { FormDrawer } from '../../../../shared/form-drawer/form-drawer';
+import { TableSettings } from '../../../../shared/table-settings/table-settings';
 import { StateForm } from '../state-form/state-form';
 
 @Component({
   selector: 'app-state-list',
-  imports: [ButtonDirective, PageHeader, DataTable, FormDrawer, StateForm],
+  imports: [ButtonDirective, PageHeader, DataTable, FormDrawer, TableSettings, StateForm],
   templateUrl: './state-list.html',
   styleUrl: './state-list.scss',
 })
@@ -37,7 +38,7 @@ export class StateList {
     return map;
   });
 
-  protected readonly columns: DataTableColumn<StateRead>[] = [
+  protected readonly allColumns: DataTableColumn<StateRead>[] = [
     { field: 'name', header: 'Name', sortable: true },
     { field: 'slug', header: 'Slug', sortable: true },
     {
@@ -46,6 +47,11 @@ export class StateList {
       cell: (state) => this.countryNameById().get(state.country_id) ?? '—',
     },
   ];
+  protected readonly visibleFields = signal<Set<string>>(new Set());
+  protected readonly columns = computed(() => {
+    const visible = this.visibleFields();
+    return visible.size === 0 ? this.allColumns : this.allColumns.filter((c) => visible.has(c.field));
+  });
 
   protected readonly actions: DataTableAction<StateRead>[] = [
     { icon: 'pi pi-pencil', label: 'Edit', onClick: (state) => this.openEdit(state) },

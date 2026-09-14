@@ -4,7 +4,13 @@
   icon="pi pi-history"
   [showRefresh]="true"
   (refresh)="load()"
-/>
+>
+  <app-table-settings
+    tableKey="audit-logs"
+    [columns]="allColumns()"
+    (visibleFieldsChange)="visibleFields.set($event)"
+  />
+</app-page-header>
 
 <div class="audit-log-list__filter">
   <input

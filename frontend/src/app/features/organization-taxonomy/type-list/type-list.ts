@@ -11,11 +11,12 @@ import { PageHeader } from '../../../shared/page-header/page-header';
 import { DataTable } from '../../../shared/data-table/data-table';
 import { DataTableAction, DataTableColumn } from '../../../shared/data-table/data-table.model';
 import { FormDrawer } from '../../../shared/form-drawer/form-drawer';
+import { TableSettings } from '../../../shared/table-settings/table-settings';
 import { TypeForm } from '../type-form/type-form';
 
 @Component({
   selector: 'app-type-list',
-  imports: [ButtonDirective, PageHeader, DataTable, FormDrawer, TypeForm],
+  imports: [ButtonDirective, PageHeader, DataTable, FormDrawer, TableSettings, TypeForm],
   templateUrl: './type-list.html',
   styleUrl: './type-list.scss',
 })
@@ -38,7 +39,7 @@ export class TypeList {
     return map;
   });
 
-  protected readonly columns: DataTableColumn<OrganizationTypeRead>[] = [
+  protected readonly allColumns: DataTableColumn<OrganizationTypeRead>[] = [
     { field: 'name', header: 'Name', sortable: true },
     { field: 'slug', header: 'Slug', sortable: true },
     {
@@ -47,6 +48,11 @@ export class TypeList {
       cell: (type) => this.categoryNameById().get(type.organization_category_id) ?? '—',
     },
   ];
+  protected readonly visibleFields = signal<Set<string>>(new Set());
+  protected readonly columns = computed(() => {
+    const visible = this.visibleFields();
+    return visible.size === 0 ? this.allColumns : this.allColumns.filter((c) => visible.has(c.field));
+  });
 
   protected readonly actions: DataTableAction<OrganizationTypeRead>[] = [
     {

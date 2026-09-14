@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { ButtonDirective } from 'primeng/button';
 
 import { OrganizationCategoryService } from '../../../core/data-access/organization-category.service';
@@ -7,6 +7,7 @@ import { PageHeader } from '../../../shared/page-header/page-header';
 import { DataTable } from '../../../shared/data-table/data-table';
 import { DataTableAction, DataTableColumn } from '../../../shared/data-table/data-table.model';
 import { FormDrawer } from '../../../shared/form-drawer/form-drawer';
+import { TableSettings } from '../../../shared/table-settings/table-settings';
 import { CategoryForm } from '../category-form/category-form';
 
 const COLUMNS: DataTableColumn<OrganizationCategoryRead>[] = [
@@ -16,7 +17,7 @@ const COLUMNS: DataTableColumn<OrganizationCategoryRead>[] = [
 
 @Component({
   selector: 'app-category-list',
-  imports: [ButtonDirective, PageHeader, DataTable, FormDrawer, CategoryForm],
+  imports: [ButtonDirective, PageHeader, DataTable, FormDrawer, TableSettings, CategoryForm],
   templateUrl: './category-list.html',
   styleUrl: './category-list.scss',
 })
@@ -29,7 +30,12 @@ export class CategoryList {
   protected readonly editingCategory = signal<OrganizationCategoryRead | null>(null);
   protected readonly searchTerm = signal('');
 
-  protected readonly columns = COLUMNS;
+  protected readonly allColumns = COLUMNS;
+  protected readonly visibleFields = signal<Set<string>>(new Set());
+  protected readonly columns = computed(() => {
+    const visible = this.visibleFields();
+    return visible.size === 0 ? this.allColumns : this.allColumns.filter((c) => visible.has(c.field));
+  });
   protected readonly actions: DataTableAction<OrganizationCategoryRead>[] = [
     { icon: 'pi pi-pencil', label: 'Edit', onClick: (category) => this.openEdit(category) },
   ];

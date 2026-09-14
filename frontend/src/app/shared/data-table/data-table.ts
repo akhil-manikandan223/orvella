@@ -1,12 +1,4 @@
-import {
-  Component,
-  TemplateRef,
-  computed,
-  effect,
-  input,
-  output,
-  viewChild,
-} from '@angular/core';
+import { Component, TemplateRef, computed, effect, input, output, signal } from '@angular/core';
 import { NgTemplateOutlet } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { Table, SortIcon, SortableColumn } from 'primeng/table';
@@ -41,17 +33,42 @@ export class DataTable<T extends object = Record<string, unknown>> {
   readonly expansionTemplate = input<TemplateRef<{ $implicit: T }> | null>(null);
   readonly rowClicked = output<T>();
 
-  private readonly tableRef = viewChild(Table);
-
   protected readonly hasActions = computed(() => this.actions().length > 0);
   protected readonly columnSpan = computed(() => this.columns().length + (this.hasActions() ? 1 : 0));
-  protected readonly globalFilterFields = computed(() => this.columns().map((column) => column.field));
+  private readonly globalFilterFields = computed(() => this.columns().map((column) => column.field));
+
+  /**
+   * Filtered by hand rather than via PrimeNG's own filterGlobal()/totalRecords
+   * sync: that combination proved to get totalRecords stuck (see the pagination
+   * fix history) - computing the filtered set ourselves keeps totalRecords
+   * always correct with zero reliance on PrimeNG's internal bookkeeping.
+   */
+  protected readonly filteredValue = computed(() => {
+    const term = this.globalFilter().trim().toLowerCase();
+    if (!term) {
+      return this.value();
+    }
+    const fields = this.globalFilterFields();
+    return this.value().filter((row) =>
+      fields.some((field) => {
+        const raw = (row as Record<string, unknown>)[field];
+        return raw != null && String(raw).toLowerCase().includes(term);
+      }),
+    );
+  });
+
+  /** Reset to page 1 whenever the search narrows/widens the result set. */
+  protected readonly firstRow = signal(0);
 
   constructor() {
     effect(() => {
-      const filterValue = this.globalFilter();
-      this.tableRef()?.filterGlobal(filterValue, 'contains');
+      this.globalFilter();
+      this.firstRow.set(0);
     });
+  }
+
+  protected onPageChange(event: { first: number }): void {
+    this.firstRow.set(event.first);
   }
 
   protected cellValue(row: T, column: DataTableColumn<T>): string {

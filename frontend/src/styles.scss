@@ -21,3 +21,18 @@ body {
 a {
   text-decoration: none;
 }
+
+/* Shared app-data-table tweaks that reach into PrimeNG's own internal markup,
+   which component-scoped styles can't target (rendered by a child component,
+   not projected content). */
+.p-paginator-current {
+  margin-inline-end: auto;
+}
+
+/* Extra `.p-datatable` ancestor bumps specificity above PrimeNG's own
+   `.p-datatable-thead > tr > th` base rule (identical selector otherwise) -
+   PrimeNG's stylesheet is injected at runtime, after this one, so on a tied
+   specificity it would win the cascade and silently cancel our tint. */
+.p-datatable .p-datatable-thead > tr > th {
+  background: var(--p-content-hover-background);
+}

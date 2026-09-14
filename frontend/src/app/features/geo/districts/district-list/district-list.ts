@@ -8,11 +8,12 @@ import { PageHeader } from '../../../../shared/page-header/page-header';
 import { DataTable } from '../../../../shared/data-table/data-table';
 import { DataTableAction, DataTableColumn } from '../../../../shared/data-table/data-table.model';
 import { FormDrawer } from '../../../../shared/form-drawer/form-drawer';
+import { TableSettings } from '../../../../shared/table-settings/table-settings';
 import { DistrictForm } from '../district-form/district-form';
 
 @Component({
   selector: 'app-district-list',
-  imports: [ButtonDirective, PageHeader, DataTable, FormDrawer, DistrictForm],
+  imports: [ButtonDirective, PageHeader, DataTable, FormDrawer, TableSettings, DistrictForm],
   templateUrl: './district-list.html',
   styleUrl: './district-list.scss',
 })
@@ -37,7 +38,7 @@ export class DistrictList {
     return map;
   });
 
-  protected readonly columns: DataTableColumn<DistrictRead>[] = [
+  protected readonly allColumns: DataTableColumn<DistrictRead>[] = [
     { field: 'name', header: 'Name', sortable: true },
     { field: 'slug', header: 'Slug', sortable: true },
     {
@@ -46,6 +47,11 @@ export class DistrictList {
       cell: (district) => this.stateNameById().get(district.state_id) ?? '—',
     },
   ];
+  protected readonly visibleFields = signal<Set<string>>(new Set());
+  protected readonly columns = computed(() => {
+    const visible = this.visibleFields();
+    return visible.size === 0 ? this.allColumns : this.allColumns.filter((c) => visible.has(c.field));
+  });
 
   protected readonly actions: DataTableAction<DistrictRead>[] = [
     { icon: 'pi pi-pencil', label: 'Edit', onClick: (district) => this.openEdit(district) },

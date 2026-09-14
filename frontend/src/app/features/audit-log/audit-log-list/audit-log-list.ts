@@ -10,10 +10,11 @@ import { AuditLogRead } from '../../../core/models/audit-log.model';
 import { PageHeader } from '../../../shared/page-header/page-header';
 import { DataTable } from '../../../shared/data-table/data-table';
 import { DataTableColumn } from '../../../shared/data-table/data-table.model';
+import { TableSettings } from '../../../shared/table-settings/table-settings';
 
 @Component({
   selector: 'app-audit-log-list',
-  imports: [InputText, FormField, JsonPipe, PageHeader, DataTable],
+  imports: [InputText, FormField, JsonPipe, PageHeader, DataTable, TableSettings],
   providers: [DatePipe],
   templateUrl: './audit-log-list.html',
   styleUrl: './audit-log-list.scss',
@@ -43,9 +44,16 @@ export class AuditLogList {
   protected readonly isRowExpandedFn = (entry: AuditLogRead): boolean =>
     this.expandedRowId() === entry.id;
 
-  protected readonly columns = computed<DataTableColumn<AuditLogRead>[]>(() => {
+  private readonly expandColumn = computed<DataTableColumn<AuditLogRead>>(() => ({
+    field: 'expand',
+    header: '',
+    width: '2.5rem',
+    template: this.expandCellTpl(),
+  }));
+
+  /** Toggleable columns only - the expand-arrow column is structural, not a data field. */
+  protected readonly allColumns = computed<DataTableColumn<AuditLogRead>[]>(() => {
     const columns: DataTableColumn<AuditLogRead>[] = [
-      { field: 'expand', header: '', width: '2.5rem', template: this.expandCellTpl() },
       { field: 'action', header: 'Action', cell: (entry) => entry.action },
       { field: 'entity_type', header: 'Entity Type' },
     ];
@@ -58,6 +66,13 @@ export class AuditLogList {
       cell: (entry) => this.datePipe.transform(entry.created_at, 'medium') ?? '',
     });
     return columns;
+  });
+  protected readonly visibleFields = signal<Set<string>>(new Set());
+  protected readonly columns = computed(() => {
+    const visible = this.visibleFields();
+    const all = this.allColumns();
+    const dataColumns = visible.size === 0 ? all : all.filter((c) => visible.has(c.field));
+    return [this.expandColumn(), ...dataColumns];
   });
 
   protected readonly expansionTemplate = computed(() => this.expansionTpl());

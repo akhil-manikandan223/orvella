@@ -9,11 +9,12 @@ import { PageHeader } from '../../../../shared/page-header/page-header';
 import { DataTable } from '../../../../shared/data-table/data-table';
 import { DataTableAction, DataTableColumn } from '../../../../shared/data-table/data-table.model';
 import { FormDrawer } from '../../../../shared/form-drawer/form-drawer';
+import { TableSettings } from '../../../../shared/table-settings/table-settings';
 import { CityForm } from '../city-form/city-form';
 
 @Component({
   selector: 'app-city-list',
-  imports: [ButtonDirective, PageHeader, DataTable, FormDrawer, CityForm],
+  imports: [ButtonDirective, PageHeader, DataTable, FormDrawer, TableSettings, CityForm],
   templateUrl: './city-list.html',
   styleUrl: './city-list.scss',
 })
@@ -49,7 +50,7 @@ export class CityList {
     return map;
   });
 
-  protected readonly columns: DataTableColumn<CityRead>[] = [
+  protected readonly allColumns: DataTableColumn<CityRead>[] = [
     { field: 'name', header: 'Name', sortable: true },
     { field: 'slug', header: 'Slug', sortable: true },
     {
@@ -63,6 +64,11 @@ export class CityList {
       cell: (city) => (city.district_id ? (this.districtNameById().get(city.district_id) ?? '—') : '—'),
     },
   ];
+  protected readonly visibleFields = signal<Set<string>>(new Set());
+  protected readonly columns = computed(() => {
+    const visible = this.visibleFields();
+    return visible.size === 0 ? this.allColumns : this.allColumns.filter((c) => visible.has(c.field));
+  });
 
   protected readonly actions: DataTableAction<CityRead>[] = [
     { icon: 'pi pi-pencil', label: 'Edit', onClick: (city) => this.openEdit(city) },

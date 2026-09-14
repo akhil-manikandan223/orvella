@@ -1,0 +1,43 @@
+<button
+  pButton
+  [text]="true"
+  severity="secondary"
+  aria-label="Table settings"
+  (click)="togglePopover($event)"
+>
+  <i class="pi pi-cog" aria-hidden="true"></i>
+</button>
+<p-popover #popover appendTo="body">
+  <button type="button" class="table-settings__menu-item" (click)="openCustomize()">
+    <i class="pi pi-sliders-h" aria-hidden="true"></i>
+    Customize
+  </button>
+</p-popover>
+
+<app-form-drawer
+  [visible]="drawerVisible()"
+  (visibleChange)="drawerVisible.set($event)"
+  header="Customize Columns"
+  width="22rem"
+>
+  @if (drawerVisible()) {
+    <div class="table-settings__list">
+      @for (column of columns(); track column.field) {
+        <label class="table-settings__item">
+          <input
+            type="checkbox"
+            [checked]="visibleFields().has(column.field)"
+            (change)="onColumnToggle(column.field, $event)"
+          />
+          <span>{{ column.header }}</span>
+        </label>
+      }
+    </div>
+    <div class="table-settings__actions">
+      <button pButton [disabled]="saving()" (click)="saveChanges()">
+        <i class="pi" [class.pi-spin]="saving()" [class.pi-spinner]="saving()" [class.pi-check]="!saving()" aria-hidden="true"></i>
+        Save
+      </button>
+    </div>
+  }
+</app-form-drawer>

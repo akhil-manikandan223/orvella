@@ -6,75 +6,107 @@
     <div class="login-page__blob login-page__blob--three"></div>
   </div>
 
-  <form class="login-page__card" (submit)="onSubmit($event)">
-    <div class="login-page__brand">
+  <div class="login-page__layout">
+    <section class="login-page__brand">
+      <div class="login-page__wordmark">
+        <img src="assets/logos/Orvella-logo.png" alt="" width="32" height="32" />
+        <span>Orvella</span>
+      </div>
+
+      <div class="login-page__hero">
+        <span class="login-page__eyebrow">Platform Admin Console</span>
+        <h1 class="login-page__headline">One Platform.<br />Every Organization.</h1>
+        <p class="login-page__lede">
+          Provision tenants, manage their feature access, and keep a full audit trail — all from
+          one console.
+        </p>
+
+        <div class="login-page__modules">
+          @for (module of modules; track module.title) {
+            <div class="login-page__module">
+              <span class="login-page__module-index">{{ module.index }}</span>
+              <i [class]="module.icon" aria-hidden="true"></i>
+              <span class="login-page__module-title">{{ module.title }}</span>
+              <span class="login-page__module-category">{{ module.category }}</span>
+            </div>
+          }
+        </div>
+      </div>
+
+      <div class="login-page__brand-footer">
+        <span>Orvella</span>
+        <span>© {{ currentYear }} Orvella. All rights reserved.</span>
+      </div>
+    </section>
+
+    <form class="login-page__card" (submit)="onSubmit($event)">
       <img
-        class="login-page__logo"
+        class="login-page__card-logo"
         src="assets/logos/Orvella-logo.png"
         alt="Orvella"
-        width="60"
-        height="60"
+        width="48"
+        height="48"
       />
-      <h1>Orvella</h1>
-      <p class="login-page__subtitle">Platform administration</p>
-    </div>
+      <h2>Welcome back</h2>
+      <p class="login-page__subtitle">Sign in to your platform admin account</p>
 
-    <div class="login-page__field">
-      <label for="email">Email</label>
-      <p-iconfield>
-        <p-inputicon class="pi pi-envelope" />
-        <input
-          id="email"
-          type="email"
-          pInputText
-          fluid
-          [formField]="loginForm.email"
-          [class.p-invalid]="loginForm.email().touched() && loginForm.email().invalid()"
-          autocomplete="email"
-          placeholder="you@company.com"
-        />
-      </p-iconfield>
-      @if (loginForm.email().touched()) {
-        @for (error of loginForm.email().errors(); track error.kind) {
-          <small class="login-page__error">{{ error.message }}</small>
+      <div class="login-page__field">
+        <label for="email">Email</label>
+        <p-iconfield>
+          <p-inputicon class="pi pi-envelope" />
+          <input
+            id="email"
+            type="email"
+            pInputText
+            fluid
+            [formField]="loginForm.email"
+            [class.p-invalid]="loginForm.email().touched() && loginForm.email().invalid()"
+            autocomplete="email"
+            placeholder="you@company.com"
+          />
+        </p-iconfield>
+        @if (loginForm.email().touched()) {
+          @for (error of loginForm.email().errors(); track error.kind) {
+            <small class="login-page__error">{{ error.message }}</small>
+          }
         }
-      }
-    </div>
+      </div>
 
-    <div class="login-page__field">
-      <label for="password">Password</label>
-      <p-iconfield>
-        <p-inputicon class="pi pi-lock" />
-        <input
-          id="password"
-          type="password"
-          pInputPassword
-          fluid
-          [formField]="loginForm.password"
-          [class.p-invalid]="loginForm.password().touched() && loginForm.password().invalid()"
-          autocomplete="current-password"
-          placeholder="••••••••"
-        />
-      </p-iconfield>
-      @if (loginForm.password().touched()) {
-        @for (error of loginForm.password().errors(); track error.kind) {
-          <small class="login-page__error">{{ error.message }}</small>
+      <div class="login-page__field">
+        <label for="password">Password</label>
+        <p-iconfield>
+          <p-inputicon class="pi pi-lock" />
+          <input
+            id="password"
+            type="password"
+            pInputPassword
+            fluid
+            [formField]="loginForm.password"
+            [class.p-invalid]="loginForm.password().touched() && loginForm.password().invalid()"
+            autocomplete="current-password"
+            placeholder="••••••••"
+          />
+        </p-iconfield>
+        @if (loginForm.password().touched()) {
+          @for (error of loginForm.password().errors(); track error.kind) {
+            <small class="login-page__error">{{ error.message }}</small>
+          }
         }
-      }
-    </div>
+      </div>
 
-    <button pButton type="submit" [disabled]="submitting()" class="login-page__submit">
-      @if (submitting()) {
-        <i class="pi pi-spin pi-spinner" aria-hidden="true"></i>
-      } @else {
-        <i class="pi pi-arrow-right" aria-hidden="true"></i>
-      }
-      Sign in
-    </button>
+      <button pButton type="submit" [disabled]="submitting()" class="login-page__submit">
+        @if (submitting()) {
+          <i class="pi pi-spin pi-spinner" aria-hidden="true"></i>
+        } @else {
+          <i class="pi pi-arrow-right" aria-hidden="true"></i>
+        }
+        Sign in
+      </button>
 
-    <p class="login-page__footnote">
-      <i class="pi pi-shield" aria-hidden="true"></i>
-      Secure access for platform administrators only
-    </p>
-  </form>
+      <p class="login-page__footnote">
+        <i class="pi pi-shield" aria-hidden="true"></i>
+        Secure access for platform administrators only
+      </p>
+    </form>
+  </div>
 </div>

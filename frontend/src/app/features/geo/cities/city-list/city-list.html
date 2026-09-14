@@ -11,10 +11,15 @@
     <i class="pi pi-plus" aria-hidden="true"></i>
     New
   </button>
+  <app-table-settings
+    tableKey="cities"
+    [columns]="allColumns"
+    (visibleFieldsChange)="visibleFields.set($event)"
+  />
 </app-page-header>
 
 <app-data-table
-  [columns]="columns"
+  [columns]="columns()"
   [value]="cities()"
   [actions]="actions"
   [loading]="loading()"

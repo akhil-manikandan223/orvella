@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { ButtonDirective } from 'primeng/button';
 
 import { CountryService } from '../../../../core/data-access/country.service';
@@ -7,6 +7,7 @@ import { PageHeader } from '../../../../shared/page-header/page-header';
 import { DataTable } from '../../../../shared/data-table/data-table';
 import { DataTableAction, DataTableColumn } from '../../../../shared/data-table/data-table.model';
 import { FormDrawer } from '../../../../shared/form-drawer/form-drawer';
+import { TableSettings } from '../../../../shared/table-settings/table-settings';
 import { CountryForm } from '../country-form/country-form';
 
 const COLUMNS: DataTableColumn<CountryRead>[] = [
@@ -16,7 +17,7 @@ const COLUMNS: DataTableColumn<CountryRead>[] = [
 
 @Component({
   selector: 'app-country-list',
-  imports: [ButtonDirective, PageHeader, DataTable, FormDrawer, CountryForm],
+  imports: [ButtonDirective, PageHeader, DataTable, FormDrawer, TableSettings, CountryForm],
   templateUrl: './country-list.html',
   styleUrl: './country-list.scss',
 })
@@ -29,7 +30,12 @@ export class CountryList {
   protected readonly editingCountry = signal<CountryRead | null>(null);
   protected readonly searchTerm = signal('');
 
-  protected readonly columns = COLUMNS;
+  protected readonly allColumns = COLUMNS;
+  protected readonly visibleFields = signal<Set<string>>(new Set());
+  protected readonly columns = computed(() => {
+    const visible = this.visibleFields();
+    return visible.size === 0 ? this.allColumns : this.allColumns.filter((c) => visible.has(c.field));
+  });
   protected readonly actions: DataTableAction<CountryRead>[] = [
     { icon: 'pi pi-pencil', label: 'Edit', onClick: (country) => this.openEdit(country) },
   ];
