@@ -3,7 +3,7 @@ from pathlib import Path
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.openapi.docs import get_swagger_ui_html
-from fastapi.responses import HTMLResponse
+from fastapi.responses import FileResponse, HTMLResponse
 from fastapi.staticfiles import StaticFiles
 
 import app.core.audit  # noqa: F401 - registers the after_flush audit listener
@@ -60,12 +60,24 @@ def create_app() -> FastAPI:
     app.include_router(api_router, prefix='/api/v1')
 
     # Registered last, and only if present, so it never shadows the routes
-    # above: StaticFiles(html=True) falls back to index.html for any path
-    # that isn't a real file, which is exactly SPA client-side routing needs
-    # (e.g. /tenants/new), but it must never get a chance to intercept
-    # /api/*, /health, /docs, or /static first.
+    # above (a route added after these only gets a chance once /api/*,
+    # /health, /docs, and /static have all failed to match).
+    #
+    # Not a StaticFiles(html=True) mount: that only auto-serves index.html
+    # for "/" itself, not for arbitrary client-side routes like /login or
+    # /dashboard - those would 404 at the server before Angular's router
+    # ever loads. This catch-all serves the real file when one exists
+    # (JS/CSS/assets) and falls back to index.html otherwise, which is what
+    # SPA client-side routing actually needs.
     if _FRONTEND_DIR.is_dir():
-        app.mount('/', StaticFiles(directory=_FRONTEND_DIR, html=True), name='frontend')
+        _FRONTEND_INDEX = _FRONTEND_DIR / 'index.html'
+
+        @app.get('/{full_path:path}', include_in_schema=False)
+        async def serve_frontend(full_path: str) -> FileResponse:
+            candidate = _FRONTEND_DIR / full_path
+            if full_path and candidate.is_file():
+                return FileResponse(candidate)
+            return FileResponse(_FRONTEND_INDEX)
 
     return app
 
