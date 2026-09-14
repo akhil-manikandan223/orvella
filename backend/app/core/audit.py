@@ -31,6 +31,13 @@ _EXCLUDED_MODELS: set[type] = {AuditLog}
 # entirely and are NOT audited - don't introduce those for tracked models
 # without adding equivalent audit coverage elsewhere.
 
+# Column names never written to an audit row, on any model - the audit log
+# is viewable by platform admins (Audit Log screen renders `changes` as raw
+# JSON), so a credential landing in there would be a real leak, not just
+# noise. Add to this set for any future column holding a secret.
+_REDACTED_COLUMNS = {'hashed_password'}
+_REDACTED_PLACEHOLDER = '[redacted]'
+
 
 def _to_jsonable(value: Any) -> Any:
     if isinstance(value, uuid.UUID):
@@ -47,7 +54,10 @@ def _resolve_tenant_id(obj: Any) -> uuid.UUID | None:
 
 
 def _row_dict(obj: Any) -> dict[str, Any]:
-    return {c.key: _to_jsonable(getattr(obj, c.key)) for c in inspect(obj).mapper.column_attrs}
+    return {
+        c.key: _REDACTED_PLACEHOLDER if c.key in _REDACTED_COLUMNS else _to_jsonable(getattr(obj, c.key))
+        for c in inspect(obj).mapper.column_attrs
+    }
 
 
 def _build_audit_log(obj: Any, *, action: str, changes: dict) -> AuditLog:
@@ -79,7 +89,11 @@ def _record_audit_events(session: Session, flush_context: object) -> None:
         changes: dict[str, Any] = {}
         for attr in insp.mapper.column_attrs:
             history = insp.attrs[attr.key].history
-            if history.has_changes():
+            if not history.has_changes():
+                continue
+            if attr.key in _REDACTED_COLUMNS:
+                changes[attr.key] = _REDACTED_PLACEHOLDER
+            else:
                 changes[attr.key] = {
                     'old': _to_jsonable(history.deleted[0]) if history.deleted else None,
                     'new': _to_jsonable(history.added[0]) if history.added else None,

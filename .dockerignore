@@ -1,0 +1,17 @@
+# Used by Dockerfile.production (repo-root build context). backend/.dockerignore
+# is separate and covers the local-dev backend/Dockerfile's own context.
+.git/
+.env
+.env.example
+
+frontend/node_modules/
+frontend/dist/
+frontend/.angular/
+
+backend/__pycache__/
+backend/**/__pycache__/
+backend/*.py[cod]
+backend/.venv/
+backend/venv/
+backend/.pytest_cache/
+backend/.ruff_cache/

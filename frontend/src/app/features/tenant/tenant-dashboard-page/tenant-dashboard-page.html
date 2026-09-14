@@ -1,0 +1,8 @@
+<div class="tenant-dashboard-page">
+  <i class="pi pi-building tenant-dashboard-page__icon" aria-hidden="true"></i>
+  <h1>Welcome, {{ tenantAuthService.tenant()?.name }}</h1>
+  <p>
+    You're signed in as <strong>{{ tenantAuthService.user()?.email }}</strong
+    >. Organization modules — people, departments, scheduling, and more — are on the way.
+  </p>
+</div>

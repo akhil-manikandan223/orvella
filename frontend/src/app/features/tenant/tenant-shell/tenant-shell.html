@@ -1,0 +1,24 @@
+<div class="tenant-shell">
+  <header class="tenant-shell__topbar">
+    <div class="tenant-shell__brand">
+      <img
+        ngSrc="assets/logos/orvella-header-light-logo.png"
+        alt="Orvella"
+        width="120"
+        height="32"
+        priority
+      />
+      <span class="tenant-shell__tenant-name">{{ tenantAuthService.tenant()?.name }}</span>
+    </div>
+    <div class="tenant-shell__end">
+      <span class="tenant-shell__email">{{ tenantAuthService.user()?.email }}</span>
+      <button pButton [text]="true" severity="secondary" aria-label="Sign out" (click)="logout()">
+        <i class="pi pi-sign-out" aria-hidden="true"></i>
+      </button>
+    </div>
+  </header>
+
+  <main class="tenant-shell__content">
+    <router-outlet />
+  </main>
+</div>

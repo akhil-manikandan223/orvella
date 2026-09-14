@@ -14,8 +14,13 @@ import Aura from '@primeuix/themes/aura';
 import { routes } from './app.routes';
 import { AuthService } from './core/auth/auth.service';
 import { authInterceptor } from './core/auth/auth.interceptor';
+import { TenantAuthService } from './core/tenant-auth/tenant-auth.service';
+import { tenantAuthInterceptor } from './core/tenant-auth/tenant-auth.interceptor';
+import { isTenantHost } from './core/tenancy/host-context';
 import { apiErrorInterceptor } from './core/interceptors/api-error.interceptor';
 import { environment } from '../environments/environment';
+
+const tenantMode = isTenantHost();
 
 const OrvellaPreset = definePreset(Aura, {
   semantic: {
@@ -39,7 +44,12 @@ export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes, withComponentInputBinding()),
-    provideHttpClient(withInterceptors([authInterceptor, apiErrorInterceptor])),
+    provideHttpClient(
+      withInterceptors([
+        tenantMode ? tenantAuthInterceptor : authInterceptor,
+        apiErrorInterceptor,
+      ]),
+    ),
     providePrimeNG({
       theme: {
         preset: OrvellaPreset,
@@ -50,7 +60,11 @@ export const appConfig: ApplicationConfig = {
     MessageService,
     ConfirmationService,
     provideAppInitializer(() => {
-      inject(AuthService);
+      if (tenantMode) {
+        inject(TenantAuthService);
+      } else {
+        inject(AuthService);
+      }
     }),
   ],
 };

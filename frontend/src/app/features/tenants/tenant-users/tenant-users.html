@@ -1,0 +1,67 @@
+<div class="tenant-users__toolbar">
+  <button pButton size="small" (click)="openCreate()">
+    <i class="pi pi-plus" aria-hidden="true"></i>
+    New User
+  </button>
+</div>
+
+<app-data-table
+  [columns]="columns"
+  [value]="users()"
+  [loading]="loading()"
+  emptyMessage="No users yet for this tenant."
+  emptyIcon="pi pi-users"
+/>
+
+<app-form-drawer
+  [visible]="drawerVisible()"
+  (visibleChange)="drawerVisible.set($event)"
+  header="New Tenant User"
+>
+  @if (drawerVisible()) {
+    <form class="tenant-users__form" (submit)="onSubmit($event)">
+      <div class="tenant-users__field">
+        <label for="tenant-user-email">Email</label>
+        <input
+          id="tenant-user-email"
+          type="email"
+          pInputText
+          [formField]="userForm.email"
+          [class.p-invalid]="userForm.email().touched() && userForm.email().invalid()"
+        />
+        @if (userForm.email().touched()) {
+          @for (error of userForm.email().errors(); track error.kind) {
+            <small class="tenant-users__error">{{ error.message }}</small>
+          }
+        }
+      </div>
+
+      <div class="tenant-users__field">
+        <label for="tenant-user-password">Password</label>
+        <input
+          id="tenant-user-password"
+          type="password"
+          pInputPassword
+          fluid
+          [formField]="userForm.password"
+          [class.p-invalid]="userForm.password().touched() && userForm.password().invalid()"
+        />
+        @if (userForm.password().touched()) {
+          @for (error of userForm.password().errors(); track error.kind) {
+            <small class="tenant-users__error">{{ error.message }}</small>
+          }
+        }
+      </div>
+
+      <div class="tenant-users__actions">
+        <button pButton type="button" [text]="true" severity="secondary" (click)="drawerVisible.set(false)">
+          Cancel
+        </button>
+        <button pButton [disabled]="submitting()">
+          <i class="pi" [class.pi-spin]="submitting()" [class.pi-spinner]="submitting()" [class.pi-check]="!submitting()" aria-hidden="true"></i>
+          Save
+        </button>
+      </div>
+    </form>
+  }
+</app-form-drawer>

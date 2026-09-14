@@ -28,6 +28,13 @@ from app.domains.tenant.service import (
     set_tenant_feature_enabled,
     update_tenant,
 )
+from app.domains.tenant_user.repository import TenantUserRepository
+from app.domains.tenant_user.schemas import TenantUserCreate, TenantUserRead
+from app.domains.tenant_user.service import (
+    TenantUserAlreadyExistsError,
+    create_tenant_user,
+    list_tenant_users,
+)
 
 router = APIRouter(
     prefix='/platform-admin/tenants',
@@ -115,3 +122,34 @@ async def toggle_tenant_feature_endpoint(
     except FeatureNotFoundError as exc:
         raise HTTPException(status.HTTP_404_NOT_FOUND, 'Feature not found') from exc
     return TenantFeatureRead.model_validate(tenant_feature)
+
+
+@router.get('/{tenant_id}/users', response_model=list[TenantUserRead])
+async def list_tenant_users_endpoint(tenant_id: uuid.UUID, db: DbSessionDep) -> list[TenantUserRead]:
+    tenant_repository = TenantRepository(db)
+    if await tenant_repository.get_by_id(tenant_id) is None:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, 'Tenant not found')
+    repository = TenantUserRepository(db)
+    users = await list_tenant_users(repository, tenant_id=tenant_id)
+    return [TenantUserRead.model_validate(user) for user in users]
+
+
+@router.post(
+    '/{tenant_id}/users', response_model=TenantUserRead, status_code=status.HTTP_201_CREATED
+)
+async def create_tenant_user_endpoint(
+    tenant_id: uuid.UUID, payload: TenantUserCreate, db: DbSessionDep
+) -> TenantUserRead:
+    tenant_repository = TenantRepository(db)
+    if await tenant_repository.get_by_id(tenant_id) is None:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, 'Tenant not found')
+    repository = TenantUserRepository(db)
+    try:
+        user = await create_tenant_user(
+            repository, tenant_id=tenant_id, email=payload.email, password=payload.password
+        )
+    except TenantUserAlreadyExistsError as exc:
+        raise HTTPException(
+            status.HTTP_409_CONFLICT, 'A user with this email already exists for this tenant'
+        ) from exc
+    return TenantUserRead.model_validate(user)

@@ -1,8 +1,10 @@
 import { Routes } from '@angular/router';
 
 import { authGuard } from './core/auth/auth.guard';
+import { tenantAuthGuard } from './core/tenant-auth/tenant-auth.guard';
+import { isTenantHost } from './core/tenancy/host-context';
 
-export const routes: Routes = [
+const platformAdminRoutes: Routes = [
   {
     path: 'login',
     loadComponent: () => import('./features/auth/login-page/login-page').then((m) => m.LoginPage),
@@ -104,3 +106,39 @@ export const routes: Routes = [
   },
   { path: '**', redirectTo: 'dashboard' },
 ];
+
+// Phase 4+ will add real organization modules here as tenant-scoped children,
+// the same way platformAdminRoutes grows above. For now there is only a
+// placeholder dashboard - see tenant-dashboard-page.
+const tenantRoutes: Routes = [
+  {
+    path: 'login',
+    loadComponent: () =>
+      import('./features/tenant/tenant-login-page/tenant-login-page').then(
+        (m) => m.TenantLoginPage,
+      ),
+  },
+  {
+    path: '',
+    loadComponent: () =>
+      import('./features/tenant/tenant-shell/tenant-shell').then((m) => m.TenantShell),
+    canActivate: [tenantAuthGuard],
+    canActivateChild: [tenantAuthGuard],
+    children: [
+      { path: '', pathMatch: 'full', redirectTo: 'dashboard' },
+      {
+        path: 'dashboard',
+        loadComponent: () =>
+          import('./features/tenant/tenant-dashboard-page/tenant-dashboard-page').then(
+            (m) => m.TenantDashboardPage,
+          ),
+      },
+    ],
+  },
+  { path: '**', redirectTo: 'dashboard' },
+];
+
+// Decided once at module load (app bootstrap), from the hostname the app
+// was actually served from - see isTenantHost() for why this carries no
+// security weight of its own.
+export const routes: Routes = isTenantHost() ? tenantRoutes : platformAdminRoutes;

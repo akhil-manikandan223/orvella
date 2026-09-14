@@ -1,0 +1,49 @@
+# Render Blueprint for the combined Angular+FastAPI production image
+# (Dockerfile.production). Build context is the repo root, so this file
+# lives at the root too, not under backend/.
+#
+# Deploy: connect this repo on Render's dashboard (New > Blueprint) and it
+# reads this file automatically. DATABASE_URL and JWT_SECRET_KEY are left
+# unset here (sync: false) - set them as secrets in the Render dashboard
+# after the first deploy, then redeploy.
+#
+# Database: this app uses SQLAlchemy's asyncpg driver, which needs the
+# postgresql+asyncpg:// scheme (not the plain postgresql:// a provider like
+# Neon gives you) plus `?ssl=require` for Neon's mandatory TLS, e.g.:
+#   postgresql+asyncpg://user:pass@ep-xxxx.neon.tech/orvella?ssl=require
+#
+# Custom domain / wildcard subdomains: add both orvella.dev and *.orvella.dev
+# as custom domains on this service in the Render dashboard once created -
+# Render will give you DNS records to add in Cloudflare (apex + wildcard
+# CNAME), with Cloudflare's proxy ("orange cloud") turned off for them.
+
+services:
+  - type: web
+    name: orvella-api
+    runtime: docker
+    plan: free
+    region: singapore
+    dockerfilePath: ./Dockerfile.production
+    dockerContext: .
+    healthCheckPath: /health
+    preDeployCommand: alembic upgrade head
+    envVars:
+      - key: ENVIRONMENT
+        value: production
+      - key: BASE_DOMAIN
+        value: orvella.dev
+      # Bare-domain platform-admin console origin. Tenant subdomains are
+      # matched separately via cors_origin_regex (derived from BASE_DOMAIN),
+      # so they don't need to be listed here too.
+      - key: CORS_ORIGINS
+        value: https://orvella.dev
+      - key: BACKEND_PORT
+        value: 8000
+      - key: JWT_ALGORITHM
+        value: HS256
+      - key: JWT_ACCESS_TOKEN_EXPIRE_MINUTES
+        value: 60
+      - key: JWT_SECRET_KEY
+        generateValue: true
+      - key: DATABASE_URL
+        sync: false

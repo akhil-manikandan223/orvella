@@ -17,13 +17,20 @@ def verify_password(password: str, hashed_password: str) -> bool:
     return _password_hash.verify(password, hashed_password)
 
 
-def create_access_token(*, subject: str, token_type: str, settings: Settings) -> str:
+def create_access_token(
+    *,
+    subject: str,
+    token_type: str,
+    settings: Settings,
+    extra_claims: dict[str, Any] | None = None,
+) -> str:
     now = datetime.now(UTC)
     payload = {
         'sub': subject,
         'type': token_type,
         'iat': now,
         'exp': now + timedelta(minutes=settings.jwt_access_token_expire_minutes),
+        **(extra_claims or {}),
     }
     return jwt.encode(payload, settings.jwt_secret_key, algorithm=settings.jwt_algorithm)
 

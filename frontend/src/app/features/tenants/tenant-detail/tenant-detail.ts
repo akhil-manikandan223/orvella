@@ -15,10 +15,11 @@ import { TenantDetailRead } from '../../../core/models/tenant.model';
 import { PageHeader } from '../../../shared/page-header/page-header';
 import { StatusBadge } from '../../../shared/status-badge/status-badge';
 import { TenantFeatureToggles } from '../tenant-feature-toggles/tenant-feature-toggles';
+import { TenantUsers } from '../tenant-users/tenant-users';
 
 @Component({
   selector: 'app-tenant-detail',
-  imports: [ButtonDirective, PageHeader, RouterLink, StatusBadge, TenantFeatureToggles],
+  imports: [ButtonDirective, PageHeader, RouterLink, StatusBadge, TenantFeatureToggles, TenantUsers],
   templateUrl: './tenant-detail.html',
   styleUrl: './tenant-detail.scss',
 })
