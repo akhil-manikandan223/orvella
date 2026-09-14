@@ -7,6 +7,11 @@
 # unset here (sync: false) - set them as secrets in the Render dashboard
 # after the first deploy, then redeploy.
 #
+# Migrations: Render's free tier doesn't support preDeployCommand, so
+# `alembic upgrade head` runs at container startup instead (see
+# Dockerfile.production's CMD) - safe to re-run on every start, since
+# Alembic no-ops once the schema is already current.
+#
 # Database: this app uses SQLAlchemy's asyncpg driver, which needs the
 # postgresql+asyncpg:// scheme (not the plain postgresql:// a provider like
 # Neon gives you) plus `?ssl=require` for Neon's mandatory TLS, e.g.:
@@ -26,7 +31,6 @@ services:
     dockerfilePath: ./Dockerfile.production
     dockerContext: .
     healthCheckPath: /health
-    preDeployCommand: alembic upgrade head
     envVars:
       - key: ENVIRONMENT
         value: production
