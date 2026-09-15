@@ -1,39 +1,40 @@
-<div class="tenant-login-page">
-  <div class="tenant-login-page__backdrop" aria-hidden="true">
-    <div class="tenant-login-page__grid"></div>
-    <div class="tenant-login-page__blob tenant-login-page__blob--one"></div>
-    <div class="tenant-login-page__blob tenant-login-page__blob--two"></div>
+<div class="auth-hero">
+  <div class="auth-hero__backdrop" aria-hidden="true">
+    <div class="auth-hero__grid"></div>
+    <div class="auth-hero__blob auth-hero__blob--one"></div>
+    <div class="auth-hero__blob auth-hero__blob--two"></div>
+    <div class="auth-hero__blob auth-hero__blob--three"></div>
   </div>
 
-  <div class="tenant-login-page__layout">
-    <section class="tenant-login-page__brand">
-      <div class="tenant-login-page__wordmark">
+  <div class="auth-hero__layout">
+    <section class="auth-hero__brand">
+      <div class="auth-hero__wordmark">
         <img src="assets/logos/Orvella-logo.png" alt="" width="32" height="32" />
         <span>Orvella</span>
       </div>
 
-      <div class="tenant-login-page__hero">
-        <span class="tenant-login-page__eyebrow">{{ tenantGreeting() }}</span>
-        <h1 class="tenant-login-page__headline">Welcome back.</h1>
-        <p class="tenant-login-page__lede">
+      <div class="auth-hero__hero">
+        <span class="auth-hero__eyebrow">{{ tenantGreeting() }}</span>
+        <h1 class="auth-hero__headline">Welcome back.</h1>
+        <p class="auth-hero__lede">
           Sign in to manage your people, records, and day-to-day operations — all in one place.
         </p>
 
-        <ul class="tenant-login-page__highlights">
+        <ul class="auth-hero__highlights">
           <li><i class="pi pi-shield" aria-hidden="true"></i>Enterprise-grade security</li>
           <li><i class="pi pi-sitemap" aria-hidden="true"></i>Configured for your organization</li>
           <li><i class="pi pi-history" aria-hidden="true"></i>Full audit trail, always on</li>
         </ul>
 
         @if (heroTiles().length > 0) {
-          <div class="tenant-login-page__modules">
+          <div class="auth-hero__modules">
             @for (tile of heroTiles(); track tile.title) {
-              <div class="tenant-login-page__module">
-                <span class="tenant-login-page__module-index">{{ tile.index }}</span>
+              <div class="auth-hero__module">
+                <span class="auth-hero__module-index">{{ tile.index }}</span>
                 <i [class]="tile.icon" aria-hidden="true"></i>
-                <span class="tenant-login-page__module-title">{{ tile.title }}</span>
+                <span class="auth-hero__module-title">{{ tile.title }}</span>
                 @if (tile.category) {
-                  <span class="tenant-login-page__module-category">{{ tile.category }}</span>
+                  <span class="auth-hero__module-category">{{ tile.category }}</span>
                 }
               </div>
             }
@@ -42,18 +43,18 @@
       </div>
     </section>
 
-    <form class="tenant-login-page__card" (submit)="onSubmit($event)">
+    <form class="auth-hero__card" (submit)="onSubmit($event)">
       <img
-        class="tenant-login-page__logo"
+        class="auth-hero__logo"
         src="assets/logos/Orvella-logo.png"
         alt="Orvella"
         width="48"
         height="48"
       />
       <h2>Sign in</h2>
-      <p class="tenant-login-page__subtitle">Sign in to your organization's workspace</p>
+      <p class="auth-hero__subtitle">Sign in to your organization's workspace</p>
 
-      <div class="tenant-login-page__field">
+      <div class="auth-hero__field">
         <label for="email">Email</label>
         <p-iconfield>
           <p-inputicon class="pi pi-envelope" />
@@ -70,12 +71,12 @@
         </p-iconfield>
         @if (loginForm.email().touched()) {
           @for (error of loginForm.email().errors(); track error.kind) {
-            <small class="tenant-login-page__error">{{ error.message }}</small>
+            <small class="auth-hero__error">{{ error.message }}</small>
           }
         }
       </div>
 
-      <div class="tenant-login-page__field">
+      <div class="auth-hero__field">
         <label for="password">Password</label>
         <p-iconfield>
           <p-inputicon class="pi pi-lock" />
@@ -92,12 +93,12 @@
         </p-iconfield>
         @if (loginForm.password().touched()) {
           @for (error of loginForm.password().errors(); track error.kind) {
-            <small class="tenant-login-page__error">{{ error.message }}</small>
+            <small class="auth-hero__error">{{ error.message }}</small>
           }
         }
       </div>
 
-      <button pButton type="submit" [disabled]="submitting()" class="tenant-login-page__submit">
+      <button pButton type="submit" [disabled]="submitting()" class="auth-hero__submit">
         @if (submitting()) {
           <i class="pi pi-spin pi-spinner" aria-hidden="true"></i>
         } @else {
@@ -106,14 +107,14 @@
         Sign in
       </button>
 
-      <p class="tenant-login-page__footnote">
+      <p class="auth-hero__footnote">
         <i class="pi pi-shield" aria-hidden="true"></i>
         Powered by Orvella
       </p>
     </form>
   </div>
 
-  <div class="tenant-login-page__footer">
+  <div class="auth-hero__footer">
     <span>Orvella</span>
     <span>Powered by Orvella</span>
   </div>

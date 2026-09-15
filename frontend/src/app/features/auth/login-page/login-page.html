@@ -1,51 +1,51 @@
-<div class="login-page">
-  <div class="login-page__backdrop" aria-hidden="true">
-    <div class="login-page__grid"></div>
-    <div class="login-page__blob login-page__blob--one"></div>
-    <div class="login-page__blob login-page__blob--two"></div>
-    <div class="login-page__blob login-page__blob--three"></div>
+<div class="auth-hero">
+  <div class="auth-hero__backdrop" aria-hidden="true">
+    <div class="auth-hero__grid"></div>
+    <div class="auth-hero__blob auth-hero__blob--one"></div>
+    <div class="auth-hero__blob auth-hero__blob--two"></div>
+    <div class="auth-hero__blob auth-hero__blob--three"></div>
   </div>
 
-  <div class="login-page__layout">
-    <section class="login-page__brand">
-      <div class="login-page__wordmark">
+  <div class="auth-hero__layout">
+    <section class="auth-hero__brand">
+      <div class="auth-hero__wordmark">
         <img src="assets/logos/Orvella-logo.png" alt="" width="32" height="32" />
         <span>Orvella</span>
       </div>
 
-      <div class="login-page__hero">
-        <span class="login-page__eyebrow">Platform Admin Console</span>
-        <h1 class="login-page__headline">One Platform.<br />Every Organization.</h1>
-        <p class="login-page__lede">
+      <div class="auth-hero__hero">
+        <span class="auth-hero__eyebrow">Platform Admin Console</span>
+        <h1 class="auth-hero__headline">One Platform.<br />Every Organization.</h1>
+        <p class="auth-hero__lede">
           Provision tenants, manage their feature access, and keep a full audit trail — all from
           one console.
         </p>
 
-        <div class="login-page__modules">
+        <div class="auth-hero__modules">
           @for (module of modules; track module.title) {
-            <div class="login-page__module">
-              <span class="login-page__module-index">{{ module.index }}</span>
+            <div class="auth-hero__module">
+              <span class="auth-hero__module-index">{{ module.index }}</span>
               <i [class]="module.icon" aria-hidden="true"></i>
-              <span class="login-page__module-title">{{ module.title }}</span>
-              <span class="login-page__module-category">{{ module.category }}</span>
+              <span class="auth-hero__module-title">{{ module.title }}</span>
+              <span class="auth-hero__module-category">{{ module.category }}</span>
             </div>
           }
         </div>
       </div>
     </section>
 
-    <form class="login-page__card" (submit)="onSubmit($event)">
+    <form class="auth-hero__card" (submit)="onSubmit($event)">
       <img
-        class="login-page__card-logo"
+        class="auth-hero__logo"
         src="assets/logos/Orvella-logo.png"
         alt="Orvella"
         width="48"
         height="48"
       />
       <h2>Welcome back</h2>
-      <p class="login-page__subtitle">Sign in to your platform admin account</p>
+      <p class="auth-hero__subtitle">Sign in to your platform admin account</p>
 
-      <div class="login-page__field">
+      <div class="auth-hero__field">
         <label for="email">Email</label>
         <p-iconfield>
           <p-inputicon class="pi pi-envelope" />
@@ -62,12 +62,12 @@
         </p-iconfield>
         @if (loginForm.email().touched()) {
           @for (error of loginForm.email().errors(); track error.kind) {
-            <small class="login-page__error">{{ error.message }}</small>
+            <small class="auth-hero__error">{{ error.message }}</small>
           }
         }
       </div>
 
-      <div class="login-page__field">
+      <div class="auth-hero__field">
         <label for="password">Password</label>
         <p-iconfield>
           <p-inputicon class="pi pi-lock" />
@@ -84,12 +84,12 @@
         </p-iconfield>
         @if (loginForm.password().touched()) {
           @for (error of loginForm.password().errors(); track error.kind) {
-            <small class="login-page__error">{{ error.message }}</small>
+            <small class="auth-hero__error">{{ error.message }}</small>
           }
         }
       </div>
 
-      <button pButton type="submit" [disabled]="submitting()" class="login-page__submit">
+      <button pButton type="submit" [disabled]="submitting()" class="auth-hero__submit">
         @if (submitting()) {
           <i class="pi pi-spin pi-spinner" aria-hidden="true"></i>
         } @else {
@@ -98,14 +98,14 @@
         Sign in
       </button>
 
-      <p class="login-page__footnote">
+      <p class="auth-hero__footnote">
         <i class="pi pi-shield" aria-hidden="true"></i>
         Secure access for platform administrators only
       </p>
     </form>
   </div>
 
-  <div class="login-page__footer">
+  <div class="auth-hero__footer">
     <span>Orvella</span>
     <span>© {{ currentYear }} Orvella. All rights reserved.</span>
   </div>
