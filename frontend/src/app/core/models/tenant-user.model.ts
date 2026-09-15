@@ -30,3 +30,14 @@ export interface TenantMeRead {
   user: TenantUserRead;
   tenant: TenantContextRead;
 }
+
+export interface HeroFeatureRead {
+  key: string;
+  name: string;
+  description: string | null;
+}
+
+export interface TenantLoginContextRead {
+  tenant: TenantContextRead;
+  hero_features: HeroFeatureRead[];
+}

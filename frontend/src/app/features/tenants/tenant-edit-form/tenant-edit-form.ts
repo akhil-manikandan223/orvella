@@ -13,6 +13,7 @@ import { TenantRead } from '../../../core/models/tenant.model';
 
 interface TenantEditFormValue {
   max_users: number | null;
+  login_hero_mode: 'default' | 'featured';
   address_line_1: string;
   address_line_2: string;
   country_id: string;
@@ -46,9 +47,14 @@ export class TenantEditForm implements OnInit {
   protected readonly countries = signal<CountryRead[]>([]);
   protected readonly states = signal<StateRead[]>([]);
   protected readonly cities = signal<CityRead[]>([]);
+  protected readonly loginHeroModeOptions = [
+    { label: 'All features (default)', value: 'default' as const },
+    { label: 'Only this tenant’s assigned features (featured)', value: 'featured' as const },
+  ];
 
   protected readonly model = signal<TenantEditFormValue>({
     max_users: null,
+    login_hero_mode: 'default',
     address_line_1: '',
     address_line_2: '',
     country_id: '',
@@ -95,6 +101,7 @@ export class TenantEditForm implements OnInit {
 
     this.model.set({
       max_users: tenant.max_users,
+      login_hero_mode: tenant.login_hero_mode,
       address_line_1: tenant.address_line_1,
       address_line_2: tenant.address_line_2 ?? '',
       country_id: tenant.country_id,
@@ -138,6 +145,7 @@ export class TenantEditForm implements OnInit {
     this.tenantService
       .update(this.tenant()!.id, {
         max_users: value.max_users,
+        login_hero_mode: value.login_hero_mode,
         address_line_1: value.address_line_1,
         address_line_2: value.address_line_2 || null,
         country_id: value.country_id,

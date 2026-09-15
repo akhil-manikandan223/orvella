@@ -2,9 +2,13 @@ from fastapi import APIRouter, HTTPException, status
 
 from app.api.deps import CurrentTenantDep, CurrentTenantUserDep, DbSessionDep, SettingsDep
 from app.core.security import create_access_token
+from app.domains.feature.repository import FeatureRepository
+from app.domains.tenant.repository import TenantFeatureRepository
 from app.domains.tenant_user.repository import TenantUserRepository
 from app.domains.tenant_user.schemas import (
+    HeroFeatureRead,
     TenantContextRead,
+    TenantLoginContextRead,
     TenantLoginRequest,
     TenantMeRead,
     TenantTokenResponse,
@@ -49,4 +53,36 @@ async def read_current_tenant_user(
     return TenantMeRead(
         user=TenantUserRead.model_validate(user),
         tenant=TenantContextRead(id=tenant.id, name=tenant.name, slug=tenant.slug),
+    )
+
+
+@router.get('/context', response_model=TenantLoginContextRead)
+async def read_tenant_login_context(
+    tenant: CurrentTenantDep, db: DbSessionDep
+) -> TenantLoginContextRead:
+    """Public (no auth) info for the tenant login page's hero tiles.
+
+    No auth on purpose - this page is reached before any login. Which
+    features it exposes is controlled server-side by the tenant's own
+    login_hero_mode setting, not by anything the client sends.
+    """
+    feature_repository = FeatureRepository(db)
+
+    if tenant.login_hero_mode == 'featured':
+        tenant_feature_repository = TenantFeatureRepository(db)
+        tenant_features = await tenant_feature_repository.list_for_tenant(tenant.id)
+        enabled_feature_ids = [tf.feature_id for tf in tenant_features if tf.enabled]
+        features = await feature_repository.list_by_ids(enabled_feature_ids)
+    else:
+        features = [f for f in await feature_repository.list_all() if f.status == 'active']
+
+    return TenantLoginContextRead(
+        tenant=TenantContextRead(id=tenant.id, name=tenant.name, slug=tenant.slug),
+        hero_features=sorted(
+            (
+                HeroFeatureRead(key=f.key, name=f.name, description=f.description)
+                for f in features
+            ),
+            key=lambda f: f.name,
+        ),
     )

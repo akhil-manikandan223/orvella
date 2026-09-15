@@ -36,6 +36,10 @@
         <dd>{{ t.max_users ?? 'Unlimited' }}</dd>
       </div>
       <div>
+        <dt>Login Screen Features</dt>
+        <dd>{{ t.login_hero_mode === 'featured' ? 'Only assigned features' : 'All features' }}</dd>
+      </div>
+      <div>
         <dt>Address</dt>
         <dd>{{ formattedAddress() }}</dd>
       </div>

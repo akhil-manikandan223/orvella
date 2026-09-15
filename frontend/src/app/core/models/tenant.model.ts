@@ -5,6 +5,7 @@ export interface TenantCreate {
   slug: string;
   organization_type_id: string;
   max_users?: number | null;
+  login_hero_mode?: 'default' | 'featured';
 
   address_line_1: string;
   address_line_2?: string | null;
@@ -22,6 +23,7 @@ export interface TenantCreate {
 export interface TenantUpdate {
   max_users?: number | null;
   is_active?: boolean;
+  login_hero_mode?: 'default' | 'featured';
 
   address_line_1?: string;
   address_line_2?: string | null;
@@ -43,6 +45,7 @@ export interface TenantRead {
   organization_type_id: string;
   max_users: number | null;
   is_active: boolean;
+  login_hero_mode: 'default' | 'featured';
 
   address_line_1: string;
   address_line_2: string | null;

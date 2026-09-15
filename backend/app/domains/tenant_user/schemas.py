@@ -36,3 +36,29 @@ class TenantContextRead(BaseModel):
 class TenantMeRead(BaseModel):
     user: TenantUserRead
     tenant: TenantContextRead
+
+
+class HeroFeatureRead(BaseModel):
+    """A feature as shown on the tenant login page's hero tiles.
+
+    Deliberately just key/name/description - the same shape regardless of
+    whether it came from the tenant's own enabled features or the full
+    platform catalog, so the frontend doesn't need to know which.
+    """
+
+    key: str
+    name: str
+    description: str | None
+
+
+class TenantLoginContextRead(BaseModel):
+    """Public, pre-login info for the tenant login page.
+
+    Which features end up in hero_features depends on the tenant's
+    login_hero_mode - 'default' returns every active platform feature,
+    'featured' returns only this tenant's own enabled features. See
+    GET /tenant/auth/context.
+    """
+
+    tenant: TenantContextRead
+    hero_features: list[HeroFeatureRead]

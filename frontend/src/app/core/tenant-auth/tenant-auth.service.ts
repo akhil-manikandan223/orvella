@@ -6,6 +6,7 @@ import { firstValueFrom } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import {
   TenantContextRead,
+  TenantLoginContextRead,
   TenantLoginRequest,
   TenantMeRead,
   TenantTokenResponse,
@@ -39,6 +40,13 @@ export class TenantAuthService {
 
   constructor() {
     this.restoreSession();
+  }
+
+  /** Public (no auth) - used by the tenant login page to render its hero tiles. */
+  getLoginContext(): Promise<TenantLoginContextRead> {
+    return firstValueFrom(
+      this.http.get<TenantLoginContextRead>(`${environment.apiUrl}/tenant/auth/context`),
+    );
   }
 
   async login(email: string, password: string): Promise<void> {

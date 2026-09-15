@@ -14,6 +14,25 @@
 
   <section class="tenant-edit-form__section">
     <div class="tenant-edit-form__section-title">
+      <i class="pi pi-star" aria-hidden="true"></i>
+      <span>Login Screen</span>
+    </div>
+    <div class="tenant-edit-form__grid">
+      <div class="tenant-edit-form__field tenant-edit-form__field--wide">
+        <label for="edit-login-hero-mode">Display features on login</label>
+        <p-select
+          inputId="edit-login-hero-mode"
+          [formField]="$any(tenantForm.login_hero_mode)"
+          [options]="loginHeroModeOptions"
+          optionLabel="label"
+          optionValue="value"
+        />
+      </div>
+    </div>
+  </section>
+
+  <section class="tenant-edit-form__section">
+    <div class="tenant-edit-form__section-title">
       <i class="pi pi-map-marker" aria-hidden="true"></i>
       <span>Address</span>
     </div>

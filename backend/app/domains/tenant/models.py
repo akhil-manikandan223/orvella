@@ -24,6 +24,9 @@ class Tenant(Base):
     __tablename__ = 'tenants'
     __table_args__ = (
         CheckConstraint('max_users IS NULL OR max_users > 0', name='ck_tenants_max_users'),
+        CheckConstraint(
+            "login_hero_mode IN ('default', 'featured')", name='ck_tenants_login_hero_mode'
+        ),
     )
 
     id: Mapped[uuid.UUID] = mapped_column(Uuid(as_uuid=True), primary_key=True, default=uuid.uuid4)
@@ -37,6 +40,13 @@ class Tenant(Base):
     # not exist yet.
     max_users: Mapped[int | None] = mapped_column(Integer, nullable=True)
     is_active: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
+    # Controls what the tenant's public (pre-login) login page shows as its
+    # hero tiles: 'default' shows every active platform feature, 'featured'
+    # shows only this tenant's own enabled features. See
+    # GET /tenant/auth/context. Deliberately not tied to organization_type -
+    # a platform admin may customize a tenant's features beyond its type's
+    # defaults, and the hero tiles should reflect what's actually assigned.
+    login_hero_mode: Mapped[str] = mapped_column(String(20), default='default', nullable=False)
 
     address_line_1: Mapped[str] = mapped_column(String(255), nullable=False)
     address_line_2: Mapped[str | None] = mapped_column(String(255), nullable=True)

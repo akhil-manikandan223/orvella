@@ -198,10 +198,13 @@
     gap: 0.5rem;
     padding: 2.5rem 2.25rem;
     border-radius: 1.25rem;
-    background: #ffffff;
+    background: rgb(20 21 41 / 70%);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgb(255 255 255 / 10%);
     box-shadow:
-      0 25px 70px -15px rgb(0 0 0 / 45%),
-      0 0 0 1px rgb(0 0 0 / 4%);
+      0 25px 70px -15px rgb(0 0 0 / 55%),
+      0 0 0 1px rgb(0 0 0 / 20%),
+      inset 0 1px 0 rgb(255 255 255 / 6%);
     animation: login-card-in 0.5s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
@@ -214,12 +217,12 @@
     font-size: 1.35rem;
     font-weight: 700;
     letter-spacing: -0.01em;
-    color: #17171f;
+    color: #f5f3ff;
   }
 
   &__subtitle {
     margin: 0.25rem 0 1.75rem;
-    color: #6b6b7b;
+    color: rgb(255 255 255 / 55%);
     font-size: 0.875rem;
   }
 
@@ -233,7 +236,7 @@
     label {
       font-size: 0.8rem;
       font-weight: 600;
-      color: #44444f;
+      color: rgb(255 255 255 / 75%);
     }
 
     p-iconfield {
@@ -243,7 +246,7 @@
   }
 
   &__error {
-    color: #dc2626;
+    color: #f87171;
   }
 
   &__submit {
@@ -272,31 +275,31 @@
     align-items: center;
     gap: 0.375rem;
     margin: 1.5rem 0 0;
-    color: #9494a3;
+    color: rgb(255 255 255 / 40%);
     font-size: 0.75rem;
   }
 }
 
-// ---- Light-themed PrimeNG inputs for the white card ----
+// ---- Dark-themed PrimeNG inputs for the glass card ----
 .login-page {
   .p-inputtext,
   .p-password {
     width: 100%;
-    background: #fff;
-    border: 1px solid #e3e3ea;
-    color: #17171f;
+    background: rgb(255 255 255 / 5%);
+    border: 1px solid rgb(255 255 255 / 12%);
+    color: #f5f3ff;
 
     &::placeholder {
-      color: #9494a3;
+      color: rgb(255 255 255 / 35%);
     }
 
     &:enabled:hover {
-      border-color: #cfcfdb;
+      border-color: rgb(255 255 255 / 20%);
     }
 
     &:enabled:focus {
       border-color: var(--p-primary-color);
-      box-shadow: 0 0 0 3px color-mix(in srgb, var(--p-primary-color) 20%, transparent);
+      box-shadow: 0 0 0 3px color-mix(in srgb, var(--p-primary-color) 25%, transparent);
     }
 
     &.p-invalid {
@@ -305,7 +308,7 @@
   }
 
   .p-inputicon {
-    color: #9494a3;
+    color: rgb(255 255 255 / 40%);
   }
 
   p-iconfield:focus-within .p-inputicon {

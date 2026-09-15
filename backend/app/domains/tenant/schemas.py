@@ -1,8 +1,11 @@
 import uuid
+from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, EmailStr
 
 from app.domains.feature.schemas import FeatureRead
+
+LoginHeroMode = Literal['default', 'featured']
 
 
 class TenantCreate(BaseModel):
@@ -10,6 +13,7 @@ class TenantCreate(BaseModel):
     slug: str
     organization_type_id: uuid.UUID
     max_users: int | None = None
+    login_hero_mode: LoginHeroMode = 'default'
 
     address_line_1: str
     address_line_2: str | None = None
@@ -27,6 +31,7 @@ class TenantCreate(BaseModel):
 class TenantUpdate(BaseModel):
     max_users: int | None = None
     is_active: bool | None = None
+    login_hero_mode: LoginHeroMode | None = None
 
     address_line_1: str | None = None
     address_line_2: str | None = None
@@ -50,6 +55,7 @@ class TenantRead(BaseModel):
     organization_type_id: uuid.UUID
     max_users: int | None
     is_active: bool
+    login_hero_mode: LoginHeroMode
 
     address_line_1: str
     address_line_2: str | None
