@@ -15,6 +15,15 @@
       <div class="tenant-login-page__hero">
         <span class="tenant-login-page__eyebrow">{{ tenantGreeting() }}</span>
         <h1 class="tenant-login-page__headline">Welcome back.</h1>
+        <p class="tenant-login-page__lede">
+          Sign in to manage your people, records, and day-to-day operations — all in one place.
+        </p>
+
+        <ul class="tenant-login-page__highlights">
+          <li><i class="pi pi-shield" aria-hidden="true"></i>Enterprise-grade security</li>
+          <li><i class="pi pi-sitemap" aria-hidden="true"></i>Configured for your organization</li>
+          <li><i class="pi pi-history" aria-hidden="true"></i>Full audit trail, always on</li>
+        </ul>
 
         @if (heroTiles().length > 0) {
           <div class="tenant-login-page__modules">
@@ -30,11 +39,6 @@
             }
           </div>
         }
-      </div>
-
-      <div class="tenant-login-page__brand-footer">
-        <span>Orvella</span>
-        <span>Powered by Orvella</span>
       </div>
     </section>
 
@@ -107,5 +111,10 @@
         Powered by Orvella
       </p>
     </form>
+  </div>
+
+  <div class="tenant-login-page__footer">
+    <span>Orvella</span>
+    <span>Powered by Orvella</span>
   </div>
 </div>

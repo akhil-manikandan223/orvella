@@ -4,6 +4,8 @@
 
 .tenant-login-page {
   position: relative;
+  display: flex;
+  flex-direction: column;
   min-height: 100dvh;
   padding: 2.5rem 3rem;
   overflow: hidden;
@@ -55,19 +57,18 @@
   &__layout {
     position: relative;
     z-index: 1;
+    flex: 1;
     display: flex;
     align-items: stretch;
     justify-content: space-between;
     gap: 3rem;
     width: 100%;
-    min-height: calc(100dvh - 5rem);
   }
 
   &__brand {
     flex: 1 1 56%;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
     max-width: 42rem;
     color: #fff;
   }
@@ -85,8 +86,10 @@
   }
 
   &__hero {
+    flex: 1;
     display: flex;
     flex-direction: column;
+    justify-content: center;
     gap: 1rem;
   }
 
@@ -109,6 +112,38 @@
     background-clip: text;
     -webkit-background-clip: text;
     color: transparent;
+  }
+
+  &__lede {
+    margin: 0;
+    max-width: 34ch;
+    color: rgb(255 255 255 / 62%);
+    font-size: 0.95rem;
+    line-height: 1.6;
+  }
+
+  &__highlights {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem 1.5rem;
+    margin: 0.25rem 0 0;
+    padding: 0;
+    list-style: none;
+
+    li {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: rgb(255 255 255 / 65%);
+    }
+
+    i {
+      font-size: 0.9rem;
+      color: #a78bfa;
+    }
   }
 
   &__modules {
@@ -151,11 +186,15 @@
     color: rgb(255 255 255 / 45%);
   }
 
-  &__brand-footer {
+  // ---- Footer: full page width, below both columns ----
+  &__footer {
+    position: relative;
+    z-index: 1;
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 1rem;
+    width: 100%;
     padding-top: 1.25rem;
     margin-top: 1.5rem;
     border-top: 1px solid rgb(255 255 255 / 10%);
