@@ -18,3 +18,8 @@ class PlatformAdminRead(BaseModel):
 
     id: uuid.UUID
     email: str
+
+
+class ChangePasswordRequest(BaseModel):
+    current_password: str
+    new_password: str

@@ -1,0 +1,91 @@
+<section class="profile-section">
+  <div class="profile-section__title">
+    <i class="pi pi-lock" aria-hidden="true"></i>
+    <span>Change Password</span>
+  </div>
+  <form class="profile-section__card" (submit)="onSubmit($event)">
+    <div class="profile-section__field">
+      <label for="current-password">Current password</label>
+      <p-iconfield>
+        <p-inputicon class="pi pi-lock" />
+        <input
+          id="current-password"
+          type="password"
+          pInputPassword
+          fluid
+          [formField]="passwordForm.current_password"
+          [class.p-invalid]="
+            passwordForm.current_password().touched() &&
+            passwordForm.current_password().invalid() &&
+            !justSucceeded()
+          "
+          autocomplete="current-password"
+        />
+      </p-iconfield>
+      @if (passwordForm.current_password().touched() && !justSucceeded()) {
+        @for (error of passwordForm.current_password().errors(); track error.kind) {
+          <small class="profile-section__error">{{ error.message }}</small>
+        }
+      }
+    </div>
+
+    <div class="profile-section__field">
+      <label for="new-password">New password</label>
+      <p-iconfield>
+        <p-inputicon class="pi pi-key" />
+        <input
+          id="new-password"
+          type="password"
+          pInputPassword
+          fluid
+          [formField]="passwordForm.new_password"
+          [class.p-invalid]="
+            passwordForm.new_password().touched() &&
+            passwordForm.new_password().invalid() &&
+            !justSucceeded()
+          "
+          autocomplete="new-password"
+        />
+      </p-iconfield>
+      @if (passwordForm.new_password().touched() && !justSucceeded()) {
+        @for (error of passwordForm.new_password().errors(); track error.kind) {
+          <small class="profile-section__error">{{ error.message }}</small>
+        }
+      }
+    </div>
+
+    <div class="profile-section__field">
+      <label for="confirm-password">Confirm new password</label>
+      <p-iconfield>
+        <p-inputicon class="pi pi-key" />
+        <input
+          id="confirm-password"
+          type="password"
+          pInputPassword
+          fluid
+          [formField]="passwordForm.confirm_password"
+          [class.p-invalid]="
+            passwordForm.confirm_password().touched() &&
+            passwordForm.confirm_password().invalid() &&
+            !justSucceeded()
+          "
+          autocomplete="new-password"
+        />
+      </p-iconfield>
+      @if (passwordForm.confirm_password().touched() && !justSucceeded()) {
+        @for (error of passwordForm.confirm_password().errors(); track error.kind) {
+          <small class="profile-section__error">{{ error.message }}</small>
+        }
+      }
+    </div>
+
+    <button pButton type="submit" [disabled]="submitting()">
+      @if (submitting()) {
+        <i class="pi pi-spin pi-spinner" aria-hidden="true"></i>
+      } @else {
+        <i class="pi pi-check" aria-hidden="true"></i>
+      }
+      Update password
+    </button>
+  </form>
+</section>

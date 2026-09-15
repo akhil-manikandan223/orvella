@@ -1,0 +1,66 @@
+:host {
+  display: block;
+}
+
+.profile-page {
+  &__layout {
+    display: flex;
+    align-items: flex-start;
+    gap: 1.5rem;
+  }
+
+  &__nav {
+    flex: 0 0 14rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+    border-radius: var(--p-content-border-radius);
+    border: 1px solid var(--p-content-border-color);
+    background: var(--p-content-background);
+    padding: 0.5rem;
+  }
+
+  &__nav-link {
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+    padding: 0.6rem 0.75rem;
+    border-radius: var(--p-content-border-radius);
+    color: var(--p-text-color);
+    text-decoration: none;
+    font-size: 0.9rem;
+
+    i {
+      font-size: 1rem;
+      width: 1rem;
+      text-align: center;
+    }
+
+    &:hover {
+      background: var(--p-content-hover-background);
+    }
+
+    &--active {
+      background: var(--p-highlight-background);
+      color: var(--p-highlight-color);
+      font-weight: 600;
+    }
+  }
+
+  &__content {
+    flex: 1;
+    min-width: 0;
+  }
+}
+
+@media (max-width: 720px) {
+  .profile-page__layout {
+    flex-direction: column;
+  }
+
+  .profile-page__nav {
+    flex-basis: auto;
+    flex-direction: row;
+    overflow-x: auto;
+  }
+}

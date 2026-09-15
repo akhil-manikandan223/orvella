@@ -102,6 +102,35 @@ const platformAdminRoutes: Routes = [
             (m) => m.AuditLogList,
           ),
       },
+      {
+        path: 'profile',
+        loadComponent: () =>
+          import('./features/profile/profile-page/profile-page').then((m) => m.ProfilePage),
+        children: [
+          { path: '', pathMatch: 'full', redirectTo: 'general' },
+          {
+            path: 'general',
+            loadComponent: () =>
+              import('./features/profile/profile-general/profile-general').then(
+                (m) => m.ProfileGeneral,
+              ),
+          },
+          {
+            path: 'appearance',
+            loadComponent: () =>
+              import('./features/profile/profile-appearance/profile-appearance').then(
+                (m) => m.ProfileAppearance,
+              ),
+          },
+          {
+            path: 'security',
+            loadComponent: () =>
+              import('./features/profile/profile-security/profile-security').then(
+                (m) => m.ProfileSecurity,
+              ),
+          },
+        ],
+      },
     ],
   },
   { path: '**', redirectTo: 'dashboard' },

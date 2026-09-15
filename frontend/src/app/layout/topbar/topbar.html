@@ -25,9 +25,24 @@
   </div>
 
   <div class="topbar__end">
-    <app-theme-toggle />
+    <!-- <app-theme-toggle /> -->
     @if (authService.admin(); as admin) {
-      <span class="topbar__admin-email">{{ admin.email }}</span>
+      <button
+        type="button"
+        class="topbar__account"
+        (click)="toggleAccountMenu($event)"
+        aria-haspopup="true"
+        [attr.aria-label]="'Account menu for ' + admin.email"
+      >
+        <p-avatar [label]="avatarLabel()" shape="circle" size="normal" />
+        <span class="topbar__admin-email">{{ admin.email }}</span>
+      </button>
+      <p-popover appendTo="body">
+        <a routerLink="/profile" class="topbar__account-menu-item" (click)="closeAccountMenu()">
+          <i class="pi pi-user" aria-hidden="true"></i>
+          Profile
+        </a>
+      </p-popover>
     }
     <button
       pButton

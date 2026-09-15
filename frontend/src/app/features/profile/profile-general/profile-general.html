@@ -1,0 +1,16 @@
+<section class="profile-section">
+  <div class="profile-section__title">
+    <i class="pi pi-id-card" aria-hidden="true"></i>
+    <span>Account</span>
+  </div>
+  <dl class="profile-section__card profile-section__grid">
+    <div>
+      <dt>Email</dt>
+      <dd>{{ authService.admin()?.email ?? '—' }}</dd>
+    </div>
+    <div>
+      <dt>Role</dt>
+      <dd>Platform Admin</dd>
+    </div>
+  </dl>
+</section>

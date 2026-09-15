@@ -4,7 +4,12 @@ import { Router } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
 
 import { environment } from '../../../environments/environment';
-import { LoginRequest, PlatformAdminRead, TokenResponse } from '../models/platform-admin.model';
+import {
+  ChangePasswordRequest,
+  LoginRequest,
+  PlatformAdminRead,
+  TokenResponse,
+} from '../models/platform-admin.model';
 
 const SESSION_STORAGE_KEY = 'orvella.session';
 
@@ -41,6 +46,14 @@ export class AuthService {
     );
     this._admin.set(admin);
     this.persistSession();
+  }
+
+  async changePassword(currentPassword: string, newPassword: string): Promise<void> {
+    const body: ChangePasswordRequest = {
+      current_password: currentPassword,
+      new_password: newPassword,
+    };
+    await firstValueFrom(this.http.post<void>(`${environment.apiUrl}/auth/change-password`, body));
   }
 
   logout(): void {

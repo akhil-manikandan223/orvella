@@ -1,0 +1,6 @@
+// Visual styling shared with the other Profile sections lives in
+// src/app/shared/styles/_profile-section.scss under the .profile-section
+// class this template uses, loaded once globally.
+:host {
+  display: block;
+}

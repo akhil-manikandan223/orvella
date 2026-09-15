@@ -1,0 +1,25 @@
+<section class="profile-section">
+  <div class="profile-section__title">
+    <i class="pi pi-palette" aria-hidden="true"></i>
+    <span>Theme</span>
+  </div>
+  <div class="profile-section__card">
+    <div class="profile-section__options" role="radiogroup" aria-label="Theme">
+      @for (option of themeOptions; track option.value) {
+        <label class="profile-section__option">
+          <input
+            type="radio"
+            name="theme"
+            [value]="option.value"
+            [checked]="themeService.preference() === option.value"
+            (change)="onThemeChange(option.value)"
+          />
+          <span>
+            <strong>{{ option.label }}</strong>
+            <p class="profile-section__hint">{{ option.hint }}</p>
+          </span>
+        </label>
+      }
+    </div>
+  </div>
+</section>

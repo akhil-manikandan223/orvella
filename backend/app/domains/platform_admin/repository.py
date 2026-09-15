@@ -28,3 +28,10 @@ class PlatformAdminRepository:
         await self._session.commit()
         await self._session.refresh(admin)
         return admin
+
+    async def update(self, admin: PlatformAdmin, **fields: object) -> PlatformAdmin:
+        for field_name, value in fields.items():
+            setattr(admin, field_name, value)
+        await self._session.commit()
+        await self._session.refresh(admin)
+        return admin

@@ -1,0 +1,20 @@
+<app-page-header title="Profile" subtitle="Manage your account" icon="pi pi-user" [showBack]="true" />
+
+<div class="profile-page__layout">
+  <nav class="profile-page__nav" aria-label="Profile settings">
+    @for (item of navItems; track item.path) {
+      <a
+        class="profile-page__nav-link"
+        [routerLink]="item.path"
+        routerLinkActive="profile-page__nav-link--active"
+      >
+        <i [class]="item.icon" aria-hidden="true"></i>
+        <span>{{ item.label }}</span>
+      </a>
+    }
+  </nav>
+
+  <div class="profile-page__content">
+    <router-outlet />
+  </div>
+</div>
