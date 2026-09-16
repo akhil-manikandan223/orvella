@@ -26,6 +26,15 @@
 
   <div class="topbar__end">
     <!-- <app-theme-toggle /> -->
+     <button
+      pButton
+      [text]="true"
+      [rounded]="true"
+      severity="secondary"
+      aria-label="mobile app"
+    >
+      <i class="pi pi-mobile" aria-hidden="true" style="font-size: 1rem"></i>
+    </button>
     @if (authService.admin(); as admin) {
       <button
         type="button"
@@ -48,7 +57,7 @@
       pButton
       [text]="true"
       [rounded]="true"
-      severity="secondary"
+      severity="danger"
       aria-label="Log out"
       (click)="authService.logout()"
     >
