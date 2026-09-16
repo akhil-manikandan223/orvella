@@ -77,7 +77,17 @@ def create_app() -> FastAPI:
             candidate = _FRONTEND_DIR / full_path
             if full_path and candidate.is_file():
                 return FileResponse(candidate)
-            return FileResponse(_FRONTEND_INDEX)
+            # No-store specifically on the HTML shell (not the hashed-filename
+            # JS/CSS/asset files above, which are safe and worth caching): a
+            # cached/bfcached copy of this page could still show an
+            # authenticated route's content after the user has since logged
+            # out, since bfcache restores it without ever re-running
+            # Angular's router or auth guards. See main.ts for the paired
+            # client-side defense.
+            return FileResponse(
+                _FRONTEND_INDEX,
+                headers={'Cache-Control': 'no-store'},
+            )
 
     return app
 
