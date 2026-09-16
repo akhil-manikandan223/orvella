@@ -7,11 +7,10 @@ import { Popover } from 'primeng/popover';
 
 import { AuthService } from '../../core/auth/auth.service';
 import { ThemeService } from '../../core/theme/theme.service';
-import { ThemeToggle } from '../theme-toggle/theme-toggle';
 
 @Component({
   selector: 'app-topbar',
-  imports: [NgOptimizedImage, ButtonDirective, ThemeToggle, Avatar, Popover, RouterLink],
+  imports: [NgOptimizedImage, ButtonDirective, Avatar, Popover, RouterLink],
   templateUrl: './topbar.html',
   styleUrl: './topbar.scss',
 })
