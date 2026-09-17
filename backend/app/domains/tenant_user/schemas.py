@@ -1,6 +1,9 @@
 import uuid
+from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, EmailStr
+
+TenantUserRole = Literal['admin', 'member']
 
 
 class TenantLoginRequest(BaseModel):
@@ -16,6 +19,7 @@ class TenantTokenResponse(BaseModel):
 class TenantUserCreate(BaseModel):
     email: EmailStr
     password: str
+    role: TenantUserRole = 'admin'
 
 
 class TenantUserRead(BaseModel):
@@ -24,6 +28,7 @@ class TenantUserRead(BaseModel):
     id: uuid.UUID
     tenant_id: uuid.UUID
     email: str
+    role: TenantUserRole
     is_active: bool
 
 

@@ -16,6 +16,7 @@ from app.domains.tenant.models import Tenant
 from app.domains.tenant.repository import TenantRepository
 from app.domains.tenant.service import resolve_tenant_by_host
 from app.domains.tenant_user.models import TenantUser
+from app.domains.tenant_user.permissions import TenantPermission, role_has_permission
 from app.domains.tenant_user.repository import TenantUserRepository
 
 SettingsDep = Annotated[Settings, Depends(get_settings)]
@@ -156,3 +157,17 @@ async def get_current_tenant_user(
 
 
 CurrentTenantUserDep = Annotated[TenantUser, Depends(get_current_tenant_user)]
+
+
+def require_tenant_permission(permission: TenantPermission):
+    """Dependency factory: 403s unless the current tenant user's role grants
+    `permission` (see app.domains.tenant_user.permissions). Frontend-side
+    role checks are UX only - this is the actual security boundary.
+    """
+
+    async def _check(user: CurrentTenantUserDep) -> TenantUser:
+        if not role_has_permission(user.role, permission):
+            raise HTTPException(status.HTTP_403_FORBIDDEN, 'Not permitted')
+        return user
+
+    return _check

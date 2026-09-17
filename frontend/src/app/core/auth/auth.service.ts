@@ -34,6 +34,14 @@ export class AuthService {
     this.restoreSession();
   }
 
+  // In-flight refresh, shared by every caller: if several requests 401 at
+  // once (e.g. right after the access token expires), they must all await
+  // the *same* refresh rather than each firing their own - the backend
+  // rotates the refresh token on every use, so a second concurrent call
+  // would see the first's token as already-revoked and trip reuse
+  // detection, forcing an unwanted full logout.
+  private refreshInFlight: Promise<boolean> | null = null;
+
   async login(email: string, password: string): Promise<void> {
     const body: LoginRequest = { email, password };
     const tokenResponse = await firstValueFrom(
@@ -56,7 +64,35 @@ export class AuthService {
     await firstValueFrom(this.http.post<void>(`${environment.apiUrl}/auth/change-password`, body));
   }
 
+  /** Silently exchanges the httpOnly refresh cookie for a new access token. */
+  refresh(): Promise<boolean> {
+    if (!this.refreshInFlight) {
+      this.refreshInFlight = this.performRefresh().finally(() => {
+        this.refreshInFlight = null;
+      });
+    }
+    return this.refreshInFlight;
+  }
+
+  private async performRefresh(): Promise<boolean> {
+    try {
+      const response = await firstValueFrom(
+        this.http.post<TokenResponse>(`${environment.apiUrl}/auth/refresh`, {}),
+      );
+      this._token.set(response.access_token);
+      this.persistSession();
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
   logout(): void {
+    // Best-effort server-side revocation - fired and not awaited, so
+    // logout stays instant even if this request is slow or fails. Local
+    // state is cleared unconditionally either way.
+    firstValueFrom(this.http.post<void>(`${environment.apiUrl}/auth/logout`, {})).catch(() => {});
+
     this._token.set(null);
     this._admin.set(null);
     sessionStorage.removeItem(SESSION_STORAGE_KEY);

@@ -1,13 +1,17 @@
+export type TenantUserRole = 'admin' | 'member';
+
 export interface TenantUserRead {
   id: string;
   tenant_id: string;
   email: string;
+  role: TenantUserRole;
   is_active: boolean;
 }
 
 export interface TenantUserCreate {
   email: string;
   password: string;
+  role?: TenantUserRole;
 }
 
 export interface TenantLoginRequest {

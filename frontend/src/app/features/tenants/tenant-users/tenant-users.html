@@ -53,6 +53,17 @@
         }
       </div>
 
+      <div class="tenant-users__field">
+        <label for="tenant-user-role">Role</label>
+        <p-select
+          inputId="tenant-user-role"
+          [formField]="$any(userForm.role)"
+          [options]="roleOptions"
+          optionLabel="label"
+          optionValue="value"
+        />
+      </div>
+
       <div class="tenant-users__actions">
         <button pButton type="button" [text]="true" severity="secondary" (click)="drawerVisible.set(false)">
           Cancel

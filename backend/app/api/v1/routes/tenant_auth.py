@@ -1,7 +1,20 @@
-from fastapi import APIRouter, HTTPException, status
+from fastapi import APIRouter, HTTPException, Request, Response, status
 
 from app.api.deps import CurrentTenantDep, CurrentTenantUserDep, DbSessionDep, SettingsDep
+from app.core.refresh_cookie import (
+    TENANT_USER_COOKIE_NAME,
+    TENANT_USER_COOKIE_PATH,
+    clear_refresh_cookie,
+    set_refresh_cookie,
+)
 from app.core.security import create_access_token
+from app.domains.auth_session.repository import RefreshTokenRepository
+from app.domains.auth_session.service import (
+    RefreshTokenInvalidError,
+    issue_refresh_token,
+    revoke_refresh_token,
+    rotate_refresh_token,
+)
 from app.domains.feature.repository import FeatureRepository
 from app.domains.tenant.repository import TenantFeatureRepository
 from app.domains.tenant_user.repository import TenantUserRepository
@@ -23,6 +36,7 @@ router = APIRouter(prefix='/tenant/auth', tags=['tenant-auth'])
 async def tenant_login(
     payload: TenantLoginRequest,
     tenant: CurrentTenantDep,
+    response: Response,
     db: DbSessionDep,
     settings: SettingsDep,
 ) -> TenantTokenResponse:
@@ -43,7 +57,88 @@ async def tenant_login(
         settings=settings,
         extra_claims={'tenant_id': str(tenant.id)},
     )
+
+    refresh_token_repository = RefreshTokenRepository(db)
+    _, raw_refresh_token = await issue_refresh_token(
+        refresh_token_repository,
+        subject_type='tenant_user',
+        subject_id=user.id,
+        tenant_id=tenant.id,
+        ttl_days=settings.refresh_token_expire_days,
+    )
+    set_refresh_cookie(
+        response,
+        name=TENANT_USER_COOKIE_NAME,
+        path=TENANT_USER_COOKIE_PATH,
+        value=raw_refresh_token,
+        max_age_days=settings.refresh_token_expire_days,
+        settings=settings,
+    )
+
     return TenantTokenResponse(access_token=access_token)
+
+
+@router.post('/refresh', response_model=TenantTokenResponse)
+async def tenant_refresh(
+    request: Request,
+    response: Response,
+    tenant: CurrentTenantDep,
+    db: DbSessionDep,
+    settings: SettingsDep,
+) -> TenantTokenResponse:
+    raw_refresh_token = request.cookies.get(TENANT_USER_COOKIE_NAME)
+    if raw_refresh_token is None:
+        raise HTTPException(status.HTTP_401_UNAUTHORIZED, 'Not signed in')
+
+    repository = RefreshTokenRepository(db)
+    try:
+        new_row, new_raw_refresh_token = await rotate_refresh_token(
+            repository,
+            raw_token=raw_refresh_token,
+            subject_type='tenant_user',
+            ttl_days=settings.refresh_token_expire_days,
+        )
+    except RefreshTokenInvalidError as exc:
+        clear_refresh_cookie(response, name=TENANT_USER_COOKIE_NAME, path=TENANT_USER_COOKIE_PATH)
+        raise HTTPException(status.HTTP_401_UNAUTHORIZED, 'Session expired') from exc
+
+    # A refresh token minted on one tenant's subdomain must not mint access
+    # tokens while on another's - same invariant as the access token's own
+    # tenant_id claim check in get_current_tenant_user.
+    if new_row.tenant_id != tenant.id:
+        raise HTTPException(status.HTTP_401_UNAUTHORIZED, 'Session expired')
+
+    user_repository = TenantUserRepository(db)
+    user = await user_repository.get_by_id(new_row.subject_id)
+    if user is None or not user.is_active or user.tenant_id != tenant.id:
+        raise HTTPException(status.HTTP_401_UNAUTHORIZED, 'Session expired')
+
+    access_token = create_access_token(
+        subject=str(user.id),
+        token_type='tenant_user',
+        settings=settings,
+        extra_claims={'tenant_id': str(tenant.id)},
+    )
+    set_refresh_cookie(
+        response,
+        name=TENANT_USER_COOKIE_NAME,
+        path=TENANT_USER_COOKIE_PATH,
+        value=new_raw_refresh_token,
+        max_age_days=settings.refresh_token_expire_days,
+        settings=settings,
+    )
+    return TenantTokenResponse(access_token=access_token)
+
+
+@router.post('/logout', status_code=status.HTTP_204_NO_CONTENT)
+async def tenant_logout(request: Request, response: Response, db: DbSessionDep) -> None:
+    # Deliberately not gated behind CurrentTenantUserDep - see the matching
+    # note on the platform-admin /auth/logout.
+    raw_refresh_token = request.cookies.get(TENANT_USER_COOKIE_NAME)
+    if raw_refresh_token is not None:
+        repository = RefreshTokenRepository(db)
+        await revoke_refresh_token(repository, raw_token=raw_refresh_token)
+    clear_refresh_cookie(response, name=TENANT_USER_COOKIE_NAME, path=TENANT_USER_COOKIE_PATH)
 
 
 @router.get('/me', response_model=TenantMeRead)

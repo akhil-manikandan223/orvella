@@ -1,5 +1,5 @@
 <nav class="sidebar-nav" aria-label="Primary">
-  @for (group of groups; track group.label) {
+  @for (group of groups(); track group.label) {
     <div class="sidebar-nav__group">
       <span class="sidebar-nav__group-label">{{ group.label }}</span>
       @for (item of group.items; track item.path) {

@@ -1,0 +1,31 @@
+<app-page-header title="Locations" subtitle="Sites within your organization" icon="pi pi-map-marker">
+  @if (canManage()) {
+    <button pButton (click)="openCreate()">
+      <i class="pi pi-plus" aria-hidden="true"></i>
+      New
+    </button>
+  }
+</app-page-header>
+
+<app-data-table
+  [columns]="columns"
+  [value]="locations()"
+  [actions]="actions()"
+  [loading]="loading()"
+  emptyMessage="No locations yet."
+  emptyIcon="pi pi-map-marker"
+/>
+
+<app-form-drawer
+  [visible]="drawerVisible()"
+  (visibleChange)="drawerVisible.set($event)"
+  [header]="editingLocation() ? 'Edit Location' : 'New Location'"
+>
+  @if (drawerVisible()) {
+    <app-location-form
+      [location]="editingLocation()"
+      (saved)="onSaved()"
+      (cancelled)="drawerVisible.set(false)"
+    />
+  }
+</app-form-drawer>

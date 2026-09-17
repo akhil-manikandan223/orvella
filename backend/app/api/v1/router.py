@@ -12,6 +12,10 @@ from app.api.v1.routes import (
     states,
     table_preferences,
     tenant_auth,
+    tenant_departments,
+    tenant_locations,
+    tenant_people,
+    tenant_users,
     tenants,
 )
 
@@ -27,4 +31,8 @@ api_router.include_router(organization_types.router)
 api_router.include_router(states.router)
 api_router.include_router(table_preferences.router)
 api_router.include_router(tenant_auth.router)
+api_router.include_router(tenant_departments.router)
+api_router.include_router(tenant_locations.router)
+api_router.include_router(tenant_people.router)
+api_router.include_router(tenant_users.router)
 api_router.include_router(tenants.router)

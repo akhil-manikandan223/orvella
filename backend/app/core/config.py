@@ -13,7 +13,11 @@ class Settings(BaseSettings):
 
     jwt_secret_key: str
     jwt_algorithm: str = 'HS256'
-    jwt_access_token_expire_minutes: int = 60
+    # Short-lived on purpose: refresh_token_expire_days below is what
+    # actually keeps a user signed in. A leaked access token self-expires
+    # quickly; the refresh token is the one that can be revoked server-side.
+    jwt_access_token_expire_minutes: int = 15
+    refresh_token_expire_days: int = 30
 
     cors_origins: str = 'http://localhost:6200'
 

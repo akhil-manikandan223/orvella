@@ -24,13 +24,21 @@ async def authenticate_tenant_user(
 
 
 async def create_tenant_user(
-    repository: TenantUserRepository, *, tenant_id: uuid.UUID, email: str, password: str
+    repository: TenantUserRepository,
+    *,
+    tenant_id: uuid.UUID,
+    email: str,
+    password: str,
+    role: str = 'admin',
 ) -> TenantUser:
     normalized_email = email.strip().lower()
     if await repository.get_by_tenant_and_email(tenant_id=tenant_id, email=normalized_email):
         raise TenantUserAlreadyExistsError
     return await repository.create(
-        tenant_id=tenant_id, email=normalized_email, hashed_password=hash_password(password)
+        tenant_id=tenant_id,
+        email=normalized_email,
+        hashed_password=hash_password(password),
+        role=role,
     )
 
 

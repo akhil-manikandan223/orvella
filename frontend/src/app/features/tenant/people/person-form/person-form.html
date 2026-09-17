@@ -1,0 +1,118 @@
+<form class="person-form" (submit)="onSubmit($event)">
+  <div class="person-form__row">
+    <div class="person-form__field">
+      <label for="person-first-name">First name</label>
+      <input
+        id="person-first-name"
+        pInputText
+        fluid
+        [formField]="personForm.first_name"
+        [class.p-invalid]="personForm.first_name().touched() && personForm.first_name().invalid()"
+      />
+      @if (personForm.first_name().touched()) {
+        @for (error of personForm.first_name().errors(); track error.kind) {
+          <small class="person-form__error">{{ error.message }}</small>
+        }
+      }
+    </div>
+
+    <div class="person-form__field">
+      <label for="person-last-name">Last name</label>
+      <input
+        id="person-last-name"
+        pInputText
+        fluid
+        [formField]="personForm.last_name"
+        [class.p-invalid]="personForm.last_name().touched() && personForm.last_name().invalid()"
+      />
+      @if (personForm.last_name().touched()) {
+        @for (error of personForm.last_name().errors(); track error.kind) {
+          <small class="person-form__error">{{ error.message }}</small>
+        }
+      }
+    </div>
+  </div>
+
+  <div class="person-form__field">
+    <label for="person-category">Category</label>
+    <input
+      id="person-category"
+      pInputText
+      fluid
+      placeholder="e.g. Student, Staff, Member, Patient"
+      [formField]="personForm.category"
+      [class.p-invalid]="personForm.category().touched() && personForm.category().invalid()"
+    />
+    @if (personForm.category().touched()) {
+      @for (error of personForm.category().errors(); track error.kind) {
+        <small class="person-form__error">{{ error.message }}</small>
+      }
+    }
+  </div>
+
+  <div class="person-form__row">
+    <div class="person-form__field">
+      <label for="person-email">Email (optional)</label>
+      <input
+        id="person-email"
+        type="email"
+        pInputText
+        fluid
+        [formField]="personForm.email"
+        [class.p-invalid]="personForm.email().touched() && personForm.email().invalid()"
+      />
+      @if (personForm.email().touched()) {
+        @for (error of personForm.email().errors(); track error.kind) {
+          <small class="person-form__error">{{ error.message }}</small>
+        }
+      }
+    </div>
+
+    <div class="person-form__field">
+      <label for="person-phone">Phone (optional)</label>
+      <input id="person-phone" pInputText fluid [formField]="personForm.phone" />
+    </div>
+  </div>
+
+  <div class="person-form__row">
+    <div class="person-form__field">
+      <label for="person-department">Department (optional)</label>
+      <p-select
+        inputId="person-department"
+        [formField]="$any(personForm.department_id)"
+        [options]="departments()"
+        optionLabel="name"
+        optionValue="id"
+        [filter]="true"
+        [showClear]="true"
+        placeholder="No department"
+      />
+    </div>
+
+    <div class="person-form__field">
+      <label for="person-location">Location (optional)</label>
+      <p-select
+        inputId="person-location"
+        [formField]="$any(personForm.location_id)"
+        [options]="locations()"
+        optionLabel="name"
+        optionValue="id"
+        [filter]="true"
+        [showClear]="true"
+        placeholder="No location"
+      />
+    </div>
+  </div>
+
+  <div class="person-form__actions">
+    <button pButton type="button" [text]="true" severity="secondary" (click)="cancelled.emit()">
+      Cancel
+    </button>
+    <button pButton type="submit" [disabled]="submitting()">
+      @if (submitting()) {
+        <i class="pi pi-spin pi-spinner" aria-hidden="true"></i>
+      }
+      Save
+    </button>
+  </div>
+</form>

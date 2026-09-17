@@ -49,6 +49,10 @@ export class TenantAuthService {
     );
   }
 
+  // See AuthService.refreshInFlight - same reasoning, kept per-service since
+  // each auth domain has its own refresh cookie and rotation chain.
+  private refreshInFlight: Promise<boolean> | null = null;
+
   async login(email: string, password: string): Promise<void> {
     const body: TenantLoginRequest = { email, password };
     const tokenResponse = await firstValueFrom(
@@ -64,7 +68,37 @@ export class TenantAuthService {
     this.persistSession();
   }
 
+  /** Silently exchanges the httpOnly refresh cookie for a new access token. */
+  refresh(): Promise<boolean> {
+    if (!this.refreshInFlight) {
+      this.refreshInFlight = this.performRefresh().finally(() => {
+        this.refreshInFlight = null;
+      });
+    }
+    return this.refreshInFlight;
+  }
+
+  private async performRefresh(): Promise<boolean> {
+    try {
+      const response = await firstValueFrom(
+        this.http.post<TenantTokenResponse>(`${environment.apiUrl}/tenant/auth/refresh`, {}),
+      );
+      this._token.set(response.access_token);
+      this.persistSession();
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
   logout(): void {
+    // Best-effort server-side revocation - fired and not awaited, so
+    // logout stays instant even if this request is slow or fails. Local
+    // state is cleared unconditionally either way.
+    firstValueFrom(
+      this.http.post<void>(`${environment.apiUrl}/tenant/auth/logout`, {}),
+    ).catch(() => {});
+
     this._token.set(null);
     this._user.set(null);
     this._tenant.set(null);

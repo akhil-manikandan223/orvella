@@ -1,0 +1,46 @@
+.person-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  height: 100%;
+
+  &__row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+    gap: 1rem;
+  }
+
+  &__field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
+    min-width: 0;
+
+    label {
+      font-size: 0.875rem;
+      font-weight: 600;
+    }
+
+    input {
+      width: 100%;
+    }
+
+    p-select {
+      width: 100%;
+      display: block;
+    }
+  }
+
+  &__error {
+    color: var(--p-red-500);
+  }
+
+  &__actions {
+    display: flex;
+    justify-content: flex-start;
+    gap: 0.5rem;
+    margin-top: auto;
+    padding-top: 1rem;
+    border-top: 1px solid var(--p-content-border-color);
+  }
+}

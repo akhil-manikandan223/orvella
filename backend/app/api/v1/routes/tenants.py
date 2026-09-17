@@ -146,7 +146,11 @@ async def create_tenant_user_endpoint(
     repository = TenantUserRepository(db)
     try:
         user = await create_tenant_user(
-            repository, tenant_id=tenant_id, email=payload.email, password=payload.password
+            repository,
+            tenant_id=tenant_id,
+            email=payload.email,
+            password=payload.password,
+            role=payload.role,
         )
     except TenantUserAlreadyExistsError as exc:
         raise HTTPException(

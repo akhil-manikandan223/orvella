@@ -136,9 +136,7 @@ const platformAdminRoutes: Routes = [
   { path: '**', redirectTo: 'dashboard' },
 ];
 
-// Phase 4+ will add real organization modules here as tenant-scoped children,
-// the same way platformAdminRoutes grows above. For now there is only a
-// placeholder dashboard - see tenant-dashboard-page.
+// Phase 4 - Core Organization Model: Departments, Locations, People.
 const tenantRoutes: Routes = [
   {
     path: 'login',
@@ -161,6 +159,25 @@ const tenantRoutes: Routes = [
           import('./features/tenant/tenant-dashboard-page/tenant-dashboard-page').then(
             (m) => m.TenantDashboardPage,
           ),
+      },
+      {
+        path: 'departments',
+        loadComponent: () =>
+          import('./features/tenant/departments/department-list/department-list').then(
+            (m) => m.DepartmentList,
+          ),
+      },
+      {
+        path: 'locations',
+        loadComponent: () =>
+          import('./features/tenant/locations/location-list/location-list').then(
+            (m) => m.LocationList,
+          ),
+      },
+      {
+        path: 'people',
+        loadComponent: () =>
+          import('./features/tenant/people/person-list/person-list').then((m) => m.PersonList),
       },
     ],
   },

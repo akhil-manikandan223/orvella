@@ -1,0 +1,39 @@
+<app-page-header
+  title="People"
+  subtitle="Everyone your organization manages"
+  icon="pi pi-users"
+  [showSearch]="true"
+  (search)="searchTerm.set($event)"
+>
+  @if (canManage()) {
+    <button pButton (click)="openCreate()">
+      <i class="pi pi-plus" aria-hidden="true"></i>
+      New
+    </button>
+  }
+</app-page-header>
+
+<app-data-table
+  [columns]="columns()"
+  [value]="people()"
+  [actions]="actions()"
+  [loading]="loading()"
+  [globalFilter]="searchTerm()"
+  emptyMessage="No people yet."
+  emptyIcon="pi pi-users"
+/>
+
+<app-form-drawer
+  [visible]="drawerVisible()"
+  (visibleChange)="drawerVisible.set($event)"
+  [header]="editingPerson() ? 'Edit Person' : 'New Person'"
+  width="32rem"
+>
+  @if (drawerVisible()) {
+    <app-person-form
+      [person]="editingPerson()"
+      (saved)="onSaved()"
+      (cancelled)="drawerVisible.set(false)"
+    />
+  }
+</app-form-drawer>

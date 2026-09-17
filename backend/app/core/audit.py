@@ -8,6 +8,7 @@ from sqlalchemy import event, inspect
 from sqlalchemy.orm import Session
 
 from app.domains.audit_log.models import AuditLog
+from app.domains.auth_session.models import RefreshToken
 from app.domains.tenant.models import Tenant, TenantFeature
 
 
@@ -19,11 +20,18 @@ class ActorContext:
 
 current_actor_ctx_var: ContextVar['ActorContext | None'] = ContextVar('current_actor', default=None)
 
-# Mandatory: without excluding AuditLog from itself, writing an audit row
-# triggers another flush, which this listener sees and audits again -
+# AuditLog: mandatory. Without excluding it from itself, writing an audit
+# row triggers another flush, which this listener sees and audits again -
 # crashes after ~100 nested flushes (SQLAlchemy's own re-flush guard limit),
 # not just an infinite loop.
-_EXCLUDED_MODELS: set[type] = {AuditLog}
+#
+# RefreshToken: excluded by choice, not accident. Every login and every
+# silent token refresh creates/rotates a row here - auditing that would
+# flood the Audit Log (which platform admins read as a record of
+# meaningful business actions) with high-frequency noise, and there's no
+# reason to persist even a token's hash into a screen that renders raw
+# `changes` JSON.
+_EXCLUDED_MODELS: set[type] = {AuditLog, RefreshToken}
 
 # Only ORM unit-of-work mutations (session.add()/setattr()/session.delete())
 # are captured here, via session.new/dirty/deleted below. Bulk Core-style

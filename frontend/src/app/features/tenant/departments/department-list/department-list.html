@@ -1,0 +1,35 @@
+<app-page-header
+  title="Departments"
+  subtitle="Groupings within your organization"
+  icon="pi pi-sitemap"
+>
+  @if (canManage()) {
+    <button pButton (click)="openCreate()">
+      <i class="pi pi-plus" aria-hidden="true"></i>
+      New
+    </button>
+  }
+</app-page-header>
+
+<app-data-table
+  [columns]="columns"
+  [value]="departments()"
+  [actions]="actions()"
+  [loading]="loading()"
+  emptyMessage="No departments yet."
+  emptyIcon="pi pi-sitemap"
+/>
+
+<app-form-drawer
+  [visible]="drawerVisible()"
+  (visibleChange)="drawerVisible.set($event)"
+  [header]="editingDepartment() ? 'Edit Department' : 'New Department'"
+>
+  @if (drawerVisible()) {
+    <app-department-form
+      [department]="editingDepartment()"
+      (saved)="onSaved()"
+      (cancelled)="drawerVisible.set(false)"
+    />
+  }
+</app-form-drawer>

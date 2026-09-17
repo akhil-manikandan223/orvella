@@ -31,9 +31,11 @@ class TenantUserRepository:
         return list(result.scalars().all())
 
     async def create(
-        self, *, tenant_id: uuid.UUID, email: str, hashed_password: str
+        self, *, tenant_id: uuid.UUID, email: str, hashed_password: str, role: str = 'admin'
     ) -> TenantUser:
-        user = TenantUser(tenant_id=tenant_id, email=email, hashed_password=hashed_password)
+        user = TenantUser(
+            tenant_id=tenant_id, email=email, hashed_password=hashed_password, role=role
+        )
         self._session.add(user)
         await self._session.commit()
         await self._session.refresh(user)
