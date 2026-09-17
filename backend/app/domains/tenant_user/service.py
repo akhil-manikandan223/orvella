@@ -13,6 +13,10 @@ class TenantUserAlreadyExistsError(Exception):
     pass
 
 
+class TenantUserNotFoundError(Exception):
+    pass
+
+
 async def authenticate_tenant_user(
     repository: TenantUserRepository, *, tenant_id: uuid.UUID, email: str, password: str
 ) -> TenantUser:
@@ -46,3 +50,27 @@ async def list_tenant_users(
     repository: TenantUserRepository, *, tenant_id: uuid.UUID
 ) -> list[TenantUser]:
     return await repository.list_for_tenant(tenant_id)
+
+
+async def update_tenant_user(
+    repository: TenantUserRepository,
+    *,
+    tenant_id: uuid.UUID,
+    user_id: uuid.UUID,
+    **fields: object,
+) -> TenantUser:
+    user = await repository.get_by_id(user_id)
+    if user is None or user.tenant_id != tenant_id:
+        raise TenantUserNotFoundError
+
+    email = fields.get('email')
+    if email is not None:
+        normalized_email = str(email).strip().lower()
+        existing = await repository.get_by_tenant_and_email(
+            tenant_id=tenant_id, email=normalized_email
+        )
+        if existing is not None and existing.id != user_id:
+            raise TenantUserAlreadyExistsError
+        fields['email'] = normalized_email
+
+    return await repository.update(user, **fields)

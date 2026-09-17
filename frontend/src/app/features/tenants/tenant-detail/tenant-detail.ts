@@ -3,6 +3,7 @@ import { RouterLink } from '@angular/router';
 import { forkJoin } from 'rxjs';
 import { ButtonDirective } from 'primeng/button';
 import { ConfirmationService, MessageService } from 'primeng/api';
+import { Tab, TabList, TabPanel, TabPanels, Tabs } from 'primeng/tabs';
 
 import { CityService } from '../../../core/data-access/city.service';
 import { CountryService } from '../../../core/data-access/country.service';
@@ -19,7 +20,19 @@ import { TenantUsers } from '../tenant-users/tenant-users';
 
 @Component({
   selector: 'app-tenant-detail',
-  imports: [ButtonDirective, PageHeader, RouterLink, StatusBadge, TenantFeatureToggles, TenantUsers],
+  imports: [
+    ButtonDirective,
+    PageHeader,
+    RouterLink,
+    StatusBadge,
+    Tab,
+    TabList,
+    TabPanel,
+    TabPanels,
+    Tabs,
+    TenantFeatureToggles,
+    TenantUsers,
+  ],
   templateUrl: './tenant-detail.html',
   styleUrl: './tenant-detail.scss',
 })
@@ -40,6 +53,7 @@ export class TenantDetail implements OnInit {
   protected readonly states = signal<StateRead[]>([]);
   protected readonly cities = signal<CityRead[]>([]);
   protected readonly loading = signal(false);
+  protected readonly activeTab = signal<'users' | 'features'>('users');
 
   protected readonly organizationTypeName = computed(() => {
     const tenant = this.tenant();

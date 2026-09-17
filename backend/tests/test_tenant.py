@@ -12,6 +12,7 @@ from tests.conftest import (
     delete_organization_type,
     delete_state,
     delete_tenant,
+    delete_tenant_user,
 )
 
 Cleanup = list[Callable[[], Awaitable[None]]]
@@ -495,3 +496,187 @@ async def test_list_and_get_tenant(
 async def test_list_tenants_requires_auth(client: AsyncClient) -> None:
     response = await client.get('/api/v1/platform-admin/tenants')
     assert response.status_code == 401
+
+
+async def _create_tenant_user(
+    client: AsyncClient, headers: dict[str, str], cleanup: Cleanup, tenant_id: str
+) -> dict:
+    response = await client.post(
+        f'/api/v1/platform-admin/tenants/{tenant_id}/users',
+        json={'email': f'{_unique_slug("user")}@example.com', 'password': 'hunter2pass'},
+        headers=headers,
+    )
+    assert response.status_code == 201
+    user = response.json()
+    cleanup.append(partial(delete_tenant_user, user['id']))
+    return user
+
+
+async def test_deactivate_and_reactivate_tenant_user(
+    client: AsyncClient, platform_admin_auth_headers: dict[str, str], cleanup: Cleanup
+) -> None:
+    organization_type_id = await _create_category_and_type(
+        client, platform_admin_auth_headers, cleanup
+    )
+    geo = await _create_geo(client, platform_admin_auth_headers, cleanup)
+    tenant_response = await client.post(
+        '/api/v1/platform-admin/tenants',
+        json=_tenant_payload(organization_type_id, geo, slug=_unique_slug('user-toggle-school')),
+        headers=platform_admin_auth_headers,
+    )
+    tenant_id = tenant_response.json()['id']
+    cleanup.append(partial(delete_tenant, tenant_id))
+    user = await _create_tenant_user(client, platform_admin_auth_headers, cleanup, tenant_id)
+    assert user['is_active'] is True
+
+    deactivate_response = await client.patch(
+        f'/api/v1/platform-admin/tenants/{tenant_id}/users/{user["id"]}',
+        json={'is_active': False},
+        headers=platform_admin_auth_headers,
+    )
+    assert deactivate_response.status_code == 200
+    assert deactivate_response.json()['is_active'] is False
+
+    reactivate_response = await client.patch(
+        f'/api/v1/platform-admin/tenants/{tenant_id}/users/{user["id"]}',
+        json={'is_active': True},
+        headers=platform_admin_auth_headers,
+    )
+    assert reactivate_response.status_code == 200
+    assert reactivate_response.json()['is_active'] is True
+
+
+async def test_update_unknown_tenant_user_is_not_found(
+    client: AsyncClient, platform_admin_auth_headers: dict[str, str], cleanup: Cleanup
+) -> None:
+    organization_type_id = await _create_category_and_type(
+        client, platform_admin_auth_headers, cleanup
+    )
+    geo = await _create_geo(client, platform_admin_auth_headers, cleanup)
+    tenant_response = await client.post(
+        '/api/v1/platform-admin/tenants',
+        json=_tenant_payload(organization_type_id, geo, slug=_unique_slug('no-user-school')),
+        headers=platform_admin_auth_headers,
+    )
+    tenant_id = tenant_response.json()['id']
+    cleanup.append(partial(delete_tenant, tenant_id))
+
+    response = await client.patch(
+        f'/api/v1/platform-admin/tenants/{tenant_id}/users/{uuid.uuid4()}',
+        json={'is_active': False},
+        headers=platform_admin_auth_headers,
+    )
+    assert response.status_code == 404
+
+
+async def test_update_tenant_user_from_a_different_tenant_is_not_found(
+    client: AsyncClient, platform_admin_auth_headers: dict[str, str], cleanup: Cleanup
+) -> None:
+    organization_type_id = await _create_category_and_type(
+        client, platform_admin_auth_headers, cleanup
+    )
+    geo = await _create_geo(client, platform_admin_auth_headers, cleanup)
+
+    first_tenant_response = await client.post(
+        '/api/v1/platform-admin/tenants',
+        json=_tenant_payload(organization_type_id, geo, slug=_unique_slug('cross-tenant-a')),
+        headers=platform_admin_auth_headers,
+    )
+    first_tenant_id = first_tenant_response.json()['id']
+    cleanup.append(partial(delete_tenant, first_tenant_id))
+    user = await _create_tenant_user(client, platform_admin_auth_headers, cleanup, first_tenant_id)
+
+    second_tenant_response = await client.post(
+        '/api/v1/platform-admin/tenants',
+        json=_tenant_payload(organization_type_id, geo, slug=_unique_slug('cross-tenant-b')),
+        headers=platform_admin_auth_headers,
+    )
+    second_tenant_id = second_tenant_response.json()['id']
+    cleanup.append(partial(delete_tenant, second_tenant_id))
+
+    response = await client.patch(
+        f'/api/v1/platform-admin/tenants/{second_tenant_id}/users/{user["id"]}',
+        json={'is_active': False},
+        headers=platform_admin_auth_headers,
+    )
+    assert response.status_code == 404
+
+
+async def test_edit_tenant_user_email_and_role(
+    client: AsyncClient, platform_admin_auth_headers: dict[str, str], cleanup: Cleanup
+) -> None:
+    organization_type_id = await _create_category_and_type(
+        client, platform_admin_auth_headers, cleanup
+    )
+    geo = await _create_geo(client, platform_admin_auth_headers, cleanup)
+    tenant_response = await client.post(
+        '/api/v1/platform-admin/tenants',
+        json=_tenant_payload(organization_type_id, geo, slug=_unique_slug('edit-user-school')),
+        headers=platform_admin_auth_headers,
+    )
+    tenant_id = tenant_response.json()['id']
+    cleanup.append(partial(delete_tenant, tenant_id))
+    user = await _create_tenant_user(client, platform_admin_auth_headers, cleanup, tenant_id)
+    assert user['role'] == 'admin'
+
+    new_email = f'{_unique_slug("edited")}@example.com'
+    response = await client.patch(
+        f'/api/v1/platform-admin/tenants/{tenant_id}/users/{user["id"]}',
+        json={'email': new_email, 'role': 'member'},
+        headers=platform_admin_auth_headers,
+    )
+    assert response.status_code == 200
+    body = response.json()
+    assert body['email'] == new_email
+    assert body['role'] == 'member'
+
+
+async def test_edit_tenant_user_keeping_its_own_email_is_not_a_conflict(
+    client: AsyncClient, platform_admin_auth_headers: dict[str, str], cleanup: Cleanup
+) -> None:
+    organization_type_id = await _create_category_and_type(
+        client, platform_admin_auth_headers, cleanup
+    )
+    geo = await _create_geo(client, platform_admin_auth_headers, cleanup)
+    tenant_response = await client.post(
+        '/api/v1/platform-admin/tenants',
+        json=_tenant_payload(organization_type_id, geo, slug=_unique_slug('self-email-school')),
+        headers=platform_admin_auth_headers,
+    )
+    tenant_id = tenant_response.json()['id']
+    cleanup.append(partial(delete_tenant, tenant_id))
+    user = await _create_tenant_user(client, platform_admin_auth_headers, cleanup, tenant_id)
+
+    response = await client.patch(
+        f'/api/v1/platform-admin/tenants/{tenant_id}/users/{user["id"]}',
+        json={'email': user['email'], 'role': 'member'},
+        headers=platform_admin_auth_headers,
+    )
+    assert response.status_code == 200
+    assert response.json()['email'] == user['email']
+    assert response.json()['role'] == 'member'
+
+
+async def test_edit_tenant_user_email_conflict_with_another_user_is_conflict(
+    client: AsyncClient, platform_admin_auth_headers: dict[str, str], cleanup: Cleanup
+) -> None:
+    organization_type_id = await _create_category_and_type(
+        client, platform_admin_auth_headers, cleanup
+    )
+    geo = await _create_geo(client, platform_admin_auth_headers, cleanup)
+    tenant_response = await client.post(
+        '/api/v1/platform-admin/tenants',
+        json=_tenant_payload(organization_type_id, geo, slug=_unique_slug('dup-email-school')),
+        headers=platform_admin_auth_headers,
+    )
+    tenant_id = tenant_response.json()['id']
+    cleanup.append(partial(delete_tenant, tenant_id))
+    first_user = await _create_tenant_user(client, platform_admin_auth_headers, cleanup, tenant_id)
+    second_user = await _create_tenant_user(client, platform_admin_auth_headers, cleanup, tenant_id)
+
+    response = await client.patch(
+        f'/api/v1/platform-admin/tenants/{tenant_id}/users/{second_user["id"]}',
+        json={'email': first_user['email']},
+        headers=platform_admin_auth_headers,
+    )
+    assert response.status_code == 409

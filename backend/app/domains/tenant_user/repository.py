@@ -40,3 +40,10 @@ class TenantUserRepository:
         await self._session.commit()
         await self._session.refresh(user)
         return user
+
+    async def update(self, user: TenantUser, **fields: object) -> TenantUser:
+        for field_name, value in fields.items():
+            setattr(user, field_name, value)
+        await self._session.commit()
+        await self._session.refresh(user)
+        return user

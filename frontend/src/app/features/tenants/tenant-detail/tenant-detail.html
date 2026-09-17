@@ -54,27 +54,34 @@
     </dl>
   </section>
 
-  <section class="tenant-detail__section">
-    <div class="tenant-detail__section-title">
-      <i class="pi pi-users" aria-hidden="true"></i>
-      <span>Users</span>
-    </div>
-    <div class="tenant-detail__card tenant-detail__card--table">
-      <app-tenant-users [tenantId]="t.id" />
-    </div>
-  </section>
-
   <section class="tenant-detail__section tenant-detail__section--fill">
-    <div class="tenant-detail__section-title">
-      <i class="pi pi-star" aria-hidden="true"></i>
-      <span>Features</span>
-    </div>
-    <div class="tenant-detail__card tenant-detail__card--table">
-      <app-tenant-feature-toggles
-        [tenantId]="t.id"
-        [enabledFeatures]="t.features"
-        (toggled)="load()"
-      />
-    </div>
+    <p-tabs class="tenant-detail__tabs" [value]="activeTab()" (valueChange)="activeTab.set($any($event))">
+      <p-tablist>
+        <p-tab value="users">
+          <i class="pi pi-users" aria-hidden="true"></i>
+          Users
+        </p-tab>
+        <p-tab value="features">
+          <i class="pi pi-star" aria-hidden="true"></i>
+          Features
+        </p-tab>
+      </p-tablist>
+      <p-tabpanels>
+        <p-tabpanel value="users">
+          <div class="tenant-detail__card tenant-detail__card--table">
+            <app-tenant-users [tenantId]="t.id" />
+          </div>
+        </p-tabpanel>
+        <p-tabpanel value="features">
+          <div class="tenant-detail__card tenant-detail__card--table">
+            <app-tenant-feature-toggles
+              [tenantId]="t.id"
+              [enabledFeatures]="t.features"
+              (toggled)="load()"
+            />
+          </div>
+        </p-tabpanel>
+      </p-tabpanels>
+    </p-tabs>
   </section>
 }

@@ -14,6 +14,12 @@ export interface TenantUserCreate {
   role?: TenantUserRole;
 }
 
+export interface TenantUserUpdate {
+  email?: string;
+  role?: TenantUserRole;
+  is_active?: boolean;
+}
+
 export interface TenantLoginRequest {
   email: string;
   password: string;

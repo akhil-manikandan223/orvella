@@ -1,4 +1,13 @@
 <div class="tenant-users__toolbar">
+  <p-selectbutton
+    [options]="statusFilterOptions"
+    optionLabel="label"
+    optionValue="value"
+    [ngModel]="statusFilter()"
+    (onChange)="statusFilter.set($event.value)"
+    [allowEmpty]="false"
+    aria-label="Filter users by status"
+  />
   <button pButton size="small" (click)="openCreate()">
     <i class="pi pi-plus" aria-hidden="true"></i>
     New User
@@ -7,16 +16,17 @@
 
 <app-data-table
   [columns]="columns"
-  [value]="users()"
+  [actions]="actions()"
+  [value]="filteredUsers()"
   [loading]="loading()"
-  emptyMessage="No users yet for this tenant."
+  emptyMessage="No users match this filter."
   emptyIcon="pi pi-users"
 />
 
 <app-form-drawer
   [visible]="drawerVisible()"
   (visibleChange)="drawerVisible.set($event)"
-  header="New Tenant User"
+  [header]="drawerHeader()"
 >
   @if (drawerVisible()) {
     <form class="tenant-users__form" (submit)="onSubmit($event)">
@@ -36,22 +46,24 @@
         }
       </div>
 
-      <div class="tenant-users__field">
-        <label for="tenant-user-password">Password</label>
-        <input
-          id="tenant-user-password"
-          type="password"
-          pInputPassword
-          fluid
-          [formField]="userForm.password"
-          [class.p-invalid]="userForm.password().touched() && userForm.password().invalid()"
-        />
-        @if (userForm.password().touched()) {
-          @for (error of userForm.password().errors(); track error.kind) {
-            <small class="tenant-users__error">{{ error.message }}</small>
+      @if (!editingUser()) {
+        <div class="tenant-users__field">
+          <label for="tenant-user-password">Password</label>
+          <input
+            id="tenant-user-password"
+            type="password"
+            pInputPassword
+            fluid
+            [formField]="userForm.password"
+            [class.p-invalid]="userForm.password().touched() && userForm.password().invalid()"
+          />
+          @if (userForm.password().touched()) {
+            @for (error of userForm.password().errors(); track error.kind) {
+              <small class="tenant-users__error">{{ error.message }}</small>
+            }
           }
-        }
-      </div>
+        </div>
+      }
 
       <div class="tenant-users__field">
         <label for="tenant-user-role">Role</label>

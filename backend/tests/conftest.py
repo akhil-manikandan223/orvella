@@ -22,6 +22,7 @@ from app.domains.organization_taxonomy.models import (
 from app.domains.platform_admin.models import PlatformAdmin
 from app.domains.platform_admin.repository import PlatformAdminRepository
 from app.domains.tenant.models import Tenant, TenantFeature
+from app.domains.tenant_user.models import TenantUser
 from app.main import app
 
 # A dedicated engine/session factory for tests, using NullPool: each checkout
@@ -133,6 +134,13 @@ async def delete_tenant(tenant_id: uuid.UUID) -> None:
         await session.execute(
             delete(AuditLog).where(AuditLog.entity_id.in_([tenant_id, *tenant_feature_ids]))
         )
+        await session.commit()
+
+
+async def delete_tenant_user(user_id: uuid.UUID) -> None:
+    async with TestSessionLocal() as session:
+        await session.execute(delete(TenantUser).where(TenantUser.id == user_id))
+        await session.execute(delete(AuditLog).where(AuditLog.entity_id == user_id))
         await session.commit()
 
 

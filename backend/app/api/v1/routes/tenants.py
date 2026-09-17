@@ -29,11 +29,13 @@ from app.domains.tenant.service import (
     update_tenant,
 )
 from app.domains.tenant_user.repository import TenantUserRepository
-from app.domains.tenant_user.schemas import TenantUserCreate, TenantUserRead
+from app.domains.tenant_user.schemas import TenantUserCreate, TenantUserRead, TenantUserUpdate
 from app.domains.tenant_user.service import (
     TenantUserAlreadyExistsError,
+    TenantUserNotFoundError,
     create_tenant_user,
     list_tenant_users,
+    update_tenant_user,
 )
 
 router = APIRouter(
@@ -152,6 +154,27 @@ async def create_tenant_user_endpoint(
             password=payload.password,
             role=payload.role,
         )
+    except TenantUserAlreadyExistsError as exc:
+        raise HTTPException(
+            status.HTTP_409_CONFLICT, 'A user with this email already exists for this tenant'
+        ) from exc
+    return TenantUserRead.model_validate(user)
+
+
+@router.patch('/{tenant_id}/users/{user_id}', response_model=TenantUserRead)
+async def update_tenant_user_endpoint(
+    tenant_id: uuid.UUID, user_id: uuid.UUID, payload: TenantUserUpdate, db: DbSessionDep
+) -> TenantUserRead:
+    repository = TenantUserRepository(db)
+    try:
+        user = await update_tenant_user(
+            repository,
+            tenant_id=tenant_id,
+            user_id=user_id,
+            **payload.model_dump(exclude_unset=True),
+        )
+    except TenantUserNotFoundError as exc:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, 'Tenant user not found') from exc
     except TenantUserAlreadyExistsError as exc:
         raise HTTPException(
             status.HTTP_409_CONFLICT, 'A user with this email already exists for this tenant'

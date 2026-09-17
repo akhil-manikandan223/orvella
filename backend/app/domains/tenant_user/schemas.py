@@ -22,6 +22,12 @@ class TenantUserCreate(BaseModel):
     role: TenantUserRole = 'admin'
 
 
+class TenantUserUpdate(BaseModel):
+    email: EmailStr | None = None
+    role: TenantUserRole | None = None
+    is_active: bool | None = None
+
+
 class TenantUserRead(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
