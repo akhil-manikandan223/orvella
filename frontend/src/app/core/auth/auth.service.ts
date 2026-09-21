@@ -10,6 +10,8 @@ import {
   PlatformAdminRead,
   TokenResponse,
 } from '../models/platform-admin.model';
+import { ThemePreference, ThemePreferenceUpdate } from '../models/theme.model';
+import { ThemeService } from '../theme/theme.service';
 
 const SESSION_STORAGE_KEY = 'orvella.session';
 
@@ -22,6 +24,7 @@ interface StoredSession {
 export class AuthService {
   private readonly http = inject(HttpClient);
   private readonly router = inject(Router);
+  private readonly themeService = inject(ThemeService);
 
   private readonly _token = signal<string | null>(null);
   private readonly _admin = signal<PlatformAdminRead | null>(null);
@@ -51,6 +54,18 @@ export class AuthService {
 
     const admin = await firstValueFrom(
       this.http.get<PlatformAdminRead>(`${environment.apiUrl}/auth/me`),
+    );
+    this._admin.set(admin);
+    // This account's own preference wins over whatever the previous user of
+    // this browser left cached.
+    this.themeService.applyFromAccount(admin.theme_preference);
+    this.persistSession();
+  }
+
+  async saveThemePreference(preference: ThemePreference): Promise<void> {
+    const body: ThemePreferenceUpdate = { theme_preference: preference };
+    const admin = await firstValueFrom(
+      this.http.put<PlatformAdminRead>(`${environment.apiUrl}/auth/theme`, body),
     );
     this._admin.set(admin);
     this.persistSession();
@@ -95,6 +110,9 @@ export class AuthService {
 
     this._token.set(null);
     this._admin.set(null);
+    // Otherwise the next account to sign in on this browser inherits this
+    // user's theme until their own preference loads.
+    this.themeService.resetToSystemDefault();
     sessionStorage.removeItem(SESSION_STORAGE_KEY);
     this.router.navigateByUrl('/login');
   }
@@ -108,6 +126,7 @@ export class AuthService {
       const stored = JSON.parse(raw) as StoredSession;
       this._token.set(stored.token);
       this._admin.set(stored.admin);
+      this.themeService.applyFromAccount(stored.admin?.theme_preference);
     } catch {
       sessionStorage.removeItem(SESSION_STORAGE_KEY);
     }

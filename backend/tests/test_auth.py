@@ -51,6 +51,41 @@ async def test_me_without_token_is_unauthorized(client: AsyncClient) -> None:
     assert response.status_code == 401
 
 
+async def test_theme_preference_defaults_to_system_and_persists(
+    client: AsyncClient, seeded_admin: PlatformAdmin
+) -> None:
+    login_response = await client.post(
+        '/api/v1/auth/login', json={'email': TEST_EMAIL, 'password': TEST_PASSWORD}
+    )
+    headers = {'Authorization': f'Bearer {login_response.json()["access_token"]}'}
+
+    me_response = await client.get('/api/v1/auth/me', headers=headers)
+    assert me_response.json()['theme_preference'] == 'system'
+
+    update_response = await client.put(
+        '/api/v1/auth/theme', headers=headers, json={'theme_preference': 'dark'}
+    )
+    assert update_response.status_code == 200
+    assert update_response.json()['theme_preference'] == 'dark'
+
+    reread = await client.get('/api/v1/auth/me', headers=headers)
+    assert reread.json()['theme_preference'] == 'dark'
+
+
+async def test_theme_preference_rejects_unknown_value(
+    client: AsyncClient, seeded_admin: PlatformAdmin
+) -> None:
+    login_response = await client.post(
+        '/api/v1/auth/login', json={'email': TEST_EMAIL, 'password': TEST_PASSWORD}
+    )
+    headers = {'Authorization': f'Bearer {login_response.json()["access_token"]}'}
+
+    response = await client.put(
+        '/api/v1/auth/theme', headers=headers, json={'theme_preference': 'solarized'}
+    )
+    assert response.status_code == 422
+
+
 async def test_login_with_wrong_password_is_unauthorized(
     client: AsyncClient, seeded_admin: PlatformAdmin
 ) -> None:

@@ -9,6 +9,7 @@ from sqlalchemy.orm import Session
 
 from app.domains.audit_log.models import AuditLog
 from app.domains.auth_session.models import RefreshToken
+from app.domains.notification.models import Notification
 from app.domains.tenant.models import Tenant, TenantFeature
 
 
@@ -31,7 +32,12 @@ current_actor_ctx_var: ContextVar['ActorContext | None'] = ContextVar('current_a
 # meaningful business actions) with high-frequency noise, and there's no
 # reason to persist even a token's hash into a screen that renders raw
 # `changes` JSON.
-_EXCLUDED_MODELS: set[type] = {AuditLog, RefreshToken}
+#
+# Notification: also excluded - a notification is itself a side effect of
+# some other action (e.g. deactivating a tenant user), which is already
+# captured on the entity that actually changed. Auditing the notification
+# row too would just double up on the same event.
+_EXCLUDED_MODELS: set[type] = {AuditLog, RefreshToken, Notification}
 
 # Only ORM unit-of-work mutations (session.add()/setattr()/session.delete())
 # are captured here, via session.new/dirty/deleted below. Bulk Core-style

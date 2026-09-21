@@ -12,6 +12,8 @@ import {
   TenantTokenResponse,
   TenantUserRead,
 } from '../models/tenant-user.model';
+import { ThemePreference, ThemePreferenceUpdate } from '../models/theme.model';
+import { ThemeService } from '../theme/theme.service';
 
 // Deliberately a different key from AuthService's 'orvella.session' - the
 // two must never collide if a platform admin and a tenant user are ever
@@ -28,6 +30,7 @@ interface StoredTenantSession {
 export class TenantAuthService {
   private readonly http = inject(HttpClient);
   private readonly router = inject(Router);
+  private readonly themeService = inject(ThemeService);
 
   private readonly _token = signal<string | null>(null);
   private readonly _user = signal<TenantUserRead | null>(null);
@@ -65,7 +68,28 @@ export class TenantAuthService {
     );
     this._user.set(me.user);
     this._tenant.set(me.tenant);
+    // This account's own preference wins over whatever the previous user of
+    // this browser left cached.
+    this.themeService.applyFromAccount(me.user.theme_preference);
     this.persistSession();
+  }
+
+  async saveThemePreference(preference: ThemePreference): Promise<void> {
+    const body: ThemePreferenceUpdate = { theme_preference: preference };
+    const user = await firstValueFrom(
+      this.http.put<TenantUserRead>(`${environment.apiUrl}/tenant/auth/theme`, body),
+    );
+    this._user.set(user);
+    this.persistSession();
+  }
+
+  async changePassword(currentPassword: string, newPassword: string): Promise<void> {
+    await firstValueFrom(
+      this.http.post<void>(`${environment.apiUrl}/tenant/auth/change-password`, {
+        current_password: currentPassword,
+        new_password: newPassword,
+      }),
+    );
   }
 
   /** Silently exchanges the httpOnly refresh cookie for a new access token. */
@@ -102,6 +126,9 @@ export class TenantAuthService {
     this._token.set(null);
     this._user.set(null);
     this._tenant.set(null);
+    // Otherwise the next account to sign in on this browser inherits this
+    // user's theme until their own preference loads.
+    this.themeService.resetToSystemDefault();
     sessionStorage.removeItem(SESSION_STORAGE_KEY);
     this.router.navigateByUrl('/login');
   }
@@ -116,6 +143,7 @@ export class TenantAuthService {
       this._token.set(stored.token);
       this._user.set(stored.user);
       this._tenant.set(stored.tenant);
+      this.themeService.applyFromAccount(stored.user?.theme_preference);
     } catch {
       sessionStorage.removeItem(SESSION_STORAGE_KEY);
     }

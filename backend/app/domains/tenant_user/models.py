@@ -30,6 +30,10 @@ class TenantUser(Base):
     __table_args__ = (
         UniqueConstraint('tenant_id', 'email', name='uq_tenant_users_tenant_email'),
         CheckConstraint("role IN ('admin', 'member')", name='ck_tenant_users_role'),
+        CheckConstraint(
+            "theme_preference IN ('light', 'dark', 'system')",
+            name='ck_tenant_users_theme_preference',
+        ),
     )
 
     id: Mapped[uuid.UUID] = mapped_column(Uuid(as_uuid=True), primary_key=True, default=uuid.uuid4)
@@ -40,6 +44,9 @@ class TenantUser(Base):
     hashed_password: Mapped[str] = mapped_column(String(255), nullable=False)
     role: Mapped[str] = mapped_column(String(20), default='admin', nullable=False)
     is_active: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
+    # Per-user so it can't leak between accounts sharing a browser, which is
+    # exactly what a single localStorage key did before.
+    theme_preference: Mapped[str] = mapped_column(String(10), default='system', nullable=False)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now(), nullable=False
     )

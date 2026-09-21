@@ -25,9 +25,12 @@
       width: 100%;
     }
 
+    // No `display` override here: PrimeNG's .p-select is inline-flex, and its
+    // label relies on `flex: 1 1 auto; width: 1%` to fill the row. Forcing
+    // the host to block takes that 1% literally, clipping the selected value
+    // to a couple of characters and stacking the clear/chevron icons.
     p-select {
       width: 100%;
-      display: block;
     }
   }
 

@@ -1,4 +1,26 @@
 <div class="data-table__wrapper">
+  @if (hasBulkActions() && selection().length > 0) {
+    <div class="data-table__bulk-bar">
+      <span class="data-table__bulk-count">{{ selection().length }} selected</span>
+      <div class="data-table__bulk-actions">
+        @for (action of bulkActions(); track action.label) {
+          <button
+            pButton
+            size="small"
+            [severity]="action.severity ?? 'secondary'"
+            (click)="action.onClick(selection())"
+          >
+            <i [class]="action.icon" aria-hidden="true"></i>
+            {{ action.label }}
+          </button>
+        }
+        <button pButton size="small" [text]="true" severity="secondary" (click)="clearSelection()">
+          Clear
+        </button>
+      </div>
+    </div>
+  }
+
   <p-table
     [value]="filteredValue()"
     [loading]="loading()"
@@ -9,14 +31,18 @@
     [first]="firstRow()"
     (onPage)="onPageChange($event)"
     [dataKey]="dataKey()"
+    [selection]="selection()"
+    (selectionChange)="onSelectionChange($event)"
     [scrollable]="true"
     scrollHeight="flex"
-    [stripedRows]="true"
     [showCurrentPageReport]="true"
     currentPageReportTemplate="{totalRecords} records"
   >
     <ng-template #header>
       <tr>
+        @if (selectable()) {
+          <th class="data-table__checkbox-cell"><p-table-header-checkbox /></th>
+        }
         @for (column of columns(); track column.field) {
           @if (column.sortable) {
             <th [pSortableColumn]="column.field" [style.width]="column.width" [style.text-align]="column.align">
@@ -36,8 +62,14 @@
     <ng-template #body let-row>
       <tr
         [class.data-table__row--clickable]="expandable()"
+        [class.data-table__row--selected]="selectable() && isSelected(row)"
         (click)="onRowClick(row)"
       >
+        @if (selectable()) {
+          <td class="data-table__checkbox-cell" (click)="$event.stopPropagation()">
+            <p-table-checkbox [value]="row" />
+          </td>
+        }
         @for (column of columns(); track column.field) {
           <td [style.text-align]="column.align">
             @if (column.template) {

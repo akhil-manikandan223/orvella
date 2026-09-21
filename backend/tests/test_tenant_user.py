@@ -276,6 +276,125 @@ async def test_tenant_refresh_on_wrong_subdomain_is_unauthorized(
     assert response.status_code == 401
 
 
+async def test_tenant_theme_preference_is_per_user(client: AsyncClient, cleanup: Cleanup) -> None:
+    slug = _unique_slug('acme')
+    tenant = await _create_tenant(cleanup, slug=slug)
+    host = f'{slug}.{BASE_DOMAIN}'
+    _, first_headers = await _create_tenant_user(tenant.id, cleanup, role='admin')
+    _, second_headers = await _create_tenant_user(tenant.id, cleanup, role='member')
+    first_headers['Host'] = host
+    second_headers['Host'] = host
+
+    response = await client.put(
+        '/api/v1/tenant/auth/theme', headers=first_headers, json={'theme_preference': 'dark'}
+    )
+    assert response.status_code == 200
+    assert response.json()['theme_preference'] == 'dark'
+
+    # The point of the whole change: one user's choice must not follow the
+    # other one around.
+    first_me = await client.get('/api/v1/tenant/auth/me', headers=first_headers)
+    assert first_me.json()['user']['theme_preference'] == 'dark'
+
+    second_me = await client.get('/api/v1/tenant/auth/me', headers=second_headers)
+    assert second_me.json()['user']['theme_preference'] == 'system'
+
+
+async def test_tenant_theme_preference_rejects_unknown_value(
+    client: AsyncClient, cleanup: Cleanup
+) -> None:
+    slug = _unique_slug('acme')
+    tenant = await _create_tenant(cleanup, slug=slug)
+    _, headers = await _create_tenant_user(tenant.id, cleanup, role='admin')
+    headers['Host'] = f'{slug}.{BASE_DOMAIN}'
+
+    response = await client.put(
+        '/api/v1/tenant/auth/theme', headers=headers, json={'theme_preference': 'solarized'}
+    )
+    assert response.status_code == 422
+
+
+async def test_tenant_user_can_change_their_password(
+    client: AsyncClient, cleanup: Cleanup
+) -> None:
+    slug = _unique_slug('acme')
+    tenant = await _create_tenant(cleanup, slug=slug)
+    user = await _create_tenant_user_with_password(tenant.id, cleanup)
+    host = f'{slug}.{BASE_DOMAIN}'
+    new_password = 'a-brand-new-password'
+
+    login = await client.post(
+        '/api/v1/tenant/auth/login',
+        headers={'Host': host},
+        json={'email': user.email, 'password': TEST_PASSWORD},
+    )
+    token = login.json()['access_token']
+
+    response = await client.post(
+        '/api/v1/tenant/auth/change-password',
+        headers={'Host': host, 'Authorization': f'Bearer {token}'},
+        json={'current_password': TEST_PASSWORD, 'new_password': new_password},
+    )
+    assert response.status_code == 204
+
+    old_password_login = await client.post(
+        '/api/v1/tenant/auth/login',
+        headers={'Host': host},
+        json={'email': user.email, 'password': TEST_PASSWORD},
+    )
+    assert old_password_login.status_code == 401
+
+    new_password_login = await client.post(
+        '/api/v1/tenant/auth/login',
+        headers={'Host': host},
+        json={'email': user.email, 'password': new_password},
+    )
+    assert new_password_login.status_code == 200
+
+
+async def test_tenant_change_password_with_wrong_current_password_is_unauthorized(
+    client: AsyncClient, cleanup: Cleanup
+) -> None:
+    slug = _unique_slug('acme')
+    tenant = await _create_tenant(cleanup, slug=slug)
+    user = await _create_tenant_user_with_password(tenant.id, cleanup)
+    host = f'{slug}.{BASE_DOMAIN}'
+
+    login = await client.post(
+        '/api/v1/tenant/auth/login',
+        headers={'Host': host},
+        json={'email': user.email, 'password': TEST_PASSWORD},
+    )
+    token = login.json()['access_token']
+
+    response = await client.post(
+        '/api/v1/tenant/auth/change-password',
+        headers={'Host': host, 'Authorization': f'Bearer {token}'},
+        json={'current_password': 'not-the-right-one', 'new_password': 'whatever-comes-next'},
+    )
+    assert response.status_code == 401
+
+    # The original password must still work - a failed attempt changes nothing.
+    still_valid = await client.post(
+        '/api/v1/tenant/auth/login',
+        headers={'Host': host},
+        json={'email': user.email, 'password': TEST_PASSWORD},
+    )
+    assert still_valid.status_code == 200
+
+
+async def test_tenant_change_password_requires_auth(client: AsyncClient, cleanup: Cleanup) -> None:
+    slug = _unique_slug('acme')
+    await _create_tenant(cleanup, slug=slug)
+
+    response = await client.post(
+        '/api/v1/tenant/auth/change-password',
+        headers={'Host': f'{slug}.{BASE_DOMAIN}'},
+        json={'current_password': 'anything', 'new_password': 'anything-else'},
+    )
+    assert response.status_code == 401
+
+
 async def test_tenant_logout_revokes_the_refresh_cookie(
     client: AsyncClient, cleanup: Cleanup
 ) -> None:

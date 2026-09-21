@@ -20,6 +20,7 @@ from app.domains.platform_admin.schemas import (
     ChangePasswordRequest,
     LoginRequest,
     PlatformAdminRead,
+    ThemePreferenceUpdate,
     TokenResponse,
 )
 from app.domains.platform_admin.service import (
@@ -126,6 +127,15 @@ async def logout(request: Request, response: Response, db: DbSessionDep) -> None
 @router.get('/me', response_model=PlatformAdminRead)
 async def read_current_admin(admin: CurrentPlatformAdminDep) -> PlatformAdminRead:
     return PlatformAdminRead.model_validate(admin)
+
+
+@router.put('/theme', response_model=PlatformAdminRead)
+async def set_theme_preference(
+    payload: ThemePreferenceUpdate, admin: CurrentPlatformAdminDep, db: DbSessionDep
+) -> PlatformAdminRead:
+    repository = PlatformAdminRepository(db)
+    updated = await repository.update(admin, theme_preference=payload.theme_preference)
+    return PlatformAdminRead.model_validate(updated)
 
 
 @router.post('/change-password', status_code=status.HTTP_204_NO_CONTENT)

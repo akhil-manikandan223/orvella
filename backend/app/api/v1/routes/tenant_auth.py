@@ -20,14 +20,20 @@ from app.domains.tenant.repository import TenantFeatureRepository
 from app.domains.tenant_user.repository import TenantUserRepository
 from app.domains.tenant_user.schemas import (
     HeroFeatureRead,
+    TenantChangePasswordRequest,
     TenantContextRead,
     TenantLoginContextRead,
     TenantLoginRequest,
     TenantMeRead,
+    TenantThemePreferenceUpdate,
     TenantTokenResponse,
     TenantUserRead,
 )
-from app.domains.tenant_user.service import InvalidCredentialsError, authenticate_tenant_user
+from app.domains.tenant_user.service import (
+    InvalidCredentialsError,
+    authenticate_tenant_user,
+    change_tenant_user_password,
+)
 
 router = APIRouter(prefix='/tenant/auth', tags=['tenant-auth'])
 
@@ -149,6 +155,34 @@ async def read_current_tenant_user(
         user=TenantUserRead.model_validate(user),
         tenant=TenantContextRead(id=tenant.id, name=tenant.name, slug=tenant.slug),
     )
+
+
+@router.put('/theme', response_model=TenantUserRead)
+async def set_tenant_theme_preference(
+    payload: TenantThemePreferenceUpdate, user: CurrentTenantUserDep, db: DbSessionDep
+) -> TenantUserRead:
+    repository = TenantUserRepository(db)
+    updated = await repository.update(user, theme_preference=payload.theme_preference)
+    return TenantUserRead.model_validate(updated)
+
+
+@router.post('/change-password', status_code=status.HTTP_204_NO_CONTENT)
+async def change_tenant_password(
+    payload: TenantChangePasswordRequest, user: CurrentTenantUserDep, db: DbSessionDep
+) -> None:
+    repository = TenantUserRepository(db)
+    try:
+        await change_tenant_user_password(
+            repository,
+            user,
+            current_password=payload.current_password,
+            new_password=payload.new_password,
+        )
+    except InvalidCredentialsError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail='Current password is incorrect',
+        ) from exc
 
 
 @router.get('/context', response_model=TenantLoginContextRead)

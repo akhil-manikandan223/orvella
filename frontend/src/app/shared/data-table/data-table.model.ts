@@ -33,3 +33,11 @@ export interface DataTableAction<T = unknown> {
   /** Renders as an anchor (preserves ctrl/cmd-click, open-in-new-tab). Mutually exclusive with `onClick`. */
   routerLink?: (row: T) => unknown[];
 }
+
+/** Acts on every checkbox-selected row at once. Requires `[selectable]="true"`. */
+export interface DataTableBulkAction<T = unknown> {
+  icon: string;
+  label: string;
+  severity?: DataTableActionSeverity;
+  onClick: (rows: T[]) => void;
+}

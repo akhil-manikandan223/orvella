@@ -52,6 +52,18 @@ async def list_tenant_users(
     return await repository.list_for_tenant(tenant_id)
 
 
+async def change_tenant_user_password(
+    repository: TenantUserRepository,
+    user: TenantUser,
+    *,
+    current_password: str,
+    new_password: str,
+) -> TenantUser:
+    if not verify_password(current_password, user.hashed_password):
+        raise InvalidCredentialsError
+    return await repository.update(user, hashed_password=hash_password(new_password))
+
+
 async def update_tenant_user(
     repository: TenantUserRepository,
     *,

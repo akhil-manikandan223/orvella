@@ -5,11 +5,21 @@
   min-height: 0;
 }
 
+// The table sits in its own raised card, separated from the page toolbar
+// above it - overflow: hidden is what keeps the header/paginator corners
+// clipped to the rounded edge.
 .data-table__wrapper {
   display: flex;
   flex-direction: column;
   flex: 1;
   min-height: 0;
+  border: 1px solid var(--p-content-border-color);
+  border-radius: var(--p-content-border-radius);
+  background: var(--p-content-background);
+  overflow: hidden;
+  box-shadow:
+    0 1px 3px rgb(0 0 0 / 6%),
+    0 1px 2px rgb(0 0 0 / 4%);
 }
 
 p-table {
@@ -21,6 +31,38 @@ p-table {
 
 .data-table__row--clickable {
   cursor: pointer;
+}
+
+// Tinted with the brand primary rather than copying the reference's green,
+// so selection reads as "ours" and still works in both themes.
+.data-table__row--selected > td {
+  background: color-mix(in srgb, var(--p-primary-color) 8%, var(--p-content-background));
+}
+
+.data-table__checkbox-cell {
+  width: 3rem;
+  text-align: center;
+}
+
+.data-table__bulk-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.5rem 0.875rem;
+  border-bottom: 1px solid var(--p-content-border-color);
+  background: color-mix(in srgb, var(--p-primary-color) 6%, var(--p-content-background));
+}
+
+.data-table__bulk-count {
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.data-table__bulk-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .data-table__actions {

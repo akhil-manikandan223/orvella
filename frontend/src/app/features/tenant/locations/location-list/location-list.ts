@@ -1,4 +1,5 @@
 import { Component, computed, inject, signal } from '@angular/core';
+import { forkJoin } from 'rxjs';
 import { ButtonDirective } from 'primeng/button';
 import { ConfirmationService, MessageService } from 'primeng/api';
 
@@ -7,7 +8,11 @@ import { TenantAuthService } from '../../../../core/tenant-auth/tenant-auth.serv
 import { LocationRead } from '../../../../core/models/organization.model';
 import { PageHeader } from '../../../../shared/page-header/page-header';
 import { DataTable } from '../../../../shared/data-table/data-table';
-import { DataTableAction, DataTableColumn } from '../../../../shared/data-table/data-table.model';
+import {
+  DataTableAction,
+  DataTableBulkAction,
+  DataTableColumn,
+} from '../../../../shared/data-table/data-table.model';
 import { FormDrawer } from '../../../../shared/form-drawer/form-drawer';
 import { LocationForm } from '../location-form/location-form';
 
@@ -50,6 +55,19 @@ export class LocationList {
       : [],
   );
 
+  protected readonly bulkActions = computed<DataTableBulkAction<LocationRead>[]>(() =>
+    this.canManage()
+      ? [
+          {
+            icon: 'pi pi-trash',
+            label: 'Delete',
+            severity: 'danger',
+            onClick: (locations) => this.confirmBulkDelete(locations),
+          },
+        ]
+      : [],
+  );
+
   constructor() {
     this.load();
   }
@@ -85,6 +103,28 @@ export class LocationList {
         severity: 'success',
         summary: 'Deleted',
         detail: `"${location.name}" was deleted.`,
+      });
+      this.load();
+    });
+  }
+
+  protected confirmBulkDelete(locations: LocationRead[]): void {
+    const count = locations.length;
+    this.confirmationService.confirm({
+      header: 'Delete Locations',
+      message: `Delete ${count} location${count === 1 ? '' : 's'}? People assigned to them will simply become unassigned.`,
+      icon: 'pi pi-exclamation-triangle',
+      acceptButtonProps: { severity: 'danger' },
+      accept: () => this.deleteLocations(locations),
+    });
+  }
+
+  private deleteLocations(locations: LocationRead[]): void {
+    forkJoin(locations.map((location) => this.locationService.delete(location.id))).subscribe(() => {
+      this.messageService.add({
+        severity: 'success',
+        summary: 'Deleted',
+        detail: `${locations.length} location${locations.length === 1 ? '' : 's'} deleted.`,
       });
       this.load();
     });

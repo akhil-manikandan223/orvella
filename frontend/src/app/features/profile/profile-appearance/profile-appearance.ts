@@ -1,5 +1,6 @@
 import { Component, inject } from '@angular/core';
 
+import { THEME_PREFERENCE_STORE } from '../../../core/auth/password-changer';
 import { ThemePreference, ThemeService } from '../../../core/theme/theme.service';
 
 interface ThemeOption {
@@ -21,9 +22,15 @@ const THEME_OPTIONS: ThemeOption[] = [
 })
 export class ProfileAppearance {
   protected readonly themeService = inject(ThemeService);
+  // Whose account this saves against depends on which route loaded the
+  // screen - see THEME_PREFERENCE_STORE.
+  private readonly themeStore = inject(THEME_PREFERENCE_STORE);
   protected readonly themeOptions = THEME_OPTIONS;
 
   protected onThemeChange(value: ThemePreference): void {
+    // Applied immediately so the switch feels instant; the save is what makes
+    // it stick to this account rather than this browser.
     this.themeService.setPreference(value);
+    void this.themeStore.saveThemePreference(value);
   }
 }

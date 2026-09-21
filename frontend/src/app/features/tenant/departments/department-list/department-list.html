@@ -15,6 +15,8 @@
   [columns]="columns"
   [value]="departments()"
   [actions]="actions()"
+  [selectable]="canManage()"
+  [bulkActions]="bulkActions()"
   [loading]="loading()"
   emptyMessage="No departments yet."
   emptyIcon="pi pi-sitemap"

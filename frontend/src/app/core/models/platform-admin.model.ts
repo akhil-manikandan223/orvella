@@ -1,3 +1,5 @@
+import { ThemePreference } from './theme.model';
+
 export interface LoginRequest {
   email: string;
   password: string;
@@ -11,6 +13,7 @@ export interface TokenResponse {
 export interface PlatformAdminRead {
   id: string;
   email: string;
+  theme_preference: ThemePreference;
 }
 
 export interface ChangePasswordRequest {

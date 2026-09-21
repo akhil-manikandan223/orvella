@@ -1,0 +1,39 @@
+/* Diagonal topbar accent, shared by the platform-admin Topbar and the tenant
+   TenantShell topbar - the two are separate components but carry the same
+   chrome, same reasoning as _app-shell.scss.
+
+   The host keeps a plain content background; this paints the tinted right
+   side over it, cut on an angle. Two hard-stopped gradient bands inside the
+   clipped shape give the edge its faceted look rather than one flat slab.
+
+   z-index discipline matters here: the accent sits at 0 so each topbar's own
+   ::before brand strip and its content (which set z-index: 1) stay above it. */
+.topbar-accent {
+  position: relative;
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    clip-path: polygon(
+      27% 100%,
+      /* foot of the diagonal, on the bottom edge */ 30% 16%,
+      /* top of the diagonal, stopping short of the top */ 63% 16%,
+      /* flat shoulder */ 68% 0,
+      /* short jog up to the top edge */ 100% 0,
+      100% 100%
+    );
+    background: color-mix(in srgb, var(--p-primary-color) 12%, var(--p-content-background));
+  }
+}
+
+/* Phone widths: the left white wedge gets too small to hold the logo, so the
+   cut starts further left and shallower, keeping the split readable instead
+   of slicing through the brand mark at an awkward angle. */
+@media (max-width: 600px) {
+  .topbar-accent::after {
+    clip-path: polygon(10% 100%, 30% 0, 100% 0, 100% 100%);
+  }
+}

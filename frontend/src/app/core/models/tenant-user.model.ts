@@ -1,3 +1,5 @@
+import { ThemePreference } from './theme.model';
+
 export type TenantUserRole = 'admin' | 'member';
 
 export interface TenantUserRead {
@@ -6,6 +8,7 @@ export interface TenantUserRead {
   email: string;
   role: TenantUserRole;
   is_active: boolean;
+  theme_preference: ThemePreference;
 }
 
 export interface TenantUserCreate {

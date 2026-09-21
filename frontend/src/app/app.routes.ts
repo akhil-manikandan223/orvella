@@ -1,8 +1,22 @@
 import { Routes } from '@angular/router';
 
 import { authGuard } from './core/auth/auth.guard';
+import { AuthService } from './core/auth/auth.service';
+import { PASSWORD_CHANGER, THEME_PREFERENCE_STORE } from './core/auth/password-changer';
 import { tenantAuthGuard } from './core/tenant-auth/tenant-auth.guard';
+import { TenantAuthService } from './core/tenant-auth/tenant-auth.service';
+import {
+  PLATFORM_ADMIN_PROFILE_NAV_ITEMS,
+  ProfileNavItem,
+} from './features/profile/profile-page/profile-page';
 import { isTenantHost } from './core/tenancy/host-context';
+
+// A TenantUser carries only email/role/active - nothing worth a General tab,
+// so the tenant profile is Appearance + Security only.
+const TENANT_PROFILE_NAV_ITEMS: ProfileNavItem[] = [
+  { label: 'Appearance', icon: 'pi pi-palette', path: 'appearance' },
+  { label: 'Privacy & Security', icon: 'pi pi-lock', path: 'security' },
+];
 
 const platformAdminRoutes: Routes = [
   {
@@ -106,6 +120,7 @@ const platformAdminRoutes: Routes = [
         path: 'profile',
         loadComponent: () =>
           import('./features/profile/profile-page/profile-page').then((m) => m.ProfilePage),
+        data: { navItems: PLATFORM_ADMIN_PROFILE_NAV_ITEMS },
         children: [
           { path: '', pathMatch: 'full', redirectTo: 'general' },
           {
@@ -117,6 +132,7 @@ const platformAdminRoutes: Routes = [
           },
           {
             path: 'appearance',
+            providers: [{ provide: THEME_PREFERENCE_STORE, useExisting: AuthService }],
             loadComponent: () =>
               import('./features/profile/profile-appearance/profile-appearance').then(
                 (m) => m.ProfileAppearance,
@@ -124,6 +140,7 @@ const platformAdminRoutes: Routes = [
           },
           {
             path: 'security',
+            providers: [{ provide: PASSWORD_CHANGER, useExisting: AuthService }],
             loadComponent: () =>
               import('./features/profile/profile-security/profile-security').then(
                 (m) => m.ProfileSecurity,
@@ -178,6 +195,33 @@ const tenantRoutes: Routes = [
         path: 'people',
         loadComponent: () =>
           import('./features/tenant/people/person-list/person-list').then((m) => m.PersonList),
+      },
+      {
+        path: 'profile',
+        // Same ProfilePage/ProfileSecurity components as the admin console -
+        // only the tab list and the password-changer differ.
+        loadComponent: () =>
+          import('./features/profile/profile-page/profile-page').then((m) => m.ProfilePage),
+        data: { navItems: TENANT_PROFILE_NAV_ITEMS },
+        children: [
+          { path: '', pathMatch: 'full', redirectTo: 'appearance' },
+          {
+            path: 'appearance',
+            providers: [{ provide: THEME_PREFERENCE_STORE, useExisting: TenantAuthService }],
+            loadComponent: () =>
+              import('./features/profile/profile-appearance/profile-appearance').then(
+                (m) => m.ProfileAppearance,
+              ),
+          },
+          {
+            path: 'security',
+            providers: [{ provide: PASSWORD_CHANGER, useExisting: TenantAuthService }],
+            loadComponent: () =>
+              import('./features/profile/profile-security/profile-security').then(
+                (m) => m.ProfileSecurity,
+              ),
+          },
+        ],
       },
     ],
   },

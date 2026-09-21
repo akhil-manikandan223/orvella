@@ -6,7 +6,9 @@
   gap: 1rem;
   padding: 0.5rem 1rem;
   border-bottom: 1px solid var(--p-content-border-color);
-  background: color-mix(in srgb, var(--p-primary-color) 6%, var(--p-content-background));
+  // Flat base: the tinted right-hand side is painted by .topbar-accent's
+  // angled ::after (see shared/styles/_topbar-accent.scss).
+  background: var(--p-content-background);
 
   &::before {
     content: '';
@@ -14,10 +16,13 @@
     inset-block-start: 0;
     inset-inline: 0;
     height: 3px;
+    z-index: 1;
     background: linear-gradient(90deg, #8b3fe0, #5ec4f5, #2f4fe0);
   }
 
   &__start {
+    position: relative;
+    z-index: 1;
     display: flex;
     align-items: center;
     gap: 0.75rem;
@@ -29,6 +34,8 @@
   }
 
   &__end {
+    position: relative;
+    z-index: 1;
     display: flex;
     align-items: center;
     gap: 0.75rem;
@@ -52,7 +59,10 @@
 
   &__admin-email {
     font-size: 0.875rem;
-    color: var(--p-text-muted-color);
+    // Not the muted token: this text sits on the strongest end of the accent
+    // gradient, where muted grey drops to ~3.2:1 against the tint and fails
+    // WCAG AA. The normal text colour clears 4.5:1 comfortably there.
+    color: var(--p-text-color);
   }
 
   &__account-menu-item {

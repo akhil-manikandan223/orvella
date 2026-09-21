@@ -4,6 +4,7 @@ from typing import Literal
 from pydantic import BaseModel, ConfigDict, EmailStr
 
 TenantUserRole = Literal['admin', 'member']
+ThemePreference = Literal['light', 'dark', 'system']
 
 
 class TenantLoginRequest(BaseModel):
@@ -22,6 +23,11 @@ class TenantUserCreate(BaseModel):
     role: TenantUserRole = 'admin'
 
 
+class TenantChangePasswordRequest(BaseModel):
+    current_password: str
+    new_password: str
+
+
 class TenantUserUpdate(BaseModel):
     email: EmailStr | None = None
     role: TenantUserRole | None = None
@@ -36,6 +42,11 @@ class TenantUserRead(BaseModel):
     email: str
     role: TenantUserRole
     is_active: bool
+    theme_preference: ThemePreference
+
+
+class TenantThemePreferenceUpdate(BaseModel):
+    theme_preference: ThemePreference
 
 
 class TenantContextRead(BaseModel):

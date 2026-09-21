@@ -2,7 +2,7 @@
 
 <div class="profile-page__layout">
   <nav class="profile-page__nav" aria-label="Profile settings">
-    @for (item of navItems; track item.path) {
+    @for (item of navItems(); track item.path) {
       <a
         class="profile-page__nav-link"
         [routerLink]="item.path"

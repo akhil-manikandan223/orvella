@@ -9,6 +9,8 @@ from app.domains.feature.repository import FeatureRepository
 from app.domains.feature.schemas import FeatureRead
 from app.domains.feature.service import FeatureNotFoundError
 from app.domains.geo.service import CityNotFoundError, CountryNotFoundError
+from app.domains.notification.repository import NotificationRepository
+from app.domains.notification.service import create_notification
 from app.domains.organization_taxonomy.service import OrganizationTypeNotFoundError
 from app.domains.tenant.models import Tenant
 from app.domains.tenant.repository import TenantFeatureRepository, TenantRepository
@@ -166,17 +168,48 @@ async def update_tenant_user_endpoint(
     tenant_id: uuid.UUID, user_id: uuid.UUID, payload: TenantUserUpdate, db: DbSessionDep
 ) -> TenantUserRead:
     repository = TenantUserRepository(db)
+    fields = payload.model_dump(exclude_unset=True)
     try:
-        user = await update_tenant_user(
-            repository,
-            tenant_id=tenant_id,
-            user_id=user_id,
-            **payload.model_dump(exclude_unset=True),
-        )
+        user = await update_tenant_user(repository, tenant_id=tenant_id, user_id=user_id, **fields)
     except TenantUserNotFoundError as exc:
         raise HTTPException(status.HTTP_404_NOT_FOUND, 'Tenant user not found') from exc
     except TenantUserAlreadyExistsError as exc:
         raise HTTPException(
             status.HTTP_409_CONFLICT, 'A user with this email already exists for this tenant'
         ) from exc
+
+    # First real trigger for the notification foundation: let the affected
+    # tenant user know when a platform admin changes something about their
+    # own account. Other domains can call create_notification the same way
+    # as they gain events worth surfacing.
+    notification_repository = NotificationRepository(db)
+    if 'is_active' in fields:
+        if fields['is_active']:
+            await create_notification(
+                notification_repository,
+                tenant_id=tenant_id,
+                tenant_user_id=user.id,
+                type='account.reactivated',
+                title='Account reactivated',
+                message='Your account has been reactivated. You can sign in again.',
+            )
+        else:
+            await create_notification(
+                notification_repository,
+                tenant_id=tenant_id,
+                tenant_user_id=user.id,
+                type='account.deactivated',
+                title='Account deactivated',
+                message='Your account has been deactivated by an administrator.',
+            )
+    if 'role' in fields:
+        await create_notification(
+            notification_repository,
+            tenant_id=tenant_id,
+            tenant_user_id=user.id,
+            type='account.role_changed',
+            title='Role changed',
+            message=f'Your role has been changed to "{fields["role"]}".',
+        )
+
     return TenantUserRead.model_validate(user)

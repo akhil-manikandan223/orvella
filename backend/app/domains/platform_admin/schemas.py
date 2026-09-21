@@ -1,6 +1,9 @@
 import uuid
+from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, EmailStr
+
+ThemePreference = Literal['light', 'dark', 'system']
 
 
 class LoginRequest(BaseModel):
@@ -18,8 +21,13 @@ class PlatformAdminRead(BaseModel):
 
     id: uuid.UUID
     email: str
+    theme_preference: ThemePreference
 
 
 class ChangePasswordRequest(BaseModel):
     current_password: str
     new_password: str
+
+
+class ThemePreferenceUpdate(BaseModel):
+    theme_preference: ThemePreference

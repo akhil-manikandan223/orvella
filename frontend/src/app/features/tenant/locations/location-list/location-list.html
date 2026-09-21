@@ -11,6 +11,8 @@
   [columns]="columns"
   [value]="locations()"
   [actions]="actions()"
+  [selectable]="canManage()"
+  [bulkActions]="bulkActions()"
   [loading]="loading()"
   emptyMessage="No locations yet."
   emptyIcon="pi pi-map-marker"

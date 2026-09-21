@@ -1,5 +1,5 @@
 <div class="tenant-shell">
-  <header class="tenant-shell__topbar">
+  <header class="tenant-shell__topbar topbar-accent">
     <div class="tenant-shell__brand">
       <button
         pButton
@@ -22,7 +22,74 @@
       <span class="tenant-shell__tenant-name">{{ tenantAuthService.tenant()?.name }}</span>
     </div>
     <div class="tenant-shell__end">
-      <span class="tenant-shell__email">{{ tenantAuthService.user()?.email }}</span>
+      <p-overlay-badge
+        class="tenant-shell__bell"
+        severity="danger"
+        [value]="notificationService.unreadCount()"
+        [badgeDisabled]="notificationService.unreadCount() === 0"
+      >
+        <button
+          pButton
+          [text]="true"
+          [rounded]="true"
+          severity="secondary"
+          aria-haspopup="true"
+          [attr.aria-label]="
+            notificationService.unreadCount() > 0
+              ? notificationService.unreadCount() + ' unread notifications'
+              : 'Notifications'
+          "
+          (click)="toggleNotifications($event)"
+        >
+          <i class="pi pi-bell" aria-hidden="true"></i>
+        </button>
+      </p-overlay-badge>
+      <p-popover #notificationsPopover appendTo="body">
+        <div class="tenant-shell__notifications">
+          <div class="tenant-shell__notifications-header">
+            <span>Notifications</span>
+            @if (notificationService.unreadCount() > 0) {
+              <button pButton [text]="true" size="small" (click)="markAllNotificationsRead()">
+                Mark all read
+              </button>
+            }
+          </div>
+          @if (notificationService.notifications().length === 0) {
+            <p class="tenant-shell__notifications-empty">You're all caught up.</p>
+          } @else {
+            <ul class="tenant-shell__notifications-list">
+              @for (notification of notificationService.notifications(); track notification.id) {
+                <li
+                  class="tenant-shell__notification"
+                  [class.tenant-shell__notification--unread]="!notification.read_at"
+                  (click)="markNotificationRead(notification.id)"
+                >
+                  <span class="tenant-shell__notification-title">{{ notification.title }}</span>
+                  <span class="tenant-shell__notification-message">{{ notification.message }}</span>
+                </li>
+              }
+            </ul>
+          }
+        </div>
+      </p-popover>
+      @if (tenantAuthService.user(); as user) {
+        <button
+          type="button"
+          class="tenant-shell__account"
+          aria-haspopup="true"
+          [attr.aria-label]="'Account menu for ' + user.email"
+          (click)="toggleAccountMenu($event)"
+        >
+          <p-avatar [label]="avatarLabel()" shape="circle" size="normal" />
+          <span class="tenant-shell__email">{{ user.email }}</span>
+        </button>
+        <p-popover #accountPopover appendTo="body">
+          <a routerLink="/profile" class="tenant-shell__account-menu-item" (click)="closeAccountMenu()">
+            <i class="pi pi-user" aria-hidden="true"></i>
+            Profile
+          </a>
+        </p-popover>
+      }
       <button pButton [text]="true" severity="secondary" aria-label="Sign out" (click)="logout()">
         <i class="pi pi-sign-out" aria-hidden="true"></i>
       </button>

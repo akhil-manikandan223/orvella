@@ -1,4 +1,5 @@
 import { Component, computed, inject, signal } from '@angular/core';
+import { forkJoin } from 'rxjs';
 import { ButtonDirective } from 'primeng/button';
 import { ConfirmationService, MessageService } from 'primeng/api';
 
@@ -7,7 +8,11 @@ import { TenantAuthService } from '../../../../core/tenant-auth/tenant-auth.serv
 import { DepartmentRead } from '../../../../core/models/organization.model';
 import { PageHeader } from '../../../../shared/page-header/page-header';
 import { DataTable } from '../../../../shared/data-table/data-table';
-import { DataTableAction, DataTableColumn } from '../../../../shared/data-table/data-table.model';
+import {
+  DataTableAction,
+  DataTableBulkAction,
+  DataTableColumn,
+} from '../../../../shared/data-table/data-table.model';
 import { FormDrawer } from '../../../../shared/form-drawer/form-drawer';
 import { DepartmentForm } from '../department-form/department-form';
 
@@ -54,6 +59,19 @@ export class DepartmentList {
       : [],
   );
 
+  protected readonly bulkActions = computed<DataTableBulkAction<DepartmentRead>[]>(() =>
+    this.canManage()
+      ? [
+          {
+            icon: 'pi pi-trash',
+            label: 'Delete',
+            severity: 'danger',
+            onClick: (departments) => this.confirmBulkDelete(departments),
+          },
+        ]
+      : [],
+  );
+
   constructor() {
     this.load();
   }
@@ -92,6 +110,30 @@ export class DepartmentList {
       });
       this.load();
     });
+  }
+
+  protected confirmBulkDelete(departments: DepartmentRead[]): void {
+    const count = departments.length;
+    this.confirmationService.confirm({
+      header: 'Delete Departments',
+      message: `Delete ${count} department${count === 1 ? '' : 's'}? People assigned to them will simply become unassigned.`,
+      icon: 'pi pi-exclamation-triangle',
+      acceptButtonProps: { severity: 'danger' },
+      accept: () => this.deleteDepartments(departments),
+    });
+  }
+
+  private deleteDepartments(departments: DepartmentRead[]): void {
+    forkJoin(departments.map((department) => this.departmentService.delete(department.id))).subscribe(
+      () => {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Deleted',
+          detail: `${departments.length} department${departments.length === 1 ? '' : 's'} deleted.`,
+        });
+        this.load();
+      },
+    );
   }
 
   protected load(): void {

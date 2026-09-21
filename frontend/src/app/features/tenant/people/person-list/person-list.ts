@@ -10,7 +10,11 @@ import { TenantAuthService } from '../../../../core/tenant-auth/tenant-auth.serv
 import { PersonRead } from '../../../../core/models/organization.model';
 import { PageHeader } from '../../../../shared/page-header/page-header';
 import { DataTable } from '../../../../shared/data-table/data-table';
-import { DataTableAction, DataTableColumn } from '../../../../shared/data-table/data-table.model';
+import {
+  DataTableAction,
+  DataTableBulkAction,
+  DataTableColumn,
+} from '../../../../shared/data-table/data-table.model';
 import { FormDrawer } from '../../../../shared/form-drawer/form-drawer';
 import { PersonForm } from '../person-form/person-form';
 
@@ -78,6 +82,19 @@ export class PersonList {
       : [],
   );
 
+  protected readonly bulkActions = computed<DataTableBulkAction<PersonRead>[]>(() =>
+    this.canManage()
+      ? [
+          {
+            icon: 'pi pi-trash',
+            label: 'Delete',
+            severity: 'danger',
+            onClick: (people) => this.confirmBulkDelete(people),
+          },
+        ]
+      : [],
+  );
+
   constructor() {
     this.load();
   }
@@ -113,6 +130,28 @@ export class PersonList {
         severity: 'success',
         summary: 'Deleted',
         detail: `"${person.first_name} ${person.last_name}" was deleted.`,
+      });
+      this.load();
+    });
+  }
+
+  protected confirmBulkDelete(people: PersonRead[]): void {
+    const count = people.length;
+    this.confirmationService.confirm({
+      header: 'Delete People',
+      message: `Delete ${count} ${count === 1 ? 'person' : 'people'}? This cannot be undone.`,
+      icon: 'pi pi-exclamation-triangle',
+      acceptButtonProps: { severity: 'danger' },
+      accept: () => this.deletePeople(people),
+    });
+  }
+
+  private deletePeople(people: PersonRead[]): void {
+    forkJoin(people.map((person) => this.personService.delete(person.id))).subscribe(() => {
+      this.messageService.add({
+        severity: 'success',
+        summary: 'Deleted',
+        detail: `${people.length} ${people.length === 1 ? 'person' : 'people'} deleted.`,
       });
       this.load();
     });

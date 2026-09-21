@@ -21,7 +21,9 @@
     gap: 1rem;
     padding: 0.5rem 1rem;
     border-bottom: 1px solid var(--p-content-border-color);
-    background: color-mix(in srgb, var(--p-primary-color) 6%, var(--p-content-background));
+    // Flat base: the tinted right-hand side is painted by .topbar-accent's
+    // angled ::after (see shared/styles/_topbar-accent.scss).
+    background: var(--p-content-background);
 
     &::before {
       content: '';
@@ -29,11 +31,14 @@
       inset-block-start: 0;
       inset-inline: 0;
       height: 3px;
+      z-index: 1;
       background: linear-gradient(90deg, #8b3fe0, #5ec4f5, #2f4fe0);
     }
   }
 
   &__brand {
+    position: relative;
+    z-index: 1;
     display: flex;
     align-items: center;
     gap: 0.75rem;
@@ -59,13 +64,121 @@
   }
 
   &__end {
+    position: relative;
+    z-index: 1;
     display: flex;
     align-items: center;
     gap: 0.75rem;
   }
 
+  &__account {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.25rem 0.5rem 0.25rem 0.25rem;
+    border: none;
+    border-radius: 999px;
+    background: transparent;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+
+    &:hover {
+      background: var(--p-content-hover-background);
+    }
+  }
+
+  &__account-menu-item {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    width: 100%;
+    min-width: 8rem;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.9rem;
+    color: inherit;
+    text-decoration: none;
+    border-radius: var(--p-content-border-radius);
+    cursor: pointer;
+
+    &:hover {
+      background: var(--p-content-hover-background);
+    }
+  }
+
   &__email {
     font-size: 0.875rem;
+    // See topbar.scss: muted grey fails WCAG AA against the strong end of the
+    // accent gradient this text sits on.
+    color: var(--p-text-color);
+  }
+
+  // The badge anchors to this wrapper's corner, so it has to hug the button
+  // rather than stretch as a flex item of the topbar's right-hand group.
+  &__bell {
+    display: inline-flex;
+    flex-shrink: 0;
+  }
+
+  &__notifications {
+    display: flex;
+    flex-direction: column;
+    width: 22rem;
+    max-width: 90vw;
+  }
+
+  &__notifications-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.5rem 0.75rem;
+    font-weight: 600;
+    border-bottom: 1px solid var(--p-content-border-color);
+  }
+
+  &__notifications-empty {
+    padding: 1.5rem 0.75rem;
+    text-align: center;
+    color: var(--p-text-muted-color);
+    font-size: 0.875rem;
+    margin: 0;
+  }
+
+  &__notifications-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    max-height: 20rem;
+    overflow-y: auto;
+  }
+
+  &__notification {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    padding: 0.625rem 0.75rem;
+    cursor: pointer;
+    border-bottom: 1px solid var(--p-content-border-color);
+
+    &:hover {
+      background: var(--p-content-hover-background);
+    }
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    &--unread {
+      background: color-mix(in srgb, var(--p-primary-color) 5%, transparent);
+    }
+  }
+
+  &__notification-title {
+    font-size: 0.875rem;
+    font-weight: 600;
+  }
+
+  &__notification-message {
+    font-size: 0.8rem;
     color: var(--p-text-muted-color);
   }
 }

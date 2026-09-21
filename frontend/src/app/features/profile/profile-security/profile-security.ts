@@ -6,7 +6,7 @@ import { InputIcon } from 'primeng/inputicon';
 import { ButtonDirective } from 'primeng/button';
 import { MessageService } from 'primeng/api';
 
-import { AuthService } from '../../../core/auth/auth.service';
+import { PASSWORD_CHANGER } from '../../../core/auth/password-changer';
 
 interface ChangePasswordFormValue {
   current_password: string;
@@ -21,7 +21,9 @@ interface ChangePasswordFormValue {
   styleUrl: './profile-security.scss',
 })
 export class ProfileSecurity {
-  private readonly authService = inject(AuthService);
+  // Whose password this changes depends on which route loaded the screen -
+  // see PASSWORD_CHANGER.
+  private readonly passwordChanger = inject(PASSWORD_CHANGER);
   private readonly messageService = inject(MessageService);
 
   protected readonly submitting = signal(false);
@@ -64,7 +66,7 @@ export class ProfileSecurity {
 
     this.submitting.set(true);
     try {
-      await this.authService.changePassword(current_password, new_password);
+      await this.passwordChanger.changePassword(current_password, new_password);
       this.messageService.add({
         severity: 'success',
         summary: 'Password changed',
