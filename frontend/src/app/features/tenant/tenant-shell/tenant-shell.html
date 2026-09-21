@@ -13,7 +13,11 @@
         <i class="pi pi-bars" aria-hidden="true"></i>
       </button>
       <img
-        ngSrc="assets/logos/orvella-header-light-logo.png"
+        [ngSrc]="
+          themeService.mode() === 'dark'
+            ? 'assets/logos/orvella-header-dark-logo.png'
+            : 'assets/logos/orvella-header-light-logo.png'
+        "
         alt="Orvella"
         width="120"
         height="32"
