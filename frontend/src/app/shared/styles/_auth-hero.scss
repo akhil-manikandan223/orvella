@@ -25,13 +25,20 @@
     overflow: hidden;
   }
 
-  &__grid {
+  // Replaced the old dot grid: the plexus artwork already carries the
+  // "connected network" motif, and layering both read as noise.
+  &__photo {
     position: absolute;
     inset: 0;
-    background-image: radial-gradient(rgb(255 255 255 / 10%) 1px, transparent 1px);
-    background-size: 28px 28px;
-    mask-image: radial-gradient(ellipse at center, black 0%, transparent 70%);
-    opacity: 0.5;
+    background-image: url('/assets/bg-images/flowity-plexus-network-1789970282722.png');
+    background-size: cover;
+    background-position: center right;
+    background-repeat: no-repeat;
+    opacity: 0.7;
+    // Faded out towards the left so the brand column keeps a calm, dark area
+    // to sit on - the artwork's own mesh is already sparse on that side, and
+    // this stops it creeping under the headline as the viewport narrows.
+    mask-image: linear-gradient(to right, transparent 0%, black 45%);
   }
 
   &__blob {
