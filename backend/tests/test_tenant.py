@@ -204,6 +204,11 @@ async def test_create_tenant_duplicate_license_number_is_conflict(
         headers=platform_admin_auth_headers,
     )
     assert second.status_code == 409
+    # The message must name the offending column - a tenant has two unique
+    # columns, so a generic "already exists" is undiagnosable.
+    body = second.json()['error']
+    assert body['message'] == 'Another record already uses this license number.'
+    assert body['details']['field'] == 'license number'
 
 
 async def test_create_tenant_with_template_less_type_has_no_features(
@@ -246,6 +251,7 @@ async def test_create_tenant_duplicate_slug_is_conflict(
         headers=platform_admin_auth_headers,
     )
     assert second.status_code == 409
+    assert second.json()['error']['details']['field'] == 'slug'
 
 
 async def test_create_tenant_unknown_type_is_not_found(
