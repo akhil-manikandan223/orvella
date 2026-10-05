@@ -8,6 +8,16 @@ export interface DataTableColumn<T = unknown> {
   sortable?: boolean;
   width?: string;
   align?: DataTableColumnAlign;
+  /**
+   * Drops this column on narrow screens instead of letting the table scroll
+   * sideways (see §14: data-heavy tables need an intentional strategy, not
+   * uncontrolled overflow). Mark secondary columns - never the one that
+   * identifies the row, or the actions.
+   *
+   * Independent of the user's own column-visibility preference: this is a
+   * layout decision, that one is a choice.
+   */
+  hideOnNarrow?: boolean;
   /** Plain-text formatter. Ignored when `template` is provided. Defaults to `String(row[field])`. */
   cell?: (row: T) => string;
   /** Custom cell rendering, obtained via a `viewChild()` signal query in the caller. */
@@ -15,12 +25,7 @@ export interface DataTableColumn<T = unknown> {
 }
 
 export type DataTableActionSeverity =
-  | 'success'
-  | 'danger'
-  | 'secondary'
-  | 'info'
-  | 'warn'
-  | 'contrast';
+  'success' | 'danger' | 'secondary' | 'info' | 'warn' | 'contrast';
 
 export interface DataTableAction<T = unknown> {
   icon: string;

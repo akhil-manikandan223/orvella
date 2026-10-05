@@ -61,8 +61,7 @@ export class TenantDetail implements OnInit {
       return '—';
     }
     return (
-      this.organizationTypes().find((type) => type.id === tenant.organization_type_id)?.name ??
-      '—'
+      this.organizationTypes().find((type) => type.id === tenant.organization_type_id)?.name ?? '—'
     );
   });
 

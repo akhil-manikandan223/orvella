@@ -33,9 +33,7 @@ const platformAdminRoutes: Routes = [
       {
         path: 'dashboard',
         loadComponent: () =>
-          import('./features/dashboard/dashboard-page/dashboard-page').then(
-            (m) => m.DashboardPage,
-          ),
+          import('./features/dashboard/dashboard-page/dashboard-page').then((m) => m.DashboardPage),
       },
       {
         path: 'tenants',
@@ -62,9 +60,7 @@ const platformAdminRoutes: Routes = [
       {
         path: 'geo/countries',
         loadComponent: () =>
-          import('./features/geo/countries/country-list/country-list').then(
-            (m) => m.CountryList,
-          ),
+          import('./features/geo/countries/country-list/country-list').then((m) => m.CountryList),
       },
       {
         path: 'geo/states',
@@ -86,9 +82,7 @@ const platformAdminRoutes: Routes = [
       {
         path: 'features',
         loadComponent: () =>
-          import('./features/feature-catalog/feature-list/feature-list').then(
-            (m) => m.FeatureList,
-          ),
+          import('./features/feature-catalog/feature-list/feature-list').then((m) => m.FeatureList),
       },
       {
         path: 'organization-categories',
@@ -105,16 +99,14 @@ const platformAdminRoutes: Routes = [
       {
         path: 'organization-types/:id/template',
         loadComponent: () =>
-          import(
-            './features/organization-taxonomy/type-feature-template/type-feature-template'
-          ).then((m) => m.TypeFeatureTemplate),
+          import('./features/organization-taxonomy/type-feature-template/type-feature-template').then(
+            (m) => m.TypeFeatureTemplate,
+          ),
       },
       {
         path: 'audit-logs',
         loadComponent: () =>
-          import('./features/audit-log/audit-log-list/audit-log-list').then(
-            (m) => m.AuditLogList,
-          ),
+          import('./features/audit-log/audit-log-list/audit-log-list').then((m) => m.AuditLogList),
       },
       {
         path: 'profile',

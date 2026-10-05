@@ -37,7 +37,7 @@ const STATUS_FILTER_OPTIONS: { label: string; value: StatusFilter }[] = [
 
 const COLUMNS: DataTableColumn<TenantUserRead>[] = [
   { field: 'email', header: 'Email', sortable: true },
-  { field: 'role', header: 'Role', cell: (user) => ROLE_LABELS[user.role] },
+  { field: 'role', header: 'Role', hideOnNarrow: true, cell: (user) => ROLE_LABELS[user.role] },
   {
     field: 'is_active',
     header: 'Status',

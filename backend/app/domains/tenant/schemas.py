@@ -1,11 +1,15 @@
 import uuid
-from typing import Literal
+from typing import Annotated, Literal
 
-from pydantic import BaseModel, ConfigDict, EmailStr
+from pydantic import BaseModel, ConfigDict, EmailStr, Field
 
 from app.domains.feature.schemas import FeatureRead
 
 LoginHeroMode = Literal['default', 'featured']
+
+# Validated on the way in so a malformed value can never reach the frontend,
+# where it would be fed straight into a generated colour palette.
+BrandColor = Annotated[str, Field(pattern=r'^#[0-9a-fA-F]{6}$')]
 
 
 class TenantCreate(BaseModel):
@@ -23,6 +27,7 @@ class TenantCreate(BaseModel):
     postal_code: str | None = None
     license_number: str
     logo_url: str | None = None
+    brand_color: BrandColor | None = None
     key_contact_name: str
     key_contact_email: EmailStr
     key_contact_phone: str
@@ -41,6 +46,7 @@ class TenantUpdate(BaseModel):
     postal_code: str | None = None
     license_number: str | None = None
     logo_url: str | None = None
+    brand_color: BrandColor | None = None
     key_contact_name: str | None = None
     key_contact_email: EmailStr | None = None
     key_contact_phone: str | None = None
@@ -65,6 +71,7 @@ class TenantRead(BaseModel):
     postal_code: str | None
     license_number: str
     logo_url: str | None
+    brand_color: str | None
     key_contact_name: str
     key_contact_email: str
     key_contact_phone: str

@@ -69,6 +69,9 @@ class Tenant(Base):
     )
     # URL only - no upload endpoint/storage backend decided yet.
     logo_url: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    # Hex like '#6d5ce0'. Null means the tenant inherits Orvella's own accent -
+    # the frontend derives a full 50..950 palette from this single value.
+    brand_color: Mapped[str | None] = mapped_column(String(7), nullable=True)
     # Contact metadata only. Provisioning this person as an actual
     # logged-in tenant admin is Phase 3 work (tenant-user model doesn't
     # exist yet) - these columns do not grant any login access.

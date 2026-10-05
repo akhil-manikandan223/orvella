@@ -12,7 +12,7 @@ import { CategoryForm } from '../category-form/category-form';
 
 const COLUMNS: DataTableColumn<OrganizationCategoryRead>[] = [
   { field: 'name', header: 'Name', sortable: true },
-  { field: 'slug', header: 'Slug', sortable: true },
+  { field: 'slug', header: 'Slug', sortable: true, hideOnNarrow: true },
 ];
 
 @Component({
@@ -34,7 +34,9 @@ export class CategoryList {
   protected readonly visibleFields = signal<Set<string>>(new Set());
   protected readonly columns = computed(() => {
     const visible = this.visibleFields();
-    return visible.size === 0 ? this.allColumns : this.allColumns.filter((c) => visible.has(c.field));
+    return visible.size === 0
+      ? this.allColumns
+      : this.allColumns.filter((c) => visible.has(c.field));
   });
   protected readonly actions: DataTableAction<OrganizationCategoryRead>[] = [
     { icon: 'pi pi-pencil', label: 'Edit', onClick: (category) => this.openEdit(category) },

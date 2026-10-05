@@ -44,9 +44,14 @@
     gap: 0.75rem;
     min-width: 0;
 
+    // A tenant's logo is an arbitrary remote image, so cap the width too and
+    // preserve its proportions - a wide wordmark must not push the tenant
+    // name and topbar actions off the row.
     img {
       height: 32px;
       width: auto;
+      max-width: 10rem;
+      object-fit: contain;
       flex-shrink: 0;
     }
   }

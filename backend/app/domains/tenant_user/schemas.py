@@ -53,6 +53,11 @@ class TenantContextRead(BaseModel):
     id: uuid.UUID
     name: str
     slug: str
+    # Branding travels with the tenant context so the login page (which is
+    # reached before any auth) and the signed-in shell both get it from the
+    # one shape they already fetch.
+    logo_url: str | None = None
+    brand_color: str | None = None
 
 
 class TenantMeRead(BaseModel):

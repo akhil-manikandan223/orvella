@@ -13,15 +13,9 @@
         <i class="pi pi-bars" aria-hidden="true"></i>
       </button>
       <img
-        [ngSrc]="
-          themeService.mode() === 'dark'
-            ? 'assets/logos/orvella-header-dark-logo.png'
-            : 'assets/logos/orvella-header-light-logo.png'
-        "
-        alt="Orvella"
-        width="120"
-        height="32"
-        priority
+        class="tenant-shell__logo"
+        [src]="brandService.resolveLogo(themeService.mode())"
+        [alt]="tenantAuthService.tenant()?.name ?? 'Orvella'"
       />
       <span class="tenant-shell__tenant-name">{{ tenantAuthService.tenant()?.name }}</span>
     </div>
@@ -88,7 +82,11 @@
           <span class="tenant-shell__email">{{ user.email }}</span>
         </button>
         <p-popover #accountPopover appendTo="body">
-          <a routerLink="/profile" class="tenant-shell__account-menu-item" (click)="closeAccountMenu()">
+          <a
+            routerLink="/profile"
+            class="tenant-shell__account-menu-item"
+            (click)="closeAccountMenu()"
+          >
             <i class="pi pi-user" aria-hidden="true"></i>
             Profile
           </a>

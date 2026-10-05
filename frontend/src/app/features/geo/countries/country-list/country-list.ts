@@ -12,7 +12,7 @@ import { CountryForm } from '../country-form/country-form';
 
 const COLUMNS: DataTableColumn<CountryRead>[] = [
   { field: 'name', header: 'Name', sortable: true },
-  { field: 'slug', header: 'Slug', sortable: true },
+  { field: 'slug', header: 'Slug', sortable: true, hideOnNarrow: true },
 ];
 
 @Component({
@@ -34,7 +34,9 @@ export class CountryList {
   protected readonly visibleFields = signal<Set<string>>(new Set());
   protected readonly columns = computed(() => {
     const visible = this.visibleFields();
-    return visible.size === 0 ? this.allColumns : this.allColumns.filter((c) => visible.has(c.field));
+    return visible.size === 0
+      ? this.allColumns
+      : this.allColumns.filter((c) => visible.has(c.field));
   });
   protected readonly actions: DataTableAction<CountryRead>[] = [
     { icon: 'pi pi-pencil', label: 'Edit', onClick: (country) => this.openEdit(country) },

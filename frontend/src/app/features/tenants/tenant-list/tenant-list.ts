@@ -1,7 +1,5 @@
 import { Component, TemplateRef, computed, inject, signal, viewChild } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { BreakpointObserver } from '@angular/cdk/layout';
-import { toSignal } from '@angular/core/rxjs-interop';
 import { ButtonDirective } from 'primeng/button';
 
 import { TenantService } from '../../../core/data-access/tenant.service';
@@ -20,35 +18,21 @@ import { TableSettings } from '../../../shared/table-settings/table-settings';
 })
 export class TenantList {
   private readonly tenantService = inject(TenantService);
-  private readonly breakpointObserver = inject(BreakpointObserver);
 
   protected readonly tenants = signal<TenantRead[]>([]);
   protected readonly loading = signal(false);
   protected readonly searchTerm = signal('');
 
-  private readonly isNarrow = toSignal(this.breakpointObserver.observe('(max-width: 700px)'), {
-    initialValue: { matches: false, breakpoints: {} },
-  });
-
-  protected readonly showSecondaryColumns = computed(() => !this.isNarrow().matches);
-
   private readonly statusCellTpl =
     viewChild.required<TemplateRef<{ $implicit: TenantRead }>>('statusCell');
 
-  protected readonly allColumns = computed<DataTableColumn<TenantRead>[]>(() => {
-    const columns: DataTableColumn<TenantRead>[] = [
-      { field: 'name', header: 'Name', sortable: true },
-      { field: 'slug', header: 'Slug', sortable: true },
-    ];
-    if (this.showSecondaryColumns()) {
-      columns.push(
-        { field: 'license_number', header: 'License #' },
-        { field: 'key_contact_name', header: 'Key Contact' },
-      );
-    }
-    columns.push({ field: 'is_active', header: 'Status', template: this.statusCellTpl() });
-    return columns;
-  });
+  protected readonly allColumns = computed<DataTableColumn<TenantRead>[]>(() => [
+    { field: 'name', header: 'Name', sortable: true },
+    { field: 'slug', header: 'Slug', sortable: true },
+    { field: 'license_number', header: 'License #', hideOnNarrow: true },
+    { field: 'key_contact_name', header: 'Key Contact', hideOnNarrow: true },
+    { field: 'is_active', header: 'Status', template: this.statusCellTpl() },
+  ]);
   protected readonly visibleFields = signal<Set<string>>(new Set());
   protected readonly columns = computed(() => {
     const visible = this.visibleFields();

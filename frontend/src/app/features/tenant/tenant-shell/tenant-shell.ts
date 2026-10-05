@@ -1,11 +1,11 @@
 import { Component, OnDestroy, OnInit, computed, inject, signal, viewChild } from '@angular/core';
-import { NgOptimizedImage } from '@angular/common';
 import { RouterLink, RouterOutlet } from '@angular/router';
 import { Avatar } from 'primeng/avatar';
 import { ButtonDirective } from 'primeng/button';
 import { OverlayBadge } from 'primeng/overlaybadge';
 import { Popover } from 'primeng/popover';
 
+import { BrandService } from '../../../core/branding/brand.service';
 import { NotificationService } from '../../../core/notifications/notification.service';
 import { TenantAuthService } from '../../../core/tenant-auth/tenant-auth.service';
 import { ThemeService } from '../../../core/theme/theme.service';
@@ -25,16 +25,7 @@ const TENANT_NAV_GROUPS: NavGroup[] = [
 
 @Component({
   selector: 'app-tenant-shell',
-  imports: [
-    RouterOutlet,
-    RouterLink,
-    Avatar,
-    ButtonDirective,
-    NgOptimizedImage,
-    OverlayBadge,
-    Popover,
-    SidebarNav,
-  ],
+  imports: [RouterOutlet, RouterLink, Avatar, ButtonDirective, OverlayBadge, Popover, SidebarNav],
   templateUrl: './tenant-shell.html',
   styleUrl: './tenant-shell.scss',
 })
@@ -43,6 +34,8 @@ export class TenantShell implements OnInit, OnDestroy {
   protected readonly notificationService = inject(NotificationService);
   // Drives the light/dark logo swap, same as the platform-admin topbar.
   protected readonly themeService = inject(ThemeService);
+  // Supplies the tenant's own logo when they have one, else the Orvella mark.
+  protected readonly brandService = inject(BrandService);
 
   protected readonly navGroups = TENANT_NAV_GROUPS;
   protected readonly sidebarOpen = signal(false);

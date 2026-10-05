@@ -499,6 +499,50 @@ async def test_list_and_get_tenant(
     assert get_response.json()['id'] == tenant_id
 
 
+async def test_create_tenant_with_branding(
+    client: AsyncClient, platform_admin_auth_headers: dict[str, str], cleanup: Cleanup
+) -> None:
+    organization_type_id = await _create_category_and_type(
+        client, platform_admin_auth_headers, cleanup
+    )
+    geo = await _create_geo(client, platform_admin_auth_headers, cleanup)
+
+    response = await client.post(
+        '/api/v1/platform-admin/tenants',
+        json=_tenant_payload(
+            organization_type_id,
+            geo,
+            slug=_unique_slug('branded-school'),
+            logo_url='https://example.com/logo.png',
+            brand_color='#2f8f4e',
+        ),
+        headers=platform_admin_auth_headers,
+    )
+    assert response.status_code == 201
+    cleanup.append(partial(delete_tenant, response.json()['id']))
+    assert response.json()['brand_color'] == '#2f8f4e'
+
+
+async def test_create_tenant_with_malformed_brand_color_is_unprocessable(
+    client: AsyncClient, platform_admin_auth_headers: dict[str, str], cleanup: Cleanup
+) -> None:
+    organization_type_id = await _create_category_and_type(
+        client, platform_admin_auth_headers, cleanup
+    )
+    geo = await _create_geo(client, platform_admin_auth_headers, cleanup)
+
+    # Rejected at the edge: this value ends up driving a generated colour
+    # palette in the browser, so it must never reach the frontend unchecked.
+    response = await client.post(
+        '/api/v1/platform-admin/tenants',
+        json=_tenant_payload(
+            organization_type_id, geo, slug=_unique_slug('bad-color'), brand_color='red'
+        ),
+        headers=platform_admin_auth_headers,
+    )
+    assert response.status_code == 422
+
+
 async def test_list_tenants_requires_auth(client: AsyncClient) -> None:
     response = await client.get('/api/v1/platform-admin/tenants')
     assert response.status_code == 401

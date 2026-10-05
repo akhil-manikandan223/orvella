@@ -64,9 +64,7 @@ export class NotificationService {
   async markAllRead(): Promise<void> {
     await firstValueFrom(this.http.post<void>(`${BASE_URL}/read-all`, {}));
     const now = new Date().toISOString();
-    this._notifications.update((list) =>
-      list.map((n) => (n.read_at ? n : { ...n, read_at: now })),
-    );
+    this._notifications.update((list) => list.map((n) => (n.read_at ? n : { ...n, read_at: now })));
     this._unreadCount.set(0);
   }
 

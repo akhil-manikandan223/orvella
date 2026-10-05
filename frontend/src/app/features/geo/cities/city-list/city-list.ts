@@ -52,7 +52,7 @@ export class CityList {
 
   protected readonly allColumns: DataTableColumn<CityRead>[] = [
     { field: 'name', header: 'Name', sortable: true },
-    { field: 'slug', header: 'Slug', sortable: true },
+    { field: 'slug', header: 'Slug', sortable: true, hideOnNarrow: true },
     {
       field: 'state_id',
       header: 'State',
@@ -61,13 +61,16 @@ export class CityList {
     {
       field: 'district_id',
       header: 'District',
-      cell: (city) => (city.district_id ? (this.districtNameById().get(city.district_id) ?? '—') : '—'),
+      cell: (city) =>
+        city.district_id ? (this.districtNameById().get(city.district_id) ?? '—') : '—',
     },
   ];
   protected readonly visibleFields = signal<Set<string>>(new Set());
   protected readonly columns = computed(() => {
     const visible = this.visibleFields();
-    return visible.size === 0 ? this.allColumns : this.allColumns.filter((c) => visible.has(c.field));
+    return visible.size === 0
+      ? this.allColumns
+      : this.allColumns.filter((c) => visible.has(c.field));
   });
 
   protected readonly actions: DataTableAction<CityRead>[] = [

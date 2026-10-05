@@ -1,17 +1,26 @@
-import { Component, TemplateRef, computed, effect, input, output, signal } from '@angular/core';
-import { NgTemplateOutlet } from '@angular/common';
-import { RouterLink } from '@angular/router';
 import {
-  Table,
-  SortIcon,
-  SortableColumn,
-  TableCheckbox,
-  TableHeaderCheckbox,
-} from 'primeng/table';
+  Component,
+  TemplateRef,
+  computed,
+  effect,
+  inject,
+  input,
+  output,
+  signal,
+} from '@angular/core';
+import { NgTemplateOutlet } from '@angular/common';
+import { BreakpointObserver } from '@angular/cdk/layout';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { RouterLink } from '@angular/router';
+import { Table, SortIcon, SortableColumn, TableCheckbox, TableHeaderCheckbox } from 'primeng/table';
 import { ButtonDirective } from 'primeng/button';
 
 import { EmptyState } from '../empty-state/empty-state';
 import { DataTableAction, DataTableBulkAction, DataTableColumn } from './data-table.model';
+
+/** One breakpoint for every list screen, so tables all collapse together
+ * rather than each page picking its own width. */
+const NARROW_SCREEN_QUERY = '(max-width: 700px)';
 
 @Component({
   selector: 'app-data-table',
@@ -54,11 +63,28 @@ export class DataTable<T extends object = Record<string, unknown>> {
   readonly expansionTemplate = input<TemplateRef<{ $implicit: T }> | null>(null);
   readonly rowClicked = output<T>();
 
+  private readonly breakpointObserver = inject(BreakpointObserver);
+  private readonly isNarrow = toSignal(this.breakpointObserver.observe(NARROW_SCREEN_QUERY), {
+    initialValue: { matches: false, breakpoints: {} },
+  });
+
+  /** What actually renders: secondary columns drop out on narrow screens. */
+  protected readonly visibleColumns = computed(() =>
+    this.isNarrow().matches
+      ? this.columns().filter((column) => !column.hideOnNarrow)
+      : this.columns(),
+  );
+
   protected readonly hasActions = computed(() => this.actions().length > 0);
   protected readonly columnSpan = computed(
-    () => this.columns().length + (this.hasActions() ? 1 : 0) + (this.selectable() ? 1 : 0),
+    () => this.visibleColumns().length + (this.hasActions() ? 1 : 0) + (this.selectable() ? 1 : 0),
   );
-  private readonly globalFilterFields = computed(() => this.columns().map((column) => column.field));
+
+  // Deliberately every column, not just the visible ones - a search should
+  // still find a row by a field that a narrow screen happens to be hiding.
+  private readonly globalFilterFields = computed(() =>
+    this.columns().map((column) => column.field),
+  );
 
   protected readonly selection = signal<T[]>([]);
   protected readonly hasBulkActions = computed(
@@ -120,7 +146,9 @@ export class DataTable<T extends object = Record<string, unknown>> {
   protected isSelected(row: T): boolean {
     const key = this.dataKey();
     const rowKey = (row as Record<string, unknown>)[key];
-    return this.selection().some((selected) => (selected as Record<string, unknown>)[key] === rowKey);
+    return this.selection().some(
+      (selected) => (selected as Record<string, unknown>)[key] === rowKey,
+    );
   }
 
   protected cellValue(row: T, column: DataTableColumn<T>): string {

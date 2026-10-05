@@ -40,7 +40,7 @@ export class DistrictList {
 
   protected readonly allColumns: DataTableColumn<DistrictRead>[] = [
     { field: 'name', header: 'Name', sortable: true },
-    { field: 'slug', header: 'Slug', sortable: true },
+    { field: 'slug', header: 'Slug', sortable: true, hideOnNarrow: true },
     {
       field: 'state_id',
       header: 'State',
@@ -50,7 +50,9 @@ export class DistrictList {
   protected readonly visibleFields = signal<Set<string>>(new Set());
   protected readonly columns = computed(() => {
     const visible = this.visibleFields();
-    return visible.size === 0 ? this.allColumns : this.allColumns.filter((c) => visible.has(c.field));
+    return visible.size === 0
+      ? this.allColumns
+      : this.allColumns.filter((c) => visible.has(c.field));
   });
 
   protected readonly actions: DataTableAction<DistrictRead>[] = [

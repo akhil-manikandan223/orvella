@@ -48,13 +48,7 @@
     </section>
 
     <form class="auth-hero__card" (submit)="onSubmit($event)">
-      <img
-        class="auth-hero__logo"
-        src="assets/logos/Orvella-logo.png"
-        alt="Orvella"
-        width="48"
-        height="48"
-      />
+      <img class="auth-hero__logo" [src]="cardLogo()" [alt]="tenantGreeting()" />
       <h2>Sign in</h2>
       <p class="auth-hero__subtitle">Sign in to your organization's workspace</p>
 

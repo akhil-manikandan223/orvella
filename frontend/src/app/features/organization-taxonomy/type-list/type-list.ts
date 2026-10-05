@@ -41,7 +41,7 @@ export class TypeList {
 
   protected readonly allColumns: DataTableColumn<OrganizationTypeRead>[] = [
     { field: 'name', header: 'Name', sortable: true },
-    { field: 'slug', header: 'Slug', sortable: true },
+    { field: 'slug', header: 'Slug', sortable: true, hideOnNarrow: true },
     {
       field: 'organization_category_id',
       header: 'Category',
@@ -51,7 +51,9 @@ export class TypeList {
   protected readonly visibleFields = signal<Set<string>>(new Set());
   protected readonly columns = computed(() => {
     const visible = this.visibleFields();
-    return visible.size === 0 ? this.allColumns : this.allColumns.filter((c) => visible.has(c.field));
+    return visible.size === 0
+      ? this.allColumns
+      : this.allColumns.filter((c) => visible.has(c.field));
   });
 
   protected readonly actions: DataTableAction<OrganizationTypeRead>[] = [

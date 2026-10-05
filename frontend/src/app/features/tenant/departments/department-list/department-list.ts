@@ -18,7 +18,12 @@ import { DepartmentForm } from '../department-form/department-form';
 
 const COLUMNS: DataTableColumn<DepartmentRead>[] = [
   { field: 'name', header: 'Name', sortable: true },
-  { field: 'description', header: 'Description', cell: (d) => d.description ?? '—' },
+  {
+    field: 'description',
+    header: 'Description',
+    hideOnNarrow: true,
+    cell: (d) => d.description ?? '—',
+  },
 ];
 
 @Component({
@@ -124,16 +129,16 @@ export class DepartmentList {
   }
 
   private deleteDepartments(departments: DepartmentRead[]): void {
-    forkJoin(departments.map((department) => this.departmentService.delete(department.id))).subscribe(
-      () => {
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Deleted',
-          detail: `${departments.length} department${departments.length === 1 ? '' : 's'} deleted.`,
-        });
-        this.load();
-      },
-    );
+    forkJoin(
+      departments.map((department) => this.departmentService.delete(department.id)),
+    ).subscribe(() => {
+      this.messageService.add({
+        severity: 'success',
+        summary: 'Deleted',
+        detail: `${departments.length} department${departments.length === 1 ? '' : 's'} deleted.`,
+      });
+      this.load();
+    });
   }
 
   protected load(): void {

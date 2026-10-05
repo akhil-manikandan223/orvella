@@ -77,11 +77,23 @@
       </div>
 
       <div class="tenant-users__actions">
-        <button pButton type="button" [text]="true" severity="secondary" (click)="drawerVisible.set(false)">
+        <button
+          pButton
+          type="button"
+          [text]="true"
+          severity="secondary"
+          (click)="drawerVisible.set(false)"
+        >
           Cancel
         </button>
         <button pButton [disabled]="submitting()">
-          <i class="pi" [class.pi-spin]="submitting()" [class.pi-spinner]="submitting()" [class.pi-check]="!submitting()" aria-hidden="true"></i>
+          <i
+            class="pi"
+            [class.pi-spin]="submitting()"
+            [class.pi-spinner]="submitting()"
+            [class.pi-check]="!submitting()"
+            aria-hidden="true"
+          ></i>
           Save
         </button>
       </div>

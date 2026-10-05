@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormField, form, required } from '@angular/forms/signals';
 import { ButtonDirective } from 'primeng/button';
@@ -7,8 +7,11 @@ import { InputPassword } from 'primeng/inputpassword';
 import { IconField } from 'primeng/iconfield';
 import { InputIcon } from 'primeng/inputicon';
 
+import { BrandService } from '../../../core/branding/brand.service';
 import { TenantAuthService } from '../../../core/tenant-auth/tenant-auth.service';
 import { HeroFeatureRead } from '../../../core/models/tenant-user.model';
+
+const ORVELLA_MARK = 'assets/logos/Orvella-logo.png';
 
 interface LoginFormValue {
   email: string;
@@ -62,9 +65,14 @@ function toHeroTiles(features: HeroFeatureRead[]): HeroTile[] {
 })
 export class TenantLoginPage implements OnInit {
   private readonly tenantAuthService = inject(TenantAuthService);
+  private readonly brandService = inject(BrandService);
   private readonly router = inject(Router);
 
   protected readonly submitting = signal(false);
+
+  /** The tenant's own mark on the sign-in card when they have one; the
+   * Orvella wordmark above it stays put either way, as platform attribution. */
+  protected readonly cardLogo = computed(() => this.brandService.logoUrl() ?? ORVELLA_MARK);
 
   // Best-effort greeting derived purely from the subdomain, shown until the
   // real tenant name loads - the actual tenant identity is resolved and
@@ -85,6 +93,9 @@ export class TenantLoginPage implements OnInit {
       const context = await this.tenantAuthService.getLoginContext();
       this.tenantGreeting.set(context.tenant.name);
       this.heroTiles.set(toHeroTiles(context.hero_features));
+      // Branding has to come from this public endpoint - the login page is
+      // reached before there's any session to read it from.
+      this.brandService.apply(context.tenant);
     } catch {
       // Login still works without this - the hero tiles are decorative,
       // and the subdomain-derived greeting above already covers this case.

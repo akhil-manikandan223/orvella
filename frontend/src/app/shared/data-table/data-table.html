@@ -43,14 +43,20 @@
         @if (selectable()) {
           <th class="data-table__checkbox-cell"><p-table-header-checkbox /></th>
         }
-        @for (column of columns(); track column.field) {
+        @for (column of visibleColumns(); track column.field) {
           @if (column.sortable) {
-            <th [pSortableColumn]="column.field" [style.width]="column.width" [style.text-align]="column.align">
+            <th
+              [pSortableColumn]="column.field"
+              [style.width]="column.width"
+              [style.text-align]="column.align"
+            >
               {{ column.header }}
               <p-sort-icon [field]="column.field" />
             </th>
           } @else {
-            <th [style.width]="column.width" [style.text-align]="column.align">{{ column.header }}</th>
+            <th [style.width]="column.width" [style.text-align]="column.align">
+              {{ column.header }}
+            </th>
           }
         }
         @if (hasActions()) {
@@ -70,7 +76,7 @@
             <p-table-checkbox [value]="row" />
           </td>
         }
-        @for (column of columns(); track column.field) {
+        @for (column of visibleColumns(); track column.field) {
           <td [style.text-align]="column.align">
             @if (column.template) {
               <ng-container *ngTemplateOutlet="column.template; context: { $implicit: row }" />

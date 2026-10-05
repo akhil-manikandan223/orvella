@@ -1,5 +1,10 @@
 @if (tenant(); as t) {
-  <app-page-header [title]="t.name" [subtitle]="'/' + t.slug" icon="pi pi-building" [showBack]="true">
+  <app-page-header
+    [title]="t.name"
+    [subtitle]="'/' + t.slug"
+    icon="pi pi-building"
+    [showBack]="true"
+  >
     <app-status-badge
       [status]="t.is_active ? 'active' : 'inactive'"
       [label]="t.is_active ? 'Active' : 'Inactive'"
@@ -55,7 +60,11 @@
   </section>
 
   <section class="tenant-detail__section tenant-detail__section--fill">
-    <p-tabs class="tenant-detail__tabs" [value]="activeTab()" (valueChange)="activeTab.set($any($event))">
+    <p-tabs
+      class="tenant-detail__tabs"
+      [value]="activeTab()"
+      (valueChange)="activeTab.set($any($event))"
+    >
       <p-tablist>
         <p-tab value="users">
           <i class="pi pi-users" aria-hidden="true"></i>

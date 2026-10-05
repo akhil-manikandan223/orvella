@@ -42,6 +42,7 @@ class TenantRepository:
         state_id: uuid.UUID | None = None,
         postal_code: str | None = None,
         logo_url: str | None = None,
+        brand_color: str | None = None,
     ) -> Tenant:
         """Construct and stage (add+flush) a Tenant without committing.
 
@@ -62,6 +63,7 @@ class TenantRepository:
             postal_code=postal_code,
             license_number=license_number,
             logo_url=logo_url,
+            brand_color=brand_color,
             key_contact_name=key_contact_name,
             key_contact_email=key_contact_email,
             key_contact_phone=key_contact_phone,

@@ -18,7 +18,7 @@ import { LocationForm } from '../location-form/location-form';
 
 const COLUMNS: DataTableColumn<LocationRead>[] = [
   { field: 'name', header: 'Name', sortable: true },
-  { field: 'address', header: 'Address', cell: (l) => l.address ?? '—' },
+  { field: 'address', header: 'Address', hideOnNarrow: true, cell: (l) => l.address ?? '—' },
 ];
 
 @Component({
@@ -120,14 +120,16 @@ export class LocationList {
   }
 
   private deleteLocations(locations: LocationRead[]): void {
-    forkJoin(locations.map((location) => this.locationService.delete(location.id))).subscribe(() => {
-      this.messageService.add({
-        severity: 'success',
-        summary: 'Deleted',
-        detail: `${locations.length} location${locations.length === 1 ? '' : 's'} deleted.`,
-      });
-      this.load();
-    });
+    forkJoin(locations.map((location) => this.locationService.delete(location.id))).subscribe(
+      () => {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Deleted',
+          detail: `${locations.length} location${locations.length === 1 ? '' : 's'} deleted.`,
+        });
+        this.load();
+      },
+    );
   }
 
   protected load(): void {
