@@ -22,7 +22,9 @@ Enterprise license.
 1. **Tokens & theme** - navy PrimeNG preset, `tokens.css`, Tailwind (no
    preflight), IBM Plex. _(done)_
 2. **AG Grid** - swap the `p-table` inside `shared/data-table`; every list
-   page follows.
+   page follows. _(done)_ Expandable rows (audit log) are synthetic
+   full-width rows, because AG Grid master/detail is Enterprise-only; an
+   open expansion counts as one row in the paging summary.
 3. **Shell** - navy topbar, white sidebar, page headers, login.
 4. **Spartan by feature folder** - tenants, geo, taxonomy, features, audit,
    profile, tenant workspace. Thin toast/confirm services replace PrimeNG's
