@@ -1,0 +1,65 @@
+/* Tailwind v4 entry. Kept as plain CSS (not part of styles.scss) because Sass
+   would try to resolve these @imports itself.
+
+   Preflight (Tailwind's reset) is deliberately left out while PrimeNG and
+   Spartan coexist: it would restyle every existing heading, list and button
+   at once. Only the theme variables and utilities are loaded; add
+   "tailwindcss/preflight.css" layer(base) once PrimeNG is gone. */
+@layer theme, base, components, utilities;
+@import 'tailwindcss/theme.css' layer(theme);
+@import 'tailwindcss/utilities.css' layer(utilities);
+@import './styles/tokens.css';
+
+@custom-variant dark (&:where(.app-dark, .app-dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --color-success: var(--success);
+  --color-success-surface: var(--success-surface);
+  --color-warning: var(--warning);
+  --color-warning-surface: var(--warning-surface);
+  --color-danger: var(--danger);
+  --color-danger-surface: var(--danger-surface);
+  --color-info: var(--info);
+  --color-info-surface: var(--info-surface);
+  --color-topbar: var(--topbar);
+  --color-topbar-foreground: var(--topbar-foreground);
+  --color-sidebar: var(--sidebar);
+
+  --color-brand-50: var(--orv-primary-50);
+  --color-brand-100: var(--orv-primary-100);
+  --color-brand-200: var(--orv-primary-200);
+  --color-brand-300: var(--orv-primary-300);
+  --color-brand-400: var(--orv-primary-400);
+  --color-brand-500: var(--orv-primary-500);
+  --color-brand-600: var(--orv-primary-600);
+  --color-brand-700: var(--orv-primary-700);
+  --color-brand-800: var(--orv-primary-800);
+  --color-brand-900: var(--orv-primary-900);
+
+  --font-sans: var(--orv-font-sans);
+  --font-mono: var(--orv-font-mono);
+
+  --radius-sm: calc(var(--radius) - 2px);
+  --radius-md: var(--radius);
+  --radius-lg: calc(var(--radius) + 4px);
+}

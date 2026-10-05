@@ -22,20 +22,22 @@ import { environment } from '../environments/environment';
 
 const tenantMode = isTenantHost();
 
+// Orvella navy scale - mirrors --orv-primary-* in src/styles/tokens.css
+// (600 is the brand color). Keep the two in sync until PrimeNG is retired.
 const OrvellaPreset = definePreset(Aura, {
   semantic: {
     primary: {
-      50: '#f4f2fd',
-      100: '#e9e5fb',
-      200: '#cfc5f6',
-      300: '#b0a0f0',
-      400: '#8f79e8',
-      500: '#6d5ce0',
-      600: '#5847c4',
-      700: '#4636a0',
-      800: '#35277b',
-      900: '#241a57',
-      950: '#160f35',
+      50: '#eef3fb',
+      100: '#d9e4f5',
+      200: '#b3c8eb',
+      300: '#85a6dc',
+      400: '#4f7cc6',
+      500: '#2a5daf',
+      600: '#0e4491',
+      700: '#0b3878',
+      800: '#092c5e',
+      900: '#071f43',
+      950: '#04142c',
     },
   },
 });

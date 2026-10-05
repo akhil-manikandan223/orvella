@@ -85,8 +85,8 @@
     }
 
     &--indigo {
-      background: color-mix(in srgb, #2f4fe0 14%, transparent);
-      color: #2f4fe0;
+      background: color-mix(in srgb, var(--p-primary-400) 16%, transparent);
+      color: var(--p-primary-500);
     }
 
     &--teal {
@@ -95,8 +95,8 @@
     }
 
     &--plum {
-      background: color-mix(in srgb, #9333ea 14%, transparent);
-      color: #9333ea;
+      background: color-mix(in srgb, var(--p-primary-700) 14%, transparent);
+      color: var(--p-primary-700);
     }
   }
 }
