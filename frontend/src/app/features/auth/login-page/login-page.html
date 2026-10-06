@@ -1,120 +1,108 @@
-<!-- app-dark forces PrimeNG's dark tokens for this page specifically,
-     independent of the app-wide ThemeService/OS preference - this page has
-     one deliberate dark design, no light variant, so it must never follow
-     a light system/app theme. -->
-<div class="auth-hero app-dark">
-  <div class="auth-hero__backdrop" aria-hidden="true">
-    <div class="auth-hero__photo"></div>
-    <div class="auth-hero__blob auth-hero__blob--one"></div>
-    <div class="auth-hero__blob auth-hero__blob--two"></div>
-    <div class="auth-hero__blob auth-hero__blob--three"></div>
-  </div>
+<div class="login">
+  <main class="login__main">
+    <div class="login__wordmark">
+      <span class="login__mark" aria-hidden="true">O</span>
+      <span>Orvella</span>
+    </div>
 
-  <div class="auth-hero__layout">
-    <section class="auth-hero__brand">
-      <div class="auth-hero__wordmark">
-        <img src="assets/logos/Orvella-logo.png" alt="" width="32" height="32" />
-        <span>Orvella</span>
-      </div>
+    <div class="login__center">
+      <form class="login__form" novalidate (submit)="onSubmit($event)">
+        <div>
+          <h1 class="login__title">Welcome back</h1>
+          <p class="login__subtitle">Sign in to your platform admin account</p>
+        </div>
 
-      <div class="auth-hero__hero">
-        <span class="auth-hero__eyebrow">Platform Admin Console</span>
-        <h1 class="auth-hero__headline">One Platform.<br />Every Organization.</h1>
-        <p class="auth-hero__lede">
-          Provision tenants, manage their feature access, and keep a full audit trail — all from one
-          console.
-        </p>
-
-        <div class="auth-hero__modules">
-          @for (module of modules; track module.title) {
-            <div class="auth-hero__module">
-              <span class="auth-hero__module-index">{{ module.index }}</span>
-              <i [class]="module.icon" aria-hidden="true"></i>
-              <span class="auth-hero__module-title">{{ module.title }}</span>
-              <span class="auth-hero__module-category">{{ module.category }}</span>
-            </div>
+        <div class="login__field">
+          <label for="email">Email</label>
+          <span class="login__input-wrap">
+            <i class="pi pi-envelope" aria-hidden="true"></i>
+            <input
+              id="email"
+              type="email"
+              class="login__input"
+              [formField]="loginForm.email"
+              [attr.aria-invalid]="
+                (loginForm.email().touched() && loginForm.email().invalid()) || null
+              "
+              autocomplete="username"
+              placeholder="you@company.com"
+            />
+          </span>
+          @if (loginForm.email().touched()) {
+            @for (error of loginForm.email().errors(); track error.kind) {
+              <small class="login__error">{{ error.message }}</small>
+            }
           }
         </div>
-      </div>
-    </section>
 
-    <form class="auth-hero__card" novalidate (submit)="onSubmit($event)">
-      <img
-        class="auth-hero__logo"
-        src="assets/logos/Orvella-logo.png"
-        alt="Orvella"
-        width="48"
-        height="48"
-      />
-      <h2>Welcome back</h2>
-      <p class="auth-hero__subtitle">Sign in to your platform admin account</p>
-
-      <div class="auth-hero__field">
-        <label for="email">Email</label>
-        <span class="auth-hero__input-wrap">
-          <i class="pi pi-envelope" aria-hidden="true"></i>
-          <input
-            id="email"
-            type="email"
-            hlmInput
-            class="auth-hero__input"
-            [formField]="loginForm.email"
-            [attr.aria-invalid]="
-              (loginForm.email().touched() && loginForm.email().invalid()) || null
-            "
-            autocomplete="email"
-            placeholder="you@company.com"
-          />
-        </span>
-        @if (loginForm.email().touched()) {
-          @for (error of loginForm.email().errors(); track error.kind) {
-            <small class="auth-hero__error">{{ error.message }}</small>
+        <div class="login__field">
+          <label for="password">Password</label>
+          <span class="login__input-wrap">
+            <i class="pi pi-lock" aria-hidden="true"></i>
+            <input
+              id="password"
+              class="login__input"
+              [type]="showPassword() ? 'text' : 'password'"
+              [formField]="loginForm.password"
+              [attr.aria-invalid]="
+                (loginForm.password().touched() && loginForm.password().invalid()) || null
+              "
+              autocomplete="current-password"
+              placeholder="••••••••"
+            />
+            <button
+              type="button"
+              class="login__reveal"
+              [attr.aria-label]="showPassword() ? 'Hide password' : 'Show password'"
+              [attr.aria-pressed]="showPassword()"
+              (click)="showPassword.set(!showPassword())"
+            >
+              <i
+                class="pi"
+                [class.pi-eye]="!showPassword()"
+                [class.pi-eye-slash]="showPassword()"
+                aria-hidden="true"
+              ></i>
+            </button>
+          </span>
+          @if (loginForm.password().touched()) {
+            @for (error of loginForm.password().errors(); track error.kind) {
+              <small class="login__error">{{ error.message }}</small>
+            }
           }
-        }
-      </div>
+        </div>
 
-      <div class="auth-hero__field">
-        <label for="password">Password</label>
-        <span class="auth-hero__input-wrap">
-          <i class="pi pi-lock" aria-hidden="true"></i>
-          <input
-            id="password"
-            type="password"
-            hlmInput
-            class="auth-hero__input"
-            [formField]="loginForm.password"
-            [attr.aria-invalid]="
-              (loginForm.password().touched() && loginForm.password().invalid()) || null
-            "
-            autocomplete="current-password"
-            placeholder="••••••••"
-          />
-        </span>
-        @if (loginForm.password().touched()) {
-          @for (error of loginForm.password().errors(); track error.kind) {
-            <small class="auth-hero__error">{{ error.message }}</small>
+        <button hlmBtn size="lg" type="submit" class="login__submit" [disabled]="submitting()">
+          @if (submitting()) {
+            <i class="pi pi-spin pi-spinner" aria-hidden="true"></i>
           }
-        }
-      </div>
+          Sign in
+        </button>
 
-      <button hlmBtn type="submit" [disabled]="submitting()" class="auth-hero__submit">
-        @if (submitting()) {
-          <i class="pi pi-spin pi-spinner" aria-hidden="true"></i>
-        } @else {
-          <i class="pi pi-arrow-right" aria-hidden="true"></i>
-        }
-        Sign in
-      </button>
+        <p class="login__footnote">
+          <i class="pi pi-shield" aria-hidden="true"></i>
+          Access is restricted to platform administrators.
+        </p>
+      </form>
+    </div>
 
-      <p class="auth-hero__footnote">
-        <i class="pi pi-shield" aria-hidden="true"></i>
-        Secure access for platform administrators only
+    <p class="login__copyright">© Orvella</p>
+  </main>
+
+  <aside class="login__aside">
+    <div class="login__grid-lines" aria-hidden="true"></div>
+    <div class="login__tiles" aria-hidden="true">
+      @for (tile of tiles; track $index) {
+        <span [class]="'login__tile login__tile--' + tile"></span>
+      }
+    </div>
+    <div class="login__pitch">
+      <span class="login__eyebrow">Orvella platform</span>
+      <p class="login__headline">One Platform.<br />Every Organization.</p>
+      <p class="login__lede">
+        Provision tenants, govern features and keep every organization's people, departments and
+        locations in one place.
       </p>
-    </form>
-  </div>
-
-  <div class="auth-hero__footer">
-    <span>Orvella</span>
-    <span>© {{ currentYear }} Orvella. All rights reserved.</span>
-  </div>
+    </div>
+  </aside>
 </div>
