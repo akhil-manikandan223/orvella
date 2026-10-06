@@ -1,5 +1,4 @@
 import { Component, computed, inject, input, signal } from '@angular/core';
-import { ButtonDirective } from 'primeng/button';
 
 import { DistrictService } from '../../../../core/data-access/district.service';
 import { StateService } from '../../../../core/data-access/state.service';
@@ -10,10 +9,11 @@ import { DataTableAction, DataTableColumn } from '../../../../shared/data-table/
 import { FormDrawer } from '../../../../shared/form-drawer/form-drawer';
 import { TableSettings } from '../../../../shared/table-settings/table-settings';
 import { DistrictForm } from '../district-form/district-form';
+import { HlmButton } from '../../../../shared/ui/button';
 
 @Component({
   selector: 'app-district-list',
-  imports: [ButtonDirective, PageHeader, DataTable, FormDrawer, TableSettings, DistrictForm],
+  imports: [HlmButton, PageHeader, DataTable, FormDrawer, TableSettings, DistrictForm],
   templateUrl: './district-list.html',
   styleUrl: './district-list.scss',
 })
@@ -50,7 +50,9 @@ export class DistrictList {
   protected readonly visibleFields = signal<Set<string>>(new Set());
   protected readonly columns = computed(() => {
     const visible = this.visibleFields();
-    return visible.size === 0 ? this.allColumns : this.allColumns.filter((c) => visible.has(c.field));
+    return visible.size === 0
+      ? this.allColumns
+      : this.allColumns.filter((c) => visible.has(c.field));
   });
 
   protected readonly actions: DataTableAction<DistrictRead>[] = [

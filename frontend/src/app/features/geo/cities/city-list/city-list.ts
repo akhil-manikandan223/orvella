@@ -1,5 +1,4 @@
 import { Component, computed, inject, input, signal } from '@angular/core';
-import { ButtonDirective } from 'primeng/button';
 
 import { CityService } from '../../../../core/data-access/city.service';
 import { DistrictService } from '../../../../core/data-access/district.service';
@@ -11,10 +10,11 @@ import { DataTableAction, DataTableColumn } from '../../../../shared/data-table/
 import { FormDrawer } from '../../../../shared/form-drawer/form-drawer';
 import { TableSettings } from '../../../../shared/table-settings/table-settings';
 import { CityForm } from '../city-form/city-form';
+import { HlmButton } from '../../../../shared/ui/button';
 
 @Component({
   selector: 'app-city-list',
-  imports: [ButtonDirective, PageHeader, DataTable, FormDrawer, TableSettings, CityForm],
+  imports: [HlmButton, PageHeader, DataTable, FormDrawer, TableSettings, CityForm],
   templateUrl: './city-list.html',
   styleUrl: './city-list.scss',
 })
@@ -61,13 +61,16 @@ export class CityList {
     {
       field: 'district_id',
       header: 'District',
-      cell: (city) => (city.district_id ? (this.districtNameById().get(city.district_id) ?? '—') : '—'),
+      cell: (city) =>
+        city.district_id ? (this.districtNameById().get(city.district_id) ?? '—') : '—',
     },
   ];
   protected readonly visibleFields = signal<Set<string>>(new Set());
   protected readonly columns = computed(() => {
     const visible = this.visibleFields();
-    return visible.size === 0 ? this.allColumns : this.allColumns.filter((c) => visible.has(c.field));
+    return visible.size === 0
+      ? this.allColumns
+      : this.allColumns.filter((c) => visible.has(c.field));
   });
 
   protected readonly actions: DataTableAction<CityRead>[] = [

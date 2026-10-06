@@ -1,12 +1,12 @@
 import { Component, OnInit, inject, input, output, signal } from '@angular/core';
 import { FormField, form, required } from '@angular/forms/signals';
-import { ButtonDirective } from 'primeng/button';
-import { InputText } from 'primeng/inputtext';
 
 import { CountryService } from '../../../../core/data-access/country.service';
 import { CountryRead } from '../../../../core/models/geo.model';
 import { slugPattern } from '../../../../shared/validators/slug.validator';
 import { ToastService } from '../../../../core/feedback/toast.service';
+import { HlmButton } from '../../../../shared/ui/button';
+import { HlmInput } from '../../../../shared/ui/input';
 
 interface CountryFormValue {
   name: string;
@@ -15,7 +15,7 @@ interface CountryFormValue {
 
 @Component({
   selector: 'app-country-form',
-  imports: [ButtonDirective, InputText, FormField],
+  imports: [HlmButton, HlmInput, FormField],
   templateUrl: './country-form.html',
   styleUrl: './country-form.scss',
 })
