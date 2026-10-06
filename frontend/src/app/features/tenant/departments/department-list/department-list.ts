@@ -1,7 +1,6 @@
 import { Component, computed, inject, signal } from '@angular/core';
 import { forkJoin } from 'rxjs';
 import { ButtonDirective } from 'primeng/button';
-import { ConfirmationService, MessageService } from 'primeng/api';
 
 import { DepartmentService } from '../../../../core/data-access/department.service';
 import { TenantAuthService } from '../../../../core/tenant-auth/tenant-auth.service';
@@ -15,6 +14,8 @@ import {
 } from '../../../../shared/data-table/data-table.model';
 import { FormDrawer } from '../../../../shared/form-drawer/form-drawer';
 import { DepartmentForm } from '../department-form/department-form';
+import { ToastService } from '../../../../core/feedback/toast.service';
+import { ConfirmService } from '../../../../core/feedback/confirm.service';
 
 const COLUMNS: DataTableColumn<DepartmentRead>[] = [
   { field: 'name', header: 'Name', sortable: true },
@@ -30,8 +31,8 @@ const COLUMNS: DataTableColumn<DepartmentRead>[] = [
 export class DepartmentList {
   private readonly departmentService = inject(DepartmentService);
   private readonly tenantAuthService = inject(TenantAuthService);
-  private readonly confirmationService = inject(ConfirmationService);
-  private readonly messageService = inject(MessageService);
+  private readonly confirmService = inject(ConfirmService);
+  private readonly toast = inject(ToastService);
 
   protected readonly departments = signal<DepartmentRead[]>([]);
   protected readonly loading = signal(false);
@@ -92,18 +93,17 @@ export class DepartmentList {
   }
 
   protected confirmDelete(department: DepartmentRead): void {
-    this.confirmationService.confirm({
+    this.confirmService.confirm({
       header: 'Delete Department',
       message: `Delete "${department.name}"? People assigned to it will simply become unassigned.`,
-      icon: 'pi pi-exclamation-triangle',
-      acceptButtonProps: { severity: 'danger' },
+      destructive: true,
       accept: () => this.deleteDepartment(department),
     });
   }
 
   private deleteDepartment(department: DepartmentRead): void {
     this.departmentService.delete(department.id).subscribe(() => {
-      this.messageService.add({
+      this.toast.show({
         severity: 'success',
         summary: 'Deleted',
         detail: `"${department.name}" was deleted.`,
@@ -114,11 +114,10 @@ export class DepartmentList {
 
   protected confirmBulkDelete(departments: DepartmentRead[]): void {
     const count = departments.length;
-    this.confirmationService.confirm({
+    this.confirmService.confirm({
       header: 'Delete Departments',
       message: `Delete ${count} department${count === 1 ? '' : 's'}? People assigned to them will simply become unassigned.`,
-      icon: 'pi pi-exclamation-triangle',
-      acceptButtonProps: { severity: 'danger' },
+      destructive: true,
       accept: () => this.deleteDepartments(departments),
     });
   }
@@ -126,7 +125,7 @@ export class DepartmentList {
   private deleteDepartments(departments: DepartmentRead[]): void {
     forkJoin(departments.map((department) => this.departmentService.delete(department.id))).subscribe(
       () => {
-        this.messageService.add({
+        this.toast.show({
           severity: 'success',
           summary: 'Deleted',
           detail: `${departments.length} department${departments.length === 1 ? '' : 's'} deleted.`,

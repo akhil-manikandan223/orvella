@@ -3,7 +3,6 @@ import { FormField, form } from '@angular/forms/signals';
 import { forkJoin } from 'rxjs';
 import { ButtonDirective } from 'primeng/button';
 import { Select } from 'primeng/select';
-import { ConfirmationService, MessageService } from 'primeng/api';
 
 import { FeatureService } from '../../../core/data-access/feature.service';
 import { OrganizationTypeService } from '../../../core/data-access/organization-type.service';
@@ -11,6 +10,8 @@ import { FeatureRead } from '../../../core/models/feature.model';
 import { OrganizationTypeRead } from '../../../core/models/organization-taxonomy.model';
 import { PageHeader } from '../../../shared/page-header/page-header';
 import { EmptyState } from '../../../shared/empty-state/empty-state';
+import { ToastService } from '../../../core/feedback/toast.service';
+import { ConfirmService } from '../../../core/feedback/confirm.service';
 
 @Component({
   selector: 'app-type-feature-template',
@@ -21,8 +22,8 @@ import { EmptyState } from '../../../shared/empty-state/empty-state';
 export class TypeFeatureTemplate {
   private readonly typeService = inject(OrganizationTypeService);
   private readonly featureService = inject(FeatureService);
-  private readonly confirmationService = inject(ConfirmationService);
-  private readonly messageService = inject(MessageService);
+  private readonly confirmService = inject(ConfirmService);
+  private readonly toast = inject(ToastService);
 
   readonly id = input.required<string>();
 
@@ -60,11 +61,10 @@ export class TypeFeatureTemplate {
   }
 
   protected confirmRemove(feature: FeatureRead): void {
-    this.confirmationService.confirm({
+    this.confirmService.confirm({
       header: 'Remove Feature',
       message: `Remove "${feature.name}" from this type's feature template? Tenants created afterwards will no longer receive it by default.`,
-      icon: 'pi pi-exclamation-triangle',
-      acceptButtonProps: { severity: 'danger' },
+      destructive: true,
       accept: () => this.removeFeature(feature),
     });
   }
@@ -72,7 +72,7 @@ export class TypeFeatureTemplate {
   private removeFeature(feature: FeatureRead): void {
     this.typeService.detachTemplateFeature(this.id(), feature.id).subscribe({
       next: () => {
-        this.messageService.add({
+        this.toast.show({
           severity: 'success',
           summary: 'Removed',
           detail: `"${feature.name}" removed from the template.`,

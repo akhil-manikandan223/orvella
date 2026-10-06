@@ -6,7 +6,6 @@ import {
 } from '@angular/core';
 import { provideRouter, withComponentInputBinding } from '@angular/router';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
-import { ConfirmationService, MessageService } from 'primeng/api';
 import { providePrimeNG } from 'primeng/config';
 import { definePreset } from '@primeuix/themes';
 import Aura from '@primeuix/themes/aura';
@@ -59,8 +58,6 @@ export const appConfig: ApplicationConfig = {
       },
       license: environment.primeNgLicenseKey,
     }),
-    MessageService,
-    ConfirmationService,
     provideAppInitializer(() => {
       if (tenantMode) {
         inject(TenantAuthService);

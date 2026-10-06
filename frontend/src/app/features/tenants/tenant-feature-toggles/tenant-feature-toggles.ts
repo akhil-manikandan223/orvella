@@ -1,6 +1,5 @@
 import { Component, TemplateRef, computed, inject, input, output, signal, viewChild } from '@angular/core';
 import { ButtonDirective } from 'primeng/button';
-import { ConfirmationService, MessageService } from 'primeng/api';
 
 import { FeatureService } from '../../../core/data-access/feature.service';
 import { TenantService } from '../../../core/data-access/tenant.service';
@@ -8,6 +7,8 @@ import { FeatureRead } from '../../../core/models/feature.model';
 import { StatusBadge } from '../../../shared/status-badge/status-badge';
 import { DataTable } from '../../../shared/data-table/data-table';
 import { DataTableColumn } from '../../../shared/data-table/data-table.model';
+import { ToastService } from '../../../core/feedback/toast.service';
+import { ConfirmService } from '../../../core/feedback/confirm.service';
 
 @Component({
   selector: 'app-tenant-feature-toggles',
@@ -18,8 +19,8 @@ import { DataTableColumn } from '../../../shared/data-table/data-table.model';
 export class TenantFeatureToggles {
   private readonly featureService = inject(FeatureService);
   private readonly tenantService = inject(TenantService);
-  private readonly confirmationService = inject(ConfirmationService);
-  private readonly messageService = inject(MessageService);
+  private readonly confirmService = inject(ConfirmService);
+  private readonly toast = inject(ToastService);
 
   readonly tenantId = input.required<string>();
   readonly enabledFeatures = input.required<FeatureRead[]>();
@@ -55,11 +56,10 @@ export class TenantFeatureToggles {
 
   protected onToggleClick(feature: FeatureRead): void {
     if (this.isEnabled(feature)) {
-      this.confirmationService.confirm({
+      this.confirmService.confirm({
         header: 'Disable Feature',
         message: `Disable "${feature.name}" for this tenant? Their users will immediately lose access to it.`,
-        icon: 'pi pi-exclamation-triangle',
-        acceptButtonProps: { severity: 'danger' },
+        destructive: true,
         accept: () => this.toggle(feature, false),
       });
       return;
@@ -72,7 +72,7 @@ export class TenantFeatureToggles {
     this.tenantService.toggleFeature(this.tenantId(), feature.id, { enabled }).subscribe({
       next: () => {
         this.togglingFeatureId.set(null);
-        this.messageService.add({
+        this.toast.show({
           severity: 'success',
           summary: enabled ? 'Feature enabled' : 'Feature disabled',
           detail: `"${feature.name}" is now ${enabled ? 'enabled' : 'disabled'} for this tenant.`,

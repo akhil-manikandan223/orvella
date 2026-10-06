@@ -9,6 +9,10 @@
 @import 'tailwindcss/theme.css' layer(theme);
 @import 'tailwindcss/utilities.css' layer(utilities);
 @import './styles/tokens.css';
+/* Spartan brain overlays (dialogs, popovers) are CDK overlays; tw-animate-css
+   supplies the animate-in/fade/zoom utilities its helm components use. */
+@import '@angular/cdk/overlay-prebuilt.css';
+@import 'tw-animate-css';
 
 @custom-variant dark (&:where(.app-dark, .app-dark *));
 

@@ -3,11 +3,11 @@ import { FormField, disabled, form, required } from '@angular/forms/signals';
 import { ButtonDirective } from 'primeng/button';
 import { InputText } from 'primeng/inputtext';
 import { Select } from 'primeng/select';
-import { MessageService } from 'primeng/api';
 
 import { StateService } from '../../../../core/data-access/state.service';
 import { CountryRead, StateRead } from '../../../../core/models/geo.model';
 import { slugPattern } from '../../../../shared/validators/slug.validator';
+import { ToastService } from '../../../../core/feedback/toast.service';
 
 interface StateFormValue {
   country_id: string;
@@ -23,7 +23,7 @@ interface StateFormValue {
 })
 export class StateForm implements OnInit {
   private readonly stateService = inject(StateService);
-  private readonly messageService = inject(MessageService);
+  private readonly toast = inject(ToastService);
 
   readonly state = input<StateRead | null>(null);
   readonly countries = input.required<CountryRead[]>();
@@ -67,7 +67,7 @@ export class StateForm implements OnInit {
 
     request.subscribe({
       next: () => {
-        this.messageService.add({
+        this.toast.show({
           severity: 'success',
           summary: 'Saved',
           detail: `State "${value.name}" saved.`,

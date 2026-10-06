@@ -3,10 +3,10 @@ import { FormField, form, required } from '@angular/forms/signals';
 import { ButtonDirective } from 'primeng/button';
 import { InputText } from 'primeng/inputtext';
 import { Textarea } from 'primeng/textarea';
-import { MessageService } from 'primeng/api';
 
 import { DepartmentService } from '../../../../core/data-access/department.service';
 import { DepartmentRead } from '../../../../core/models/organization.model';
+import { ToastService } from '../../../../core/feedback/toast.service';
 
 interface DepartmentFormValue {
   name: string;
@@ -21,7 +21,7 @@ interface DepartmentFormValue {
 })
 export class DepartmentForm implements OnInit {
   private readonly departmentService = inject(DepartmentService);
-  private readonly messageService = inject(MessageService);
+  private readonly toast = inject(ToastService);
 
   readonly department = input<DepartmentRead | null>(null);
   readonly saved = output<void>();
@@ -59,7 +59,7 @@ export class DepartmentForm implements OnInit {
 
     request.subscribe({
       next: () => {
-        this.messageService.add({
+        this.toast.show({
           severity: 'success',
           summary: 'Saved',
           detail: `Department "${value.name}" saved.`,

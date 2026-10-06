@@ -3,7 +3,6 @@ import { FormField, email, form, required } from '@angular/forms/signals';
 import { ButtonDirective } from 'primeng/button';
 import { InputText } from 'primeng/inputtext';
 import { Select } from 'primeng/select';
-import { MessageService } from 'primeng/api';
 
 import { DepartmentService } from '../../../../core/data-access/department.service';
 import { LocationService } from '../../../../core/data-access/location.service';
@@ -13,6 +12,7 @@ import {
   LocationRead,
   PersonRead,
 } from '../../../../core/models/organization.model';
+import { ToastService } from '../../../../core/feedback/toast.service';
 
 interface PersonFormValue {
   first_name: string;
@@ -34,7 +34,7 @@ export class PersonForm implements OnInit {
   private readonly personService = inject(PersonService);
   private readonly departmentService = inject(DepartmentService);
   private readonly locationService = inject(LocationService);
-  private readonly messageService = inject(MessageService);
+  private readonly toast = inject(ToastService);
 
   readonly person = input<PersonRead | null>(null);
   readonly saved = output<void>();
@@ -106,7 +106,7 @@ export class PersonForm implements OnInit {
 
     request.subscribe({
       next: () => {
-        this.messageService.add({
+        this.toast.show({
           severity: 'success',
           summary: 'Saved',
           detail: `"${value.first_name} ${value.last_name}" saved.`,

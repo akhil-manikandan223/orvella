@@ -1,7 +1,6 @@
 import { Component, computed, inject, signal } from '@angular/core';
 import { forkJoin } from 'rxjs';
 import { ButtonDirective } from 'primeng/button';
-import { ConfirmationService, MessageService } from 'primeng/api';
 
 import { LocationService } from '../../../../core/data-access/location.service';
 import { TenantAuthService } from '../../../../core/tenant-auth/tenant-auth.service';
@@ -15,6 +14,8 @@ import {
 } from '../../../../shared/data-table/data-table.model';
 import { FormDrawer } from '../../../../shared/form-drawer/form-drawer';
 import { LocationForm } from '../location-form/location-form';
+import { ToastService } from '../../../../core/feedback/toast.service';
+import { ConfirmService } from '../../../../core/feedback/confirm.service';
 
 const COLUMNS: DataTableColumn<LocationRead>[] = [
   { field: 'name', header: 'Name', sortable: true },
@@ -30,8 +31,8 @@ const COLUMNS: DataTableColumn<LocationRead>[] = [
 export class LocationList {
   private readonly locationService = inject(LocationService);
   private readonly tenantAuthService = inject(TenantAuthService);
-  private readonly confirmationService = inject(ConfirmationService);
-  private readonly messageService = inject(MessageService);
+  private readonly confirmService = inject(ConfirmService);
+  private readonly toast = inject(ToastService);
 
   protected readonly locations = signal<LocationRead[]>([]);
   protected readonly loading = signal(false);
@@ -88,18 +89,17 @@ export class LocationList {
   }
 
   protected confirmDelete(location: LocationRead): void {
-    this.confirmationService.confirm({
+    this.confirmService.confirm({
       header: 'Delete Location',
       message: `Delete "${location.name}"? People assigned to it will simply become unassigned.`,
-      icon: 'pi pi-exclamation-triangle',
-      acceptButtonProps: { severity: 'danger' },
+      destructive: true,
       accept: () => this.deleteLocation(location),
     });
   }
 
   private deleteLocation(location: LocationRead): void {
     this.locationService.delete(location.id).subscribe(() => {
-      this.messageService.add({
+      this.toast.show({
         severity: 'success',
         summary: 'Deleted',
         detail: `"${location.name}" was deleted.`,
@@ -110,18 +110,17 @@ export class LocationList {
 
   protected confirmBulkDelete(locations: LocationRead[]): void {
     const count = locations.length;
-    this.confirmationService.confirm({
+    this.confirmService.confirm({
       header: 'Delete Locations',
       message: `Delete ${count} location${count === 1 ? '' : 's'}? People assigned to them will simply become unassigned.`,
-      icon: 'pi pi-exclamation-triangle',
-      acceptButtonProps: { severity: 'danger' },
+      destructive: true,
       accept: () => this.deleteLocations(locations),
     });
   }
 
   private deleteLocations(locations: LocationRead[]): void {
     forkJoin(locations.map((location) => this.locationService.delete(location.id))).subscribe(() => {
-      this.messageService.add({
+      this.toast.show({
         severity: 'success',
         summary: 'Deleted',
         detail: `${locations.length} location${locations.length === 1 ? '' : 's'} deleted.`,

@@ -4,11 +4,11 @@ import { ButtonDirective } from 'primeng/button';
 import { InputText } from 'primeng/inputtext';
 import { Textarea } from 'primeng/textarea';
 import { Select } from 'primeng/select';
-import { MessageService } from 'primeng/api';
 
 import { FeatureService } from '../../../core/data-access/feature.service';
 import { FeatureRead, FeatureStatus } from '../../../core/models/feature.model';
 import { slugPattern } from '../../../shared/validators/slug.validator';
+import { ToastService } from '../../../core/feedback/toast.service';
 
 const STATUS_OPTIONS: { label: string; value: FeatureStatus }[] = [
   { label: 'Active', value: 'active' },
@@ -30,7 +30,7 @@ interface FeatureFormValue {
 })
 export class FeatureForm implements OnInit {
   private readonly featureService = inject(FeatureService);
-  private readonly messageService = inject(MessageService);
+  private readonly toast = inject(ToastService);
 
   readonly feature = input<FeatureRead | null>(null);
   readonly saved = output<void>();
@@ -92,7 +92,7 @@ export class FeatureForm implements OnInit {
 
     request.subscribe({
       next: () => {
-        this.messageService.add({
+        this.toast.show({
           severity: 'success',
           summary: 'Saved',
           detail: `Feature "${value.name}" saved.`,

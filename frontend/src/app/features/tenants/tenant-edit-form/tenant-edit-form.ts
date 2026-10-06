@@ -2,7 +2,6 @@ import { Component, OnInit, inject, input, output, signal } from '@angular/core'
 import { FormField, disabled, email, form, required } from '@angular/forms/signals';
 import { InputText } from 'primeng/inputtext';
 import { Select } from 'primeng/select';
-import { MessageService } from 'primeng/api';
 
 import { CityService } from '../../../core/data-access/city.service';
 import { CountryService } from '../../../core/data-access/country.service';
@@ -10,6 +9,7 @@ import { StateService } from '../../../core/data-access/state.service';
 import { TenantService } from '../../../core/data-access/tenant.service';
 import { CityRead, CountryRead, StateRead } from '../../../core/models/geo.model';
 import { TenantRead } from '../../../core/models/tenant.model';
+import { ToastService } from '../../../core/feedback/toast.service';
 
 interface TenantEditFormValue {
   max_users: number | null;
@@ -38,7 +38,7 @@ export class TenantEditForm implements OnInit {
   private readonly countryService = inject(CountryService);
   private readonly stateService = inject(StateService);
   private readonly cityService = inject(CityService);
-  private readonly messageService = inject(MessageService);
+  private readonly toast = inject(ToastService);
 
   readonly tenant = input<TenantRead | null>(null);
   readonly saved = output<void>();
@@ -160,7 +160,7 @@ export class TenantEditForm implements OnInit {
       })
       .subscribe({
         next: () => {
-          this.messageService.add({
+          this.toast.show({
             severity: 'success',
             summary: 'Saved',
             detail: 'Tenant profile updated.',
