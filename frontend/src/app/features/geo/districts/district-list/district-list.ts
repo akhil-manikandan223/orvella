@@ -40,7 +40,7 @@ export class DistrictList {
 
   protected readonly allColumns: DataTableColumn<DistrictRead>[] = [
     { field: 'name', header: 'Name', sortable: true },
-    { field: 'slug', header: 'Slug', sortable: true },
+    { field: 'slug', header: 'Slug', sortable: true, hideOnNarrow: true },
     {
       field: 'state_id',
       header: 'State',

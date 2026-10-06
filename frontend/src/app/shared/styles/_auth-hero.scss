@@ -255,6 +255,12 @@
 
   &__logo {
     margin-bottom: 0.75rem;
+    // A tenant's logo is an arbitrary remote image of any aspect ratio, so
+    // cap both axes and let it keep its proportions rather than forcing the
+    // square the Orvella mark happens to be.
+    height: 48px;
+    max-width: 11rem;
+    object-fit: contain;
   }
 
   h2 {

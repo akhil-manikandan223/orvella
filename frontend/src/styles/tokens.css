@@ -23,6 +23,8 @@
   --orv-primary-700: #0b3878;
   --orv-primary-800: #092c5e;
   --orv-primary-900: #071f43;
+  /* Lifted primary for dark surfaces; BrandService derives it per tenant. */
+  --orv-primary-dark: #3366c2;
 
   --orv-neutral-0: #ffffff;
   --orv-neutral-25: #fbfcfd;
@@ -86,7 +88,7 @@
   --card-foreground: #e8ecf2;
   --popover: #1b2230;
   --popover-foreground: #e8ecf2;
-  --primary: #3366c2;
+  --primary: var(--orv-primary-dark);
   --primary-foreground: #ffffff;
   --secondary: #1b2230;
   --secondary-foreground: #d5dbe5;

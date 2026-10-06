@@ -12,6 +12,14 @@
   height: 100dvh;
   overflow: hidden;
 
+  // A tenant's logo is an arbitrary remote image, so cap the width too and
+  // preserve its proportions - a wide wordmark must not push the tenant
+  // name and topbar actions off the row.
+  &__logo {
+    max-width: 10rem;
+    object-fit: contain;
+  }
+
   &__tenant-name {
     min-width: 0;
     overflow: hidden;

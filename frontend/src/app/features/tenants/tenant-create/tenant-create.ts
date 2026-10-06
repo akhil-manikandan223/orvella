@@ -14,6 +14,7 @@ import {
   OrganizationTypeRead,
 } from '../../../core/models/organization-taxonomy.model';
 import { PageHeader } from '../../../shared/page-header/page-header';
+import { brandColorPattern } from '../../../shared/validators/brand-color.validator';
 import { slugPattern } from '../../../shared/validators/slug.validator';
 import { ToastService } from '../../../core/feedback/toast.service';
 import { HlmButton } from '../../../shared/ui/button';
@@ -33,6 +34,7 @@ interface TenantCreateFormValue {
   postal_code: string;
   license_number: string;
   logo_url: string;
+  brand_color: string;
   key_contact_name: string;
   key_contact_email: string;
   key_contact_phone: string;
@@ -86,12 +88,14 @@ export class TenantCreate {
     postal_code: '',
     license_number: '',
     logo_url: '',
+    brand_color: '',
     key_contact_name: '',
     key_contact_email: '',
     key_contact_phone: '',
   });
 
   protected readonly tenantForm = form(this.model, (path) => {
+    brandColorPattern(path.brand_color);
     required(path.name, { message: 'Name is required' });
     required(path.slug, { message: 'Slug is required' });
     slugPattern(path.slug);
@@ -163,6 +167,7 @@ export class TenantCreate {
         postal_code: value.postal_code || null,
         license_number: value.license_number,
         logo_url: value.logo_url || null,
+        brand_color: value.brand_color || null,
         key_contact_name: value.key_contact_name,
         key_contact_email: value.key_contact_email,
         key_contact_phone: value.key_contact_phone,

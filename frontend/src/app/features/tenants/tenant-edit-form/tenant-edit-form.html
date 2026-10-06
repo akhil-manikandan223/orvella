@@ -142,6 +142,24 @@
       </div>
 
       <div class="tenant-edit-form__field">
+        <label for="edit-brand-color">Brand Colour (optional)</label>
+        <input
+          id="edit-brand-color"
+          hlmInput
+          placeholder="#0e4491"
+          [formField]="tenantForm.brand_color"
+          [attr.aria-invalid]="
+            (tenantForm.brand_color().touched() && tenantForm.brand_color().invalid()) || null
+          "
+        />
+        @if (tenantForm.brand_color().touched()) {
+          @for (error of tenantForm.brand_color().errors(); track error.kind) {
+            <small class="tenant-edit-form__error">{{ error.message }}</small>
+          }
+        }
+      </div>
+
+      <div class="tenant-edit-form__field">
         <label for="edit-contact-name">Key Contact Name</label>
         <input
           id="edit-contact-name"

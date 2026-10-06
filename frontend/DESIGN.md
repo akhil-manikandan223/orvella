@@ -54,6 +54,9 @@ Possible follow-ups: swap `primeicons` for an icon set Spartan pairs with
   Badges always carry a dot + label - never color alone.
 - Grid rows: hover `primary/50`, selected `primary/100`. Never fill a row
   with 600.
+- Tenant branding: on a tenant subdomain `BrandService` regenerates the
+  `--orv-primary-*` scale (and `--orv-primary-dark`) from the tenant's
+  `brand_color`, which takes step 600. Every semantic token follows.
 
 ### Dark mode (`.app-dark`)
 

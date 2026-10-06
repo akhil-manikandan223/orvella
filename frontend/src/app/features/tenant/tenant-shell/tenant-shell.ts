@@ -1,8 +1,8 @@
 import { Component, OnDestroy, OnInit, computed, inject, signal, viewChild } from '@angular/core';
-import { NgOptimizedImage } from '@angular/common';
 import { RouterLink, RouterOutlet } from '@angular/router';
 import { BrnPopover, BrnPopoverContent, BrnPopoverTrigger } from '@spartan-ng/brain/popover';
 
+import { BrandService } from '../../../core/branding/brand.service';
 import { NotificationService } from '../../../core/notifications/notification.service';
 import { TenantAuthService } from '../../../core/tenant-auth/tenant-auth.service';
 import { NavGroup, SidebarNav } from '../../../layout/sidebar-nav/sidebar-nav';
@@ -26,7 +26,6 @@ const TENANT_NAV_GROUPS: NavGroup[] = [
     RouterOutlet,
     RouterLink,
     HlmButton,
-    NgOptimizedImage,
     BrnPopover,
     BrnPopoverContent,
     BrnPopoverTrigger,
@@ -38,6 +37,8 @@ const TENANT_NAV_GROUPS: NavGroup[] = [
 export class TenantShell implements OnInit, OnDestroy {
   protected readonly tenantAuthService = inject(TenantAuthService);
   protected readonly notificationService = inject(NotificationService);
+  // Supplies the tenant's own logo when they have one, else the Orvella mark.
+  protected readonly brandService = inject(BrandService);
 
   protected readonly navGroups = TENANT_NAV_GROUPS;
   protected readonly sidebarOpen = signal(false);

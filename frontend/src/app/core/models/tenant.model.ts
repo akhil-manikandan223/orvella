@@ -15,6 +15,7 @@ export interface TenantCreate {
   postal_code?: string | null;
   license_number: string;
   logo_url?: string | null;
+  brand_color?: string | null;
   key_contact_name: string;
   key_contact_email: string;
   key_contact_phone: string;
@@ -33,6 +34,7 @@ export interface TenantUpdate {
   postal_code?: string | null;
   license_number?: string;
   logo_url?: string | null;
+  brand_color?: string | null;
   key_contact_name?: string;
   key_contact_email?: string;
   key_contact_phone?: string;
@@ -55,6 +57,7 @@ export interface TenantRead {
   postal_code: string | null;
   license_number: string;
   logo_url: string | null;
+  brand_color: string | null;
   key_contact_name: string;
   key_contact_email: string;
   key_contact_phone: string;

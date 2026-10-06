@@ -41,7 +41,7 @@ export class TypeList {
 
   protected readonly allColumns: DataTableColumn<OrganizationTypeRead>[] = [
     { field: 'name', header: 'Name', sortable: true },
-    { field: 'slug', header: 'Slug', sortable: true },
+    { field: 'slug', header: 'Slug', sortable: true, hideOnNarrow: true },
     {
       field: 'organization_category_id',
       header: 'Category',

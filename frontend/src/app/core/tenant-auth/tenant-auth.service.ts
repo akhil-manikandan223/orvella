@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
 
 import { environment } from '../../../environments/environment';
+import { BrandService } from '../branding/brand.service';
 import {
   TenantContextRead,
   TenantLoginContextRead,
@@ -31,6 +32,7 @@ export class TenantAuthService {
   private readonly http = inject(HttpClient);
   private readonly router = inject(Router);
   private readonly themeService = inject(ThemeService);
+  private readonly brandService = inject(BrandService);
 
   private readonly _token = signal<string | null>(null);
   private readonly _user = signal<TenantUserRead | null>(null);
@@ -71,6 +73,7 @@ export class TenantAuthService {
     // This account's own preference wins over whatever the previous user of
     // this browser left cached.
     this.themeService.applyFromAccount(me.user.theme_preference);
+    this.brandService.apply(me.tenant);
     this.persistSession();
   }
 
@@ -119,9 +122,9 @@ export class TenantAuthService {
     // Best-effort server-side revocation - fired and not awaited, so
     // logout stays instant even if this request is slow or fails. Local
     // state is cleared unconditionally either way.
-    firstValueFrom(
-      this.http.post<void>(`${environment.apiUrl}/tenant/auth/logout`, {}),
-    ).catch(() => {});
+    firstValueFrom(this.http.post<void>(`${environment.apiUrl}/tenant/auth/logout`, {})).catch(
+      () => {},
+    );
 
     this._token.set(null);
     this._user.set(null);
@@ -144,6 +147,7 @@ export class TenantAuthService {
       this._user.set(stored.user);
       this._tenant.set(stored.tenant);
       this.themeService.applyFromAccount(stored.user?.theme_preference);
+      this.brandService.apply(stored.tenant);
     } catch {
       sessionStorage.removeItem(SESSION_STORAGE_KEY);
     }

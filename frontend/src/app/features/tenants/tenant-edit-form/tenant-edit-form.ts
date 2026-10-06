@@ -10,6 +10,7 @@ import { TenantRead } from '../../../core/models/tenant.model';
 import { ToastService } from '../../../core/feedback/toast.service';
 import { HlmInput } from '../../../shared/ui/input';
 import { AppSelect } from '../../../shared/ui/select';
+import { brandColorPattern } from '../../../shared/validators/brand-color.validator';
 
 interface TenantEditFormValue {
   max_users: number | null;
@@ -22,6 +23,7 @@ interface TenantEditFormValue {
   postal_code: string;
   license_number: string;
   logo_url: string;
+  brand_color: string;
   key_contact_name: string;
   key_contact_email: string;
   key_contact_phone: string;
@@ -63,12 +65,14 @@ export class TenantEditForm implements OnInit {
     postal_code: '',
     license_number: '',
     logo_url: '',
+    brand_color: '',
     key_contact_name: '',
     key_contact_email: '',
     key_contact_phone: '',
   });
 
   protected readonly tenantForm = form(this.model, (path) => {
+    brandColorPattern(path.brand_color);
     required(path.address_line_1, { message: 'Address is required' });
     required(path.country_id, { message: 'Country is required' });
     disabled(path.state_id, { when: () => !this.model().country_id });
@@ -110,6 +114,7 @@ export class TenantEditForm implements OnInit {
       postal_code: tenant.postal_code ?? '',
       license_number: tenant.license_number,
       logo_url: tenant.logo_url ?? '',
+      brand_color: tenant.brand_color ?? '',
       key_contact_name: tenant.key_contact_name,
       key_contact_email: tenant.key_contact_email,
       key_contact_phone: tenant.key_contact_phone,
@@ -154,6 +159,7 @@ export class TenantEditForm implements OnInit {
         postal_code: value.postal_code || null,
         license_number: value.license_number,
         logo_url: value.logo_url || null,
+        brand_color: value.brand_color || null,
         key_contact_name: value.key_contact_name,
         key_contact_email: value.key_contact_email,
         key_contact_phone: value.key_contact_phone,

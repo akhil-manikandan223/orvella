@@ -52,7 +52,7 @@ export class CityList {
 
   protected readonly allColumns: DataTableColumn<CityRead>[] = [
     { field: 'name', header: 'Name', sortable: true },
-    { field: 'slug', header: 'Slug', sortable: true },
+    { field: 'slug', header: 'Slug', sortable: true, hideOnNarrow: true },
     {
       field: 'state_id',
       header: 'State',

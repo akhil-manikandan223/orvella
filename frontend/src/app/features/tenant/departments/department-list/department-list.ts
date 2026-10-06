@@ -19,7 +19,12 @@ import { HlmButton } from '../../../../shared/ui/button';
 
 const COLUMNS: DataTableColumn<DepartmentRead>[] = [
   { field: 'name', header: 'Name', sortable: true },
-  { field: 'description', header: 'Description', cell: (d) => d.description ?? '—' },
+  {
+    field: 'description',
+    header: 'Description',
+    hideOnNarrow: true,
+    cell: (d) => d.description ?? '—',
+  },
 ];
 
 @Component({

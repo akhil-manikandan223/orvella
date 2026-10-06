@@ -4,12 +4,15 @@ import {
   booleanAttribute,
   computed,
   effect,
+  inject,
   input,
   isDevMode,
   output,
   signal,
   untracked,
 } from '@angular/core';
+import { BreakpointObserver } from '@angular/cdk/layout';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { AgGridAngular } from 'ag-grid-angular';
 import {
   CellClickedEvent,
@@ -62,6 +65,9 @@ ModuleRegistry.registerModules([
 ]);
 
 const ACTIONS_COLUMN_ID = '__actions';
+/** One breakpoint for every list screen, so tables all collapse together
+ * rather than each page picking its own width. */
+const NARROW_SCREEN_QUERY = '(max-width: 700px)';
 /** Fallback height for an expansion row until GridDetailRow measures its content. */
 const DETAIL_ROW_INITIAL_HEIGHT = 120;
 const COMPACT_COLUMN_WIDTH = 64;
@@ -108,6 +114,18 @@ export class DataTable<T extends object = Record<string, unknown>> {
   readonly rowClicked = output<T>();
 
   protected readonly theme = orvellaGridTheme;
+
+  private readonly breakpointObserver = inject(BreakpointObserver);
+  private readonly isNarrow = toSignal(this.breakpointObserver.observe(NARROW_SCREEN_QUERY), {
+    initialValue: { matches: false, breakpoints: {} },
+  });
+
+  /** What actually renders: secondary columns drop out on narrow screens. */
+  protected readonly visibleColumns = computed(() =>
+    this.isNarrow().matches
+      ? this.columns().filter((column) => !column.hideOnNarrow)
+      : this.columns(),
+  );
   private readonly gridApi = signal<GridApi<GridRow<T>> | null>(null);
 
   protected readonly selection = signal<T[]>([]);
@@ -115,6 +133,8 @@ export class DataTable<T extends object = Record<string, unknown>> {
     () => this.selectable() && this.bulkActions().length > 0,
   );
 
+  // Deliberately every column, not just the visible ones - a search should
+  // still find a row by a field that a narrow screen happens to be hiding.
   private readonly globalFilterFields = computed(() =>
     this.columns().map((column) => column.field),
   );
@@ -151,7 +171,7 @@ export class DataTable<T extends object = Record<string, unknown>> {
   });
 
   protected readonly columnDefs = computed<ColDef<GridRow<T>>[]>(() => {
-    const defs = this.columns().map((column) => this.toColDef(column));
+    const defs = this.visibleColumns().map((column) => this.toColDef(column));
     const actions = this.actions();
     if (actions.length > 0) {
       defs.push({

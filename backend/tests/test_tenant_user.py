@@ -276,6 +276,33 @@ async def test_tenant_refresh_on_wrong_subdomain_is_unauthorized(
     assert response.status_code == 401
 
 
+async def test_login_context_exposes_tenant_branding(
+    client: AsyncClient, cleanup: Cleanup
+) -> None:
+    slug = _unique_slug('acme')
+    tenant = await _create_tenant(cleanup, slug=slug)
+    async with TestSessionLocal() as session:
+        # Re-read inside this session: the instance from _create_tenant belongs
+        # to a session that has already closed, so it can't be updated here.
+        repository = TenantRepository(session)
+        await repository.update(
+            await repository.get_by_id(tenant.id),
+            logo_url='https://example.com/logo.png',
+            brand_color='#2f8f4e',
+        )
+
+    # Public endpoint: the login page needs branding before anyone has
+    # authenticated, so it has to come from here rather than /me.
+    response = await client.get(
+        '/api/v1/tenant/auth/context', headers={'Host': f'{slug}.{BASE_DOMAIN}'}
+    )
+
+    assert response.status_code == 200
+    branding = response.json()['tenant']
+    assert branding['logo_url'] == 'https://example.com/logo.png'
+    assert branding['brand_color'] == '#2f8f4e'
+
+
 async def test_tenant_theme_preference_is_per_user(client: AsyncClient, cleanup: Cleanup) -> None:
     slug = _unique_slug('acme')
     tenant = await _create_tenant(cleanup, slug=slug)

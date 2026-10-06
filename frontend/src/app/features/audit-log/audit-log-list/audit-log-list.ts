@@ -1,6 +1,4 @@
 import { Component, TemplateRef, computed, effect, inject, signal, viewChild } from '@angular/core';
-import { BreakpointObserver } from '@angular/cdk/layout';
-import { toSignal } from '@angular/core/rxjs-interop';
 import { DatePipe, JsonPipe } from '@angular/common';
 import { FormField, form } from '@angular/forms/signals';
 
@@ -21,7 +19,6 @@ import { HlmInput } from '../../../shared/ui/input';
 })
 export class AuditLogList {
   private readonly auditLogService = inject(AuditLogService);
-  private readonly breakpointObserver = inject(BreakpointObserver);
   private readonly datePipe = inject(DatePipe);
 
   protected readonly entries = signal<AuditLogRead[]>([]);
@@ -29,12 +26,6 @@ export class AuditLogList {
   protected readonly expandedRowId = signal<string | null>(null);
   protected readonly entityTypeFilterModel = signal('');
   protected readonly entityTypeFilter = form(this.entityTypeFilterModel);
-
-  private readonly isNarrow = toSignal(this.breakpointObserver.observe('(max-width: 700px)'), {
-    initialValue: { matches: false, breakpoints: {} },
-  });
-
-  protected readonly showActorColumn = computed(() => !this.isNarrow().matches);
 
   private readonly expandCellTpl =
     viewChild.required<TemplateRef<{ $implicit: AuditLogRead }>>('expandCell');
@@ -52,25 +43,21 @@ export class AuditLogList {
   }));
 
   /** Toggleable columns only - the expand-arrow column is structural, not a data field. */
-  protected readonly allColumns = computed<DataTableColumn<AuditLogRead>[]>(() => {
-    const columns: DataTableColumn<AuditLogRead>[] = [
-      { field: 'action', header: 'Action', cell: (entry) => entry.action },
-      { field: 'entity_type', header: 'Entity Type' },
-    ];
-    if (this.showActorColumn()) {
-      columns.push({
-        field: 'actor_type',
-        header: 'Actor',
-        cell: (entry) => entry.actor_type ?? '—',
-      });
-    }
-    columns.push({
+  protected readonly allColumns = computed<DataTableColumn<AuditLogRead>[]>(() => [
+    { field: 'action', header: 'Action', cell: (entry) => entry.action },
+    { field: 'entity_type', header: 'Entity Type' },
+    {
+      field: 'actor_type',
+      header: 'Actor',
+      hideOnNarrow: true,
+      cell: (entry) => entry.actor_type ?? '—',
+    },
+    {
       field: 'created_at',
       header: 'Timestamp',
       cell: (entry) => this.datePipe.transform(entry.created_at, 'medium') ?? '',
-    });
-    return columns;
-  });
+    },
+  ]);
   protected readonly visibleFields = signal<Set<string>>(new Set());
   protected readonly columns = computed(() => {
     const visible = this.visibleFields();

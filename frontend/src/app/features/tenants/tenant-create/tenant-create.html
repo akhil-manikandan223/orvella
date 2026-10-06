@@ -202,6 +202,24 @@
       </div>
 
       <div class="tenant-create__field">
+        <label for="tenant-brand-color">Brand Colour (optional)</label>
+        <input
+          id="tenant-brand-color"
+          hlmInput
+          placeholder="#0e4491"
+          [formField]="tenantForm.brand_color"
+          [attr.aria-invalid]="
+            (tenantForm.brand_color().touched() && tenantForm.brand_color().invalid()) || null
+          "
+        />
+        @if (tenantForm.brand_color().touched()) {
+          @for (error of tenantForm.brand_color().errors(); track error.kind) {
+            <small class="tenant-create__error">{{ error.message }}</small>
+          }
+        }
+      </div>
+
+      <div class="tenant-create__field">
         <label for="tenant-contact-name">Key Contact Name</label>
         <input
           id="tenant-contact-name"

@@ -34,7 +34,12 @@ export class FeatureList {
   protected readonly allColumns = computed<DataTableColumn<FeatureRead>[]>(() => [
     { field: 'key', header: 'Key', template: this.keyCellTpl() },
     { field: 'name', header: 'Name', sortable: true },
-    { field: 'description', header: 'Description', cell: (feature) => feature.description || '—' },
+    {
+      field: 'description',
+      header: 'Description',
+      hideOnNarrow: true,
+      cell: (feature) => feature.description || '—',
+    },
     { field: 'status', header: 'Status', template: this.statusCellTpl() },
   ]);
   protected readonly visibleFields = signal<Set<string>>(new Set());

@@ -12,7 +12,7 @@ import { HlmButton } from '../../../../shared/ui/button';
 
 const COLUMNS: DataTableColumn<CountryRead>[] = [
   { field: 'name', header: 'Name', sortable: true },
-  { field: 'slug', header: 'Slug', sortable: true },
+  { field: 'slug', header: 'Slug', sortable: true, hideOnNarrow: true },
 ];
 
 @Component({

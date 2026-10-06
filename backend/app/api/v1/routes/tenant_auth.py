@@ -153,7 +153,13 @@ async def read_current_tenant_user(
 ) -> TenantMeRead:
     return TenantMeRead(
         user=TenantUserRead.model_validate(user),
-        tenant=TenantContextRead(id=tenant.id, name=tenant.name, slug=tenant.slug),
+        tenant=TenantContextRead(
+            id=tenant.id,
+            name=tenant.name,
+            slug=tenant.slug,
+            logo_url=tenant.logo_url,
+            brand_color=tenant.brand_color,
+        ),
     )
 
 
@@ -206,7 +212,13 @@ async def read_tenant_login_context(
         features = [f for f in await feature_repository.list_all() if f.status == 'active']
 
     return TenantLoginContextRead(
-        tenant=TenantContextRead(id=tenant.id, name=tenant.name, slug=tenant.slug),
+        tenant=TenantContextRead(
+            id=tenant.id,
+            name=tenant.name,
+            slug=tenant.slug,
+            logo_url=tenant.logo_url,
+            brand_color=tenant.brand_color,
+        ),
         hero_features=sorted(
             (
                 HeroFeatureRead(key=f.key, name=f.name, description=f.description)

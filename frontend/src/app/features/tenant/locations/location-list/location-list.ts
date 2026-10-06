@@ -19,7 +19,7 @@ import { HlmButton } from '../../../../shared/ui/button';
 
 const COLUMNS: DataTableColumn<LocationRead>[] = [
   { field: 'name', header: 'Name', sortable: true },
-  { field: 'address', header: 'Address', cell: (l) => l.address ?? '—' },
+  { field: 'address', header: 'Address', hideOnNarrow: true, cell: (l) => l.address ?? '—' },
 ];
 
 @Component({

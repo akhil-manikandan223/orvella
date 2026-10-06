@@ -55,15 +55,17 @@ export class PersonList {
         cell: (p) => `${p.first_name} ${p.last_name}`,
       },
       { field: 'category', header: 'Category', sortable: true },
-      { field: 'email', header: 'Email', cell: (p) => p.email ?? '—' },
+      { field: 'email', header: 'Email', hideOnNarrow: true, cell: (p) => p.email ?? '—' },
       {
         field: 'department_id',
         header: 'Department',
+        hideOnNarrow: true,
         cell: (p) => (p.department_id && departmentNames.get(p.department_id)) || '—',
       },
       {
         field: 'location_id',
         header: 'Location',
+        hideOnNarrow: true,
         cell: (p) => (p.location_id && locationNames.get(p.location_id)) || '—',
       },
     ];

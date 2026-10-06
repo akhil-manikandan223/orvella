@@ -41,6 +41,7 @@ async def create_tenant(
     state_id: uuid.UUID | None = None,
     postal_code: str | None = None,
     logo_url: str | None = None,
+    brand_color: str | None = None,
 ) -> tuple[Tenant, list[Feature]]:
     """Create a tenant and seed its features from the org type's default template.
 
@@ -75,6 +76,7 @@ async def create_tenant(
         postal_code=postal_code,
         license_number=license_number,
         logo_url=logo_url,
+        brand_color=brand_color,
         key_contact_name=key_contact_name,
         key_contact_email=key_contact_email,
         key_contact_phone=key_contact_phone,

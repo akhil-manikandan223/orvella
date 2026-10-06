@@ -37,6 +37,8 @@ export interface TenantContextRead {
   id: string;
   name: string;
   slug: string;
+  logo_url: string | null;
+  brand_color: string | null;
 }
 
 export interface TenantMeRead {

@@ -40,7 +40,7 @@ export class StateList {
 
   protected readonly allColumns: DataTableColumn<StateRead>[] = [
     { field: 'name', header: 'Name', sortable: true },
-    { field: 'slug', header: 'Slug', sortable: true },
+    { field: 'slug', header: 'Slug', sortable: true, hideOnNarrow: true },
     {
       field: 'country_id',
       header: 'Country',
