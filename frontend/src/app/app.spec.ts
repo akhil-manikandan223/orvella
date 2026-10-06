@@ -4,6 +4,22 @@ import { TestBed } from '@angular/core/testing';
 import { App } from './app';
 
 describe('App', () => {
+  // jsdom has no matchMedia; ThemeService and the toaster read the OS
+  // color-scheme preference through it.
+  beforeAll(() => {
+    window.matchMedia ??= (query: string) =>
+      ({
+        matches: false,
+        media: query,
+        onchange: null,
+        addEventListener: () => undefined,
+        removeEventListener: () => undefined,
+        addListener: () => undefined,
+        removeListener: () => undefined,
+        dispatchEvent: () => false,
+      }) as MediaQueryList;
+  });
+
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [App],
