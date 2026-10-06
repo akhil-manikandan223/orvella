@@ -53,7 +53,7 @@ $app-shell-desktop: 1024px;
 .app-shell-content {
   flex: 1;
   min-width: 0;
-  padding: 1rem;
+  padding: 0.5rem;
   overflow-y: auto;
   overflow-x: auto;
 }
@@ -68,10 +68,6 @@ $app-shell-desktop: 1024px;
   .app-shell-body--sidebar-open .app-shell-scrim,
   .app-shell-menu-toggle {
     display: none !important;
-  }
-
-  .app-shell-content {
-    padding: 1.75rem 2rem 2rem;
   }
 }
 
