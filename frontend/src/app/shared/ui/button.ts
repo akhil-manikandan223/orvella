@@ -54,3 +54,24 @@ export class HlmButton {
     hlm(buttonVariants({ variant: this.variant(), size: this.size() }), this.userClass()),
   );
 }
+
+/**
+ * Maps the PrimeNG-era `severity` names still carried by DataTableAction /
+ * DataTableBulkAction onto helm variants plus a text color, so callers keep
+ * their config while the buttons render as helm buttons.
+ */
+export function severityToButton(
+  severity: string | undefined,
+  style: 'icon' | 'solid',
+): { variant: ButtonVariants['variant']; class: string } {
+  if (style === 'solid') {
+    return { variant: severity === 'danger' ? 'destructive' : 'outline', class: '' };
+  }
+  const tone: Record<string, string> = {
+    danger: 'text-danger hover:text-danger',
+    success: 'text-success hover:text-success',
+    info: 'text-info hover:text-info',
+    warn: 'text-warning hover:text-warning',
+  };
+  return { variant: 'ghost', class: tone[severity ?? ''] ?? 'text-muted-foreground' };
+}

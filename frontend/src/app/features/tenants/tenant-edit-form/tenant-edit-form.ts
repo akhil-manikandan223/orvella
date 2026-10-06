@@ -1,7 +1,5 @@
 import { Component, OnInit, inject, input, output, signal } from '@angular/core';
 import { FormField, disabled, email, form, required } from '@angular/forms/signals';
-import { InputText } from 'primeng/inputtext';
-import { Select } from 'primeng/select';
 
 import { CityService } from '../../../core/data-access/city.service';
 import { CountryService } from '../../../core/data-access/country.service';
@@ -10,6 +8,8 @@ import { TenantService } from '../../../core/data-access/tenant.service';
 import { CityRead, CountryRead, StateRead } from '../../../core/models/geo.model';
 import { TenantRead } from '../../../core/models/tenant.model';
 import { ToastService } from '../../../core/feedback/toast.service';
+import { HlmInput } from '../../../shared/ui/input';
+import { AppSelect } from '../../../shared/ui/select';
 
 interface TenantEditFormValue {
   max_users: number | null;
@@ -29,7 +29,7 @@ interface TenantEditFormValue {
 
 @Component({
   selector: 'app-tenant-edit-form',
-  imports: [InputText, Select, FormField],
+  imports: [HlmInput, AppSelect, FormField],
   templateUrl: './tenant-edit-form.html',
   styleUrl: './tenant-edit-form.scss',
 })

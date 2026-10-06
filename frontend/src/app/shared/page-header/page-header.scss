@@ -71,11 +71,19 @@
   }
 
   &__search {
+    position: relative;
+    display: block;
     width: 16rem;
     max-width: 100%;
 
-    input {
-      width: 100%;
+    i {
+      position: absolute;
+      top: 50%;
+      left: 0.75rem;
+      transform: translateY(-50%);
+      font-size: 0.875rem;
+      color: var(--muted-foreground);
+      pointer-events: none;
     }
   }
 

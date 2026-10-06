@@ -1,11 +1,6 @@
 import { Component, OnInit, computed, inject, input, signal } from '@angular/core';
-import { FormsModule } from '@angular/forms';
 import { FormField, email, form, required } from '@angular/forms/signals';
-import { ButtonDirective } from 'primeng/button';
-import { InputText } from 'primeng/inputtext';
-import { InputPassword } from 'primeng/inputpassword';
-import { Select } from 'primeng/select';
-import { SelectButton } from 'primeng/selectbutton';
+import { BrnToggleGroup, BrnToggleGroupItem } from '@spartan-ng/brain/toggle-group';
 
 import { TenantUserService } from '../../../core/data-access/tenant-user.service';
 import { TenantUserRead, TenantUserRole } from '../../../core/models/tenant-user.model';
@@ -14,6 +9,9 @@ import { DataTableAction, DataTableColumn } from '../../../shared/data-table/dat
 import { FormDrawer } from '../../../shared/form-drawer/form-drawer';
 import { ToastService } from '../../../core/feedback/toast.service';
 import { ConfirmService } from '../../../core/feedback/confirm.service';
+import { HlmButton } from '../../../shared/ui/button';
+import { HlmInput } from '../../../shared/ui/input';
+import { AppSelect } from '../../../shared/ui/select';
 
 interface TenantUserFormValue {
   email: string;
@@ -49,12 +47,11 @@ const COLUMNS: DataTableColumn<TenantUserRead>[] = [
 @Component({
   selector: 'app-tenant-users',
   imports: [
-    ButtonDirective,
-    InputText,
-    InputPassword,
-    Select,
-    SelectButton,
-    FormsModule,
+    HlmButton,
+    HlmInput,
+    AppSelect,
+    BrnToggleGroup,
+    BrnToggleGroupItem,
     FormField,
     DataTable,
     FormDrawer,

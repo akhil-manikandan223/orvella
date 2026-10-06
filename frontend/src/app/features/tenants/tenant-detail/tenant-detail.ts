@@ -1,8 +1,7 @@
 import { Component, computed, inject, input, OnInit, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { forkJoin } from 'rxjs';
-import { ButtonDirective } from 'primeng/button';
-import { Tab, TabList, TabPanel, TabPanels, Tabs } from 'primeng/tabs';
+import { BrnTabs, BrnTabsContent, BrnTabsList, BrnTabsTrigger } from '@spartan-ng/brain/tabs';
 
 import { CityService } from '../../../core/data-access/city.service';
 import { CountryService } from '../../../core/data-access/country.service';
@@ -18,19 +17,19 @@ import { TenantFeatureToggles } from '../tenant-feature-toggles/tenant-feature-t
 import { TenantUsers } from '../tenant-users/tenant-users';
 import { ToastService } from '../../../core/feedback/toast.service';
 import { ConfirmService } from '../../../core/feedback/confirm.service';
+import { HlmButton } from '../../../shared/ui/button';
 
 @Component({
   selector: 'app-tenant-detail',
   imports: [
-    ButtonDirective,
+    BrnTabs,
+    BrnTabsList,
+    BrnTabsTrigger,
+    BrnTabsContent,
+    HlmButton,
     PageHeader,
     RouterLink,
     StatusBadge,
-    Tab,
-    TabList,
-    TabPanel,
-    TabPanels,
-    Tabs,
     TenantFeatureToggles,
     TenantUsers,
   ],
@@ -62,8 +61,7 @@ export class TenantDetail implements OnInit {
       return '—';
     }
     return (
-      this.organizationTypes().find((type) => type.id === tenant.organization_type_id)?.name ??
-      '—'
+      this.organizationTypes().find((type) => type.id === tenant.organization_type_id)?.name ?? '—'
     );
   });
 

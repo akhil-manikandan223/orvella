@@ -5,16 +5,17 @@
       <div class="data-table__bulk-actions">
         @for (action of bulkActions(); track action.label) {
           <button
-            pButton
-            size="small"
-            [severity]="action.severity ?? 'secondary'"
+            hlmBtn
+            type="button"
+            size="sm"
+            [variant]="bulkVariant(action)"
             (click)="action.onClick(selection())"
           >
             <i [class]="action.icon" aria-hidden="true"></i>
             {{ action.label }}
           </button>
         }
-        <button pButton size="small" [text]="true" severity="secondary" (click)="clearSelection()">
+        <button hlmBtn type="button" size="sm" variant="ghost" (click)="clearSelection()">
           Clear
         </button>
       </div>

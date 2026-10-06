@@ -1,9 +1,6 @@
 import { Component, computed, inject, signal } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { FormField, disabled, email, form, required } from '@angular/forms/signals';
-import { ButtonDirective } from 'primeng/button';
-import { InputText } from 'primeng/inputtext';
-import { Select } from 'primeng/select';
 
 import { CityService } from '../../../core/data-access/city.service';
 import { CountryService } from '../../../core/data-access/country.service';
@@ -19,6 +16,9 @@ import {
 import { PageHeader } from '../../../shared/page-header/page-header';
 import { slugPattern } from '../../../shared/validators/slug.validator';
 import { ToastService } from '../../../core/feedback/toast.service';
+import { HlmButton } from '../../../shared/ui/button';
+import { HlmInput } from '../../../shared/ui/input';
+import { AppSelect } from '../../../shared/ui/select';
 
 interface TenantCreateFormValue {
   name: string;
@@ -40,7 +40,7 @@ interface TenantCreateFormValue {
 
 @Component({
   selector: 'app-tenant-create',
-  imports: [ButtonDirective, InputText, Select, FormField, PageHeader, RouterLink],
+  imports: [HlmButton, HlmInput, AppSelect, FormField, PageHeader, RouterLink],
   templateUrl: './tenant-create.html',
   styleUrl: './tenant-create.scss',
 })
@@ -70,9 +70,7 @@ export class TenantCreate {
     if (!categoryId) {
       return [];
     }
-    return this.organizationTypes().filter(
-      (type) => type.organization_category_id === categoryId,
-    );
+    return this.organizationTypes().filter((type) => type.organization_category_id === categoryId);
   });
 
   protected readonly model = signal<TenantCreateFormValue>({

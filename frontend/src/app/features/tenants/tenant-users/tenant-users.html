@@ -1,14 +1,25 @@
 <div class="tenant-users__toolbar">
-  <p-selectbutton
-    [options]="statusFilterOptions"
-    optionLabel="label"
-    optionValue="value"
-    [ngModel]="statusFilter()"
-    (onChange)="statusFilter.set($event.value)"
-    [allowEmpty]="false"
+  <div
+    brnToggleGroup
+    type="single"
+    [nullable]="false"
+    [value]="statusFilter()"
+    (valueChange)="statusFilter.set($any($event))"
+    class="inline-flex gap-0.5 rounded-lg bg-muted p-[3px]"
     aria-label="Filter users by status"
-  />
-  <button pButton size="small" (click)="openCreate()">
+  >
+    @for (option of statusFilterOptions; track option.value) {
+      <button
+        brnToggleGroupItem
+        type="button"
+        [value]="option.value"
+        class="h-[30px] cursor-pointer rounded-md border-0 bg-transparent px-3 font-sans text-[13px] font-medium text-muted-foreground data-[state=on]:bg-card data-[state=on]:text-foreground data-[state=on]:shadow-sm"
+      >
+        {{ option.label }}
+      </button>
+    }
+  </div>
+  <button type="button" hlmBtn size="sm" (click)="openCreate()">
     <i class="pi pi-plus" aria-hidden="true"></i>
     New User
   </button>
@@ -35,9 +46,9 @@
         <input
           id="tenant-user-email"
           type="email"
-          pInputText
+          hlmInput
           [formField]="userForm.email"
-          [class.p-invalid]="userForm.email().touched() && userForm.email().invalid()"
+          [attr.aria-invalid]="(userForm.email().touched() && userForm.email().invalid()) || null"
         />
         @if (userForm.email().touched()) {
           @for (error of userForm.email().errors(); track error.kind) {
@@ -52,10 +63,11 @@
           <input
             id="tenant-user-password"
             type="password"
-            pInputPassword
-            fluid
+            hlmInput
             [formField]="userForm.password"
-            [class.p-invalid]="userForm.password().touched() && userForm.password().invalid()"
+            [attr.aria-invalid]="
+              (userForm.password().touched() && userForm.password().invalid()) || null
+            "
           />
           @if (userForm.password().touched()) {
             @for (error of userForm.password().errors(); track error.kind) {
@@ -67,21 +79,28 @@
 
       <div class="tenant-users__field">
         <label for="tenant-user-role">Role</label>
-        <p-select
+        <app-select
           inputId="tenant-user-role"
           [formField]="$any(userForm.role)"
           [options]="roleOptions"
           optionLabel="label"
           optionValue="value"
+          [filter]="false"
         />
       </div>
 
       <div class="tenant-users__actions">
-        <button pButton type="button" [text]="true" severity="secondary" (click)="drawerVisible.set(false)">
+        <button hlmBtn variant="ghost" type="button" (click)="drawerVisible.set(false)">
           Cancel
         </button>
-        <button pButton [disabled]="submitting()">
-          <i class="pi" [class.pi-spin]="submitting()" [class.pi-spinner]="submitting()" [class.pi-check]="!submitting()" aria-hidden="true"></i>
+        <button hlmBtn [disabled]="submitting()">
+          <i
+            class="pi"
+            [class.pi-spin]="submitting()"
+            [class.pi-spinner]="submitting()"
+            [class.pi-check]="!submitting()"
+            aria-hidden="true"
+          ></i>
           Save
         </button>
       </div>

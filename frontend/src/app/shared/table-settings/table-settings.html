@@ -1,18 +1,31 @@
-<button
-  pButton
-  [text]="true"
-  severity="secondary"
-  aria-label="Table settings"
-  (click)="togglePopover($event)"
->
-  <i class="pi pi-cog" aria-hidden="true"></i>
-</button>
-<p-popover #popover appendTo="body">
-  <button type="button" class="table-settings__menu-item" (click)="openCustomize()">
-    <i class="pi pi-sliders-h" aria-hidden="true"></i>
-    Customize
+<div brnPopover align="end" [sideOffset]="4">
+  <button
+    brnPopoverTrigger
+    hlmBtn
+    variant="ghost"
+    size="icon"
+    type="button"
+    aria-label="Table settings"
+  >
+    <i class="pi pi-cog" aria-hidden="true"></i>
   </button>
-</p-popover>
+  <ng-template brnPopoverContent>
+    <div
+      class="min-w-40 rounded-md border border-border bg-popover p-1 text-popover-foreground shadow-lg animate-in fade-in-0"
+      role="menu"
+    >
+      <button
+        type="button"
+        role="menuitem"
+        class="table-settings__menu-item"
+        (click)="openCustomize()"
+      >
+        <i class="pi pi-sliders-h" aria-hidden="true"></i>
+        Customize
+      </button>
+    </div>
+  </ng-template>
+</div>
 
 <app-form-drawer
   [visible]="drawerVisible()"
@@ -34,8 +47,14 @@
       }
     </div>
     <div class="table-settings__actions">
-      <button pButton [disabled]="saving()" (click)="saveChanges()">
-        <i class="pi" [class.pi-spin]="saving()" [class.pi-spinner]="saving()" [class.pi-check]="!saving()" aria-hidden="true"></i>
+      <button hlmBtn type="button" [disabled]="saving()" (click)="saveChanges()">
+        <i
+          class="pi"
+          [class.pi-spin]="saving()"
+          [class.pi-spinner]="saving()"
+          [class.pi-check]="!saving()"
+          aria-hidden="true"
+        ></i>
         Save
       </button>
     </div>

@@ -32,7 +32,6 @@ import {
   SelectionChangedEvent,
   ValidationModule,
 } from 'ag-grid-community';
-import { ButtonDirective } from 'primeng/button';
 
 import { DataTableAction, DataTableBulkAction, DataTableColumn } from './data-table.model';
 import {
@@ -45,6 +44,7 @@ import {
   isDetailRow,
 } from './grid-cells';
 import { orvellaGridTheme } from './grid-theme';
+import { HlmButton, severityToButton } from '../ui/button';
 
 // Registered here rather than at bootstrap so AG Grid stays in the lazy chunk
 // shared by the list pages instead of the initial bundle. ValidationModule
@@ -70,7 +70,7 @@ type GridRow<T> = T | DetailRow<T>;
 
 @Component({
   selector: 'app-data-table',
-  imports: [AgGridAngular, ButtonDirective],
+  imports: [AgGridAngular, HlmButton],
   templateUrl: './data-table.html',
   styleUrl: './data-table.scss',
 })
@@ -232,6 +232,10 @@ export class DataTable<T extends object = Record<string, unknown>> {
     });
   }
 
+  protected bulkVariant(action: DataTableBulkAction<T>) {
+    return severityToButton(action.severity, 'solid').variant;
+  }
+
   protected onGridReady(event: GridReadyEvent<GridRow<T>>): void {
     this.gridApi.set(event.api);
   }
@@ -277,6 +281,9 @@ export class DataTable<T extends object = Record<string, unknown>> {
       colId: column.field,
       field: column.field as ColDef<GridRow<T>>['field'],
       headerName: column.header,
+      // No type inference: AG Grid would swap boolean fields to its own
+      // checkbox renderer and ignore valueFormatter (column.cell).
+      cellDataType: false,
       sortable: column.sortable ?? false,
       resizable: true,
       ...(width ? { width, minWidth: width } : { flex: 1, minWidth: 120 }),

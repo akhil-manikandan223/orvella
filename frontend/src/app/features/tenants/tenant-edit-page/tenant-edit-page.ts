@@ -1,15 +1,15 @@
 import { Component, OnInit, inject, input, signal, viewChild } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
-import { ButtonDirective } from 'primeng/button';
 
 import { TenantService } from '../../../core/data-access/tenant.service';
 import { TenantDetailRead } from '../../../core/models/tenant.model';
 import { PageHeader } from '../../../shared/page-header/page-header';
 import { TenantEditForm } from '../tenant-edit-form/tenant-edit-form';
+import { HlmButton } from '../../../shared/ui/button';
 
 @Component({
   selector: 'app-tenant-edit-page',
-  imports: [ButtonDirective, PageHeader, RouterLink, TenantEditForm],
+  imports: [HlmButton, PageHeader, RouterLink, TenantEditForm],
   templateUrl: './tenant-edit-page.html',
   styleUrl: './tenant-edit-page.scss',
 })

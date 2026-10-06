@@ -8,7 +8,7 @@ import { TenantAuthService } from './core/tenant-auth/tenant-auth.service';
 import {
   PLATFORM_ADMIN_PROFILE_NAV_ITEMS,
   ProfileNavItem,
-} from './features/profile/profile-page/profile-page';
+} from './features/profile/profile-page/profile-nav';
 import { isTenantHost } from './core/tenancy/host-context';
 
 // A TenantUser carries only email/role/active - nothing worth a General tab,

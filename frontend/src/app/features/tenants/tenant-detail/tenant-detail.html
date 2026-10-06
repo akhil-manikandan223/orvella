@@ -1,20 +1,25 @@
 @if (tenant(); as t) {
-  <app-page-header [title]="t.name" [subtitle]="'/' + t.slug" icon="pi pi-building" [showBack]="true">
+  <app-page-header
+    [title]="t.name"
+    [subtitle]="'/' + t.slug"
+    icon="pi pi-building"
+    [showBack]="true"
+  >
     <app-status-badge
       [status]="t.is_active ? 'active' : 'inactive'"
       [label]="t.is_active ? 'Active' : 'Inactive'"
     />
-    <a pButton [text]="true" [routerLink]="['/tenants', t.id, 'edit']">
+    <a hlmBtn variant="ghost" [routerLink]="['/tenants', t.id, 'edit']">
       <i class="pi pi-pencil" aria-hidden="true"></i>
       Edit
     </a>
     @if (t.is_active) {
-      <button pButton severity="danger" (click)="confirmDeactivate()">
+      <button type="button" hlmBtn variant="destructive" (click)="confirmDeactivate()">
         <i class="pi pi-ban" aria-hidden="true"></i>
         Deactivate
       </button>
     } @else {
-      <button pButton severity="success" (click)="activate()">
+      <button type="button" hlmBtn (click)="activate()">
         <i class="pi pi-check" aria-hidden="true"></i>
         Activate
       </button>
@@ -55,33 +60,35 @@
   </section>
 
   <section class="tenant-detail__section tenant-detail__section--fill">
-    <p-tabs class="tenant-detail__tabs" [value]="activeTab()" (valueChange)="activeTab.set($any($event))">
-      <p-tablist>
-        <p-tab value="users">
+    <div
+      class="tenant-detail__tabs"
+      [brnTabs]="activeTab()"
+      (brnTabsChange)="activeTab.set($any($event))"
+    >
+      <div brnTabsList class="tenant-detail__tablist" aria-label="Tenant sections">
+        <button brnTabsTrigger="users" class="tenant-detail__tab">
           <i class="pi pi-users" aria-hidden="true"></i>
           Users
-        </p-tab>
-        <p-tab value="features">
+        </button>
+        <button brnTabsTrigger="features" class="tenant-detail__tab">
           <i class="pi pi-star" aria-hidden="true"></i>
           Features
-        </p-tab>
-      </p-tablist>
-      <p-tabpanels>
-        <p-tabpanel value="users">
-          <div class="tenant-detail__card tenant-detail__card--table">
-            <app-tenant-users [tenantId]="t.id" />
-          </div>
-        </p-tabpanel>
-        <p-tabpanel value="features">
-          <div class="tenant-detail__card tenant-detail__card--table">
-            <app-tenant-feature-toggles
-              [tenantId]="t.id"
-              [enabledFeatures]="t.features"
-              (toggled)="load()"
-            />
-          </div>
-        </p-tabpanel>
-      </p-tabpanels>
-    </p-tabs>
+        </button>
+      </div>
+      <div brnTabsContent="users" class="tenant-detail__tabpanel">
+        <div class="tenant-detail__card tenant-detail__card--table">
+          <app-tenant-users [tenantId]="t.id" />
+        </div>
+      </div>
+      <div brnTabsContent="features" class="tenant-detail__tabpanel">
+        <div class="tenant-detail__card tenant-detail__card--table">
+          <app-tenant-feature-toggles
+            [tenantId]="t.id"
+            [enabledFeatures]="t.features"
+            (toggled)="load()"
+          />
+        </div>
+      </div>
+    </div>
   </section>
 }

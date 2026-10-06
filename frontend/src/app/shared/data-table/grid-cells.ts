@@ -12,9 +12,9 @@ import { NgTemplateOutlet } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { ICellRendererAngularComp, INoRowsOverlayAngularComp } from 'ag-grid-angular';
 import type { ICellRendererParams, INoRowsOverlayParams } from 'ag-grid-community';
-import { ButtonDirective } from 'primeng/button';
 
 import { EmptyState } from '../empty-state/empty-state';
+import { HlmButton, severityToButton } from '../ui/button';
 import { DataTableAction } from './data-table.model';
 
 /** Marker key carried by the synthetic full-width rows that hold an expansion. */
@@ -57,7 +57,7 @@ export class GridTemplateCell<T> implements ICellRendererAngularComp {
 /** Per-row icon buttons / links (DataTable `actions` input). */
 @Component({
   selector: 'app-grid-actions-cell',
-  imports: [ButtonDirective, RouterLink],
+  imports: [HlmButton, RouterLink],
   template: `
     <div class="grid-actions">
       @for (action of actions(); track action.label) {
@@ -65,9 +65,10 @@ export class GridTemplateCell<T> implements ICellRendererAngularComp {
           @if (!action.visible || action.visible(r)) {
             @if (action.routerLink) {
               <a
-                pButton
-                [text]="true"
-                [severity]="action.severity ?? 'secondary'"
+                hlmBtn
+                size="icon-sm"
+                [variant]="tone(action).variant"
+                [class]="tone(action).class"
                 [routerLink]="action.routerLink(r)"
                 [attr.aria-label]="action.label"
               >
@@ -75,10 +76,11 @@ export class GridTemplateCell<T> implements ICellRendererAngularComp {
               </a>
             } @else {
               <button
-                pButton
+                hlmBtn
                 type="button"
-                [text]="true"
-                [severity]="action.severity ?? 'secondary'"
+                size="icon-sm"
+                [variant]="tone(action).variant"
+                [class]="tone(action).class"
                 [disabled]="action.disabled ? action.disabled(r) : false"
                 [attr.aria-label]="action.label"
                 (click)="action.onClick?.(r)"
@@ -103,6 +105,10 @@ export class GridTemplateCell<T> implements ICellRendererAngularComp {
 export class GridActionsCell<T> implements ICellRendererAngularComp {
   protected readonly actions = signal<DataTableAction<T>[]>([]);
   protected readonly row = signal<T | undefined>(undefined);
+
+  protected tone(action: DataTableAction<T>) {
+    return severityToButton(action.severity, 'icon');
+  }
 
   agInit(params: ICellRendererParams<T> & { actions: DataTableAction<T>[] }): void {
     this.refresh(params);

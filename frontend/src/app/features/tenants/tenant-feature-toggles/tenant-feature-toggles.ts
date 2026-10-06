@@ -1,5 +1,13 @@
-import { Component, TemplateRef, computed, inject, input, output, signal, viewChild } from '@angular/core';
-import { ButtonDirective } from 'primeng/button';
+import {
+  Component,
+  TemplateRef,
+  computed,
+  inject,
+  input,
+  output,
+  signal,
+  viewChild,
+} from '@angular/core';
 
 import { FeatureService } from '../../../core/data-access/feature.service';
 import { TenantService } from '../../../core/data-access/tenant.service';
@@ -9,10 +17,11 @@ import { DataTable } from '../../../shared/data-table/data-table';
 import { DataTableColumn } from '../../../shared/data-table/data-table.model';
 import { ToastService } from '../../../core/feedback/toast.service';
 import { ConfirmService } from '../../../core/feedback/confirm.service';
+import { HlmButton } from '../../../shared/ui/button';
 
 @Component({
   selector: 'app-tenant-feature-toggles',
-  imports: [ButtonDirective, StatusBadge, DataTable],
+  imports: [HlmButton, StatusBadge, DataTable],
   templateUrl: './tenant-feature-toggles.html',
   styleUrl: './tenant-feature-toggles.scss',
 })
