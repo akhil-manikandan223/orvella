@@ -40,7 +40,7 @@
   [header]="drawerHeader()"
 >
   @if (drawerVisible()) {
-    <form class="tenant-users__form" (submit)="onSubmit($event)">
+    <form class="tenant-users__form" novalidate (submit)="onSubmit($event)">
       <div class="tenant-users__field">
         <label for="tenant-user-email">Email</label>
         <input
