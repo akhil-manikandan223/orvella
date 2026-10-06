@@ -1,12 +1,10 @@
 import { Component, inject, signal } from '@angular/core';
 import { FormField, form, required } from '@angular/forms/signals';
-import { InputPassword } from 'primeng/inputpassword';
-import { IconField } from 'primeng/iconfield';
-import { InputIcon } from 'primeng/inputicon';
-import { ButtonDirective } from 'primeng/button';
-import { MessageService } from 'primeng/api';
 
 import { PASSWORD_CHANGER } from '../../../core/auth/password-changer';
+import { ToastService } from '../../../core/feedback/toast.service';
+import { HlmButton } from '../../../shared/ui/button';
+import { HlmInput } from '../../../shared/ui/input';
 
 interface ChangePasswordFormValue {
   current_password: string;
@@ -16,7 +14,7 @@ interface ChangePasswordFormValue {
 
 @Component({
   selector: 'app-profile-security',
-  imports: [InputPassword, IconField, InputIcon, ButtonDirective, FormField],
+  imports: [HlmInput, HlmButton, FormField],
   templateUrl: './profile-security.html',
   styleUrl: './profile-security.scss',
 })
@@ -24,7 +22,7 @@ export class ProfileSecurity {
   // Whose password this changes depends on which route loaded the screen -
   // see PASSWORD_CHANGER.
   private readonly passwordChanger = inject(PASSWORD_CHANGER);
-  private readonly messageService = inject(MessageService);
+  private readonly toast = inject(ToastService);
 
   protected readonly submitting = signal(false);
   // Suppresses "required" messages on the fields this clears right after a
@@ -56,7 +54,7 @@ export class ProfileSecurity {
 
     const { current_password, new_password, confirm_password } = this.model();
     if (new_password !== confirm_password) {
-      this.messageService.add({
+      this.toast.show({
         severity: 'error',
         summary: 'Passwords do not match',
         detail: 'New password and confirmation must be the same.',
@@ -67,7 +65,7 @@ export class ProfileSecurity {
     this.submitting.set(true);
     try {
       await this.passwordChanger.changePassword(current_password, new_password);
-      this.messageService.add({
+      this.toast.show({
         severity: 'success',
         summary: 'Password changed',
         detail: 'Your password has been updated.',

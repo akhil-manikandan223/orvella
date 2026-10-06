@@ -1,10 +1,6 @@
 import { Component, computed, inject, signal } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { FormField, disabled, email, form, required } from '@angular/forms/signals';
-import { ButtonDirective } from 'primeng/button';
-import { InputText } from 'primeng/inputtext';
-import { Select } from 'primeng/select';
-import { MessageService } from 'primeng/api';
 
 import { CityService } from '../../../core/data-access/city.service';
 import { CountryService } from '../../../core/data-access/country.service';
@@ -20,6 +16,10 @@ import {
 import { PageHeader } from '../../../shared/page-header/page-header';
 import { brandColorPattern } from '../../../shared/validators/brand-color.validator';
 import { slugPattern } from '../../../shared/validators/slug.validator';
+import { ToastService } from '../../../core/feedback/toast.service';
+import { HlmButton } from '../../../shared/ui/button';
+import { HlmInput } from '../../../shared/ui/input';
+import { AppSelect } from '../../../shared/ui/select';
 
 interface TenantCreateFormValue {
   name: string;
@@ -42,7 +42,7 @@ interface TenantCreateFormValue {
 
 @Component({
   selector: 'app-tenant-create',
-  imports: [ButtonDirective, InputText, Select, FormField, PageHeader, RouterLink],
+  imports: [HlmButton, HlmInput, AppSelect, FormField, PageHeader, RouterLink],
   templateUrl: './tenant-create.html',
   styleUrl: './tenant-create.scss',
 })
@@ -53,7 +53,7 @@ export class TenantCreate {
   private readonly countryService = inject(CountryService);
   private readonly stateService = inject(StateService);
   private readonly cityService = inject(CityService);
-  private readonly messageService = inject(MessageService);
+  private readonly toast = inject(ToastService);
   private readonly router = inject(Router);
 
   protected readonly submitting = signal(false);
@@ -174,7 +174,7 @@ export class TenantCreate {
       })
       .subscribe({
         next: (tenant) => {
-          this.messageService.add({
+          this.toast.show({
             severity: 'success',
             summary: 'Tenant created',
             detail: `"${tenant.name}" was created successfully.`,

@@ -1,13 +1,12 @@
 import { Component, inject, input, output } from '@angular/core';
 import { Location } from '@angular/common';
-import { IconField } from 'primeng/iconfield';
-import { InputIcon } from 'primeng/inputicon';
-import { InputText } from 'primeng/inputtext';
-import { ButtonDirective } from 'primeng/button';
+
+import { HlmButton } from '../ui/button';
+import { HlmInput } from '../ui/input';
 
 @Component({
   selector: 'app-page-header',
-  imports: [IconField, InputIcon, InputText, ButtonDirective],
+  imports: [HlmButton, HlmInput],
   templateUrl: './page-header.html',
   styleUrl: './page-header.scss',
 })

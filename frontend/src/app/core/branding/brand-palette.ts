@@ -1,33 +1,30 @@
 /**
- * Builds a PrimeNG 50..950 primary palette from a single tenant brand colour.
+ * Builds the 50..900 `--orv-primary-*` scale (src/styles/tokens.css) from a
+ * single tenant brand colour, which takes the brand step, 600.
  *
- * The ratios below were reverse-engineered from Orvella's own hand-picked
- * purple scale in app.config.ts, so a tenant's generated palette has the same
- * character (how fast it lightens, how dark the deep end goes) as the default
- * brand rather than a flat linear ramp.
- *
- * Written by hand rather than importing @primeuix/styled's `palette()`: that
- * helper is only a transitive dependency here, and reaching into an
- * undeclared package would break on any hoisting or version change.
+ * The ratios below are averaged from Orvella's own hand-picked navy scale, so
+ * a tenant's generated palette has the same character (how fast it lightens,
+ * how dark the deep end goes) as the default brand rather than a flat linear
+ * ramp. `dark` is the lifted primary dark mode uses on near-black surfaces.
  */
 type Rgb = { r: number; g: number; b: number };
 
 /** Fraction of the way from the base colour toward white. */
-const TINT_STOPS: Record<number, number> = {
-  50: 0.92,
-  100: 0.85,
-  200: 0.67,
-  300: 0.46,
-  400: 0.23,
+const TINT_STOPS: Record<string, number> = {
+  50: 0.94,
+  100: 0.87,
+  200: 0.74,
+  300: 0.57,
+  400: 0.35,
+  500: 0.17,
+  dark: 0.26,
 };
 
 /** Fraction of the way from the base colour toward black. */
-const SHADE_STOPS: Record<number, number> = {
-  600: 0.19,
-  700: 0.36,
-  800: 0.51,
-  900: 0.67,
-  950: 0.8,
+const SHADE_STOPS: Record<string, number> = {
+  700: 0.19,
+  800: 0.35,
+  900: 0.53,
 };
 
 function parseHex(hex: string): Rgb | null {
@@ -65,7 +62,7 @@ export function buildPrimaryPalette(brandColor: string): Record<string, string> 
 
   const white: Rgb = { r: 255, g: 255, b: 255 };
   const black: Rgb = { r: 0, g: 0, b: 0 };
-  const palette: Record<string, string> = { 500: toHex(base) };
+  const palette: Record<string, string> = { 600: toHex(base) };
 
   for (const [step, amount] of Object.entries(TINT_STOPS)) {
     palette[step] = toHex(mix(base, white, amount));

@@ -1,6 +1,4 @@
 import { Component, computed, inject, signal } from '@angular/core';
-import { ButtonDirective } from 'primeng/button';
-import { ConfirmationService, MessageService } from 'primeng/api';
 import { forkJoin } from 'rxjs';
 
 import { DepartmentService } from '../../../../core/data-access/department.service';
@@ -17,10 +15,13 @@ import {
 } from '../../../../shared/data-table/data-table.model';
 import { FormDrawer } from '../../../../shared/form-drawer/form-drawer';
 import { PersonForm } from '../person-form/person-form';
+import { ToastService } from '../../../../core/feedback/toast.service';
+import { ConfirmService } from '../../../../core/feedback/confirm.service';
+import { HlmButton } from '../../../../shared/ui/button';
 
 @Component({
   selector: 'app-person-list',
-  imports: [ButtonDirective, PageHeader, DataTable, FormDrawer, PersonForm],
+  imports: [HlmButton, PageHeader, DataTable, FormDrawer, PersonForm],
   templateUrl: './person-list.html',
   styleUrl: './person-list.scss',
 })
@@ -29,8 +30,8 @@ export class PersonList {
   private readonly departmentService = inject(DepartmentService);
   private readonly locationService = inject(LocationService);
   private readonly tenantAuthService = inject(TenantAuthService);
-  private readonly confirmationService = inject(ConfirmationService);
-  private readonly messageService = inject(MessageService);
+  private readonly confirmService = inject(ConfirmService);
+  private readonly toast = inject(ToastService);
 
   protected readonly people = signal<PersonRead[]>([]);
   protected readonly loading = signal(false);
@@ -117,18 +118,17 @@ export class PersonList {
   }
 
   protected confirmDelete(person: PersonRead): void {
-    this.confirmationService.confirm({
+    this.confirmService.confirm({
       header: 'Delete Person',
       message: `Delete "${person.first_name} ${person.last_name}"? This cannot be undone.`,
-      icon: 'pi pi-exclamation-triangle',
-      acceptButtonProps: { severity: 'danger' },
+      destructive: true,
       accept: () => this.deletePerson(person),
     });
   }
 
   private deletePerson(person: PersonRead): void {
     this.personService.delete(person.id).subscribe(() => {
-      this.messageService.add({
+      this.toast.show({
         severity: 'success',
         summary: 'Deleted',
         detail: `"${person.first_name} ${person.last_name}" was deleted.`,
@@ -139,18 +139,17 @@ export class PersonList {
 
   protected confirmBulkDelete(people: PersonRead[]): void {
     const count = people.length;
-    this.confirmationService.confirm({
+    this.confirmService.confirm({
       header: 'Delete People',
       message: `Delete ${count} ${count === 1 ? 'person' : 'people'}? This cannot be undone.`,
-      icon: 'pi pi-exclamation-triangle',
-      acceptButtonProps: { severity: 'danger' },
+      destructive: true,
       accept: () => this.deletePeople(people),
     });
   }
 
   private deletePeople(people: PersonRead[]): void {
     forkJoin(people.map((person) => this.personService.delete(person.id))).subscribe(() => {
-      this.messageService.add({
+      this.toast.show({
         severity: 'success',
         summary: 'Deleted',
         detail: `${people.length} ${people.length === 1 ? 'person' : 'people'} deleted.`,

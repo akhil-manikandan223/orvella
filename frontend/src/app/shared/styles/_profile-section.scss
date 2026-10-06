@@ -14,14 +14,14 @@
     margin-bottom: 0.75rem;
 
     i {
-      color: var(--p-text-muted-color);
+      color: var(--muted-foreground);
     }
   }
 
   &__card {
-    border-radius: var(--p-content-border-radius);
-    border: 1px solid var(--p-content-border-color);
-    background: var(--p-content-background);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    background: var(--card);
     box-shadow:
       0 1px 3px rgb(0 0 0 / 8%),
       0 1px 2px rgb(0 0 0 / 5%);
@@ -39,7 +39,7 @@
       font-weight: 600;
       text-transform: uppercase;
       letter-spacing: 0.04em;
-      color: var(--p-text-muted-color);
+      color: var(--muted-foreground);
       margin-bottom: 0.3rem;
     }
 
@@ -63,12 +63,23 @@
     label {
       font-size: 0.8rem;
       font-weight: 600;
-      color: var(--p-text-color);
+      color: var(--foreground);
     }
 
-    p-iconfield {
-      width: 100%;
+    .profile-section__input-wrap {
+      position: relative;
       display: block;
+      width: 100%;
+
+      i {
+        position: absolute;
+        top: 50%;
+        left: 0.75rem;
+        transform: translateY(-50%);
+        font-size: 0.875rem;
+        color: var(--muted-foreground);
+        pointer-events: none;
+      }
     }
   }
 
@@ -79,7 +90,7 @@
 
   &__hint {
     margin: 0.15rem 0 0;
-    color: var(--p-text-muted-color);
+    color: var(--muted-foreground);
     font-size: 0.8rem;
   }
 
@@ -101,7 +112,7 @@
       height: 1.05rem;
       margin-top: 0.15rem;
       flex-shrink: 0;
-      accent-color: var(--p-primary-color);
+      accent-color: var(--primary);
     }
   }
 }

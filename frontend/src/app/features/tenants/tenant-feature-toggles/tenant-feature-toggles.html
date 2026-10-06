@@ -1,4 +1,5 @@
 <app-data-table
+  flush
   [columns]="columns()"
   [value]="allFeatures()"
   emptyMessage="No features in the catalog yet."
@@ -16,9 +17,11 @@
 
 <ng-template #enabledCell let-feature>
   <button
-    pButton
-    [text]="true"
-    [severity]="isEnabled(feature) ? 'success' : 'secondary'"
+    type="button"
+    hlmBtn
+    variant="ghost"
+    size="sm"
+    [class]="isEnabled(feature) ? 'text-success hover:text-success' : 'text-muted-foreground'"
     [disabled]="togglingFeatureId() === feature.id"
     [attr.aria-label]="(isEnabled(feature) ? 'Disable ' : 'Enable ') + feature.name"
     (click)="onToggleClick(feature)"

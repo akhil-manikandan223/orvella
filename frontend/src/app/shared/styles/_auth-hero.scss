@@ -16,9 +16,9 @@
   min-height: 100dvh;
   padding: 2.5rem 3rem;
   overflow: hidden;
-  background: radial-gradient(ellipse at top, #191c37 0%, #0a0b16 55%, #060710 100%);
+  background: radial-gradient(ellipse at top, #0e2a57 0%, #071630 55%, #040b1a 100%);
 
-  // ---- Backdrop: animated gradient blobs + dot grid ----
+  // ---- Backdrop: plexus artwork + slow navy glow blobs ----
   &__backdrop {
     position: absolute;
     inset: 0;
@@ -53,7 +53,7 @@
       left: -6%;
       width: 34rem;
       height: 34rem;
-      background: radial-gradient(circle, #7c3aed 0%, transparent 70%);
+      background: radial-gradient(circle, #2a5daf 0%, transparent 70%);
       animation: auth-hero-drift-one 22s ease-in-out infinite;
     }
 
@@ -62,7 +62,7 @@
       right: 18%;
       width: 30rem;
       height: 30rem;
-      background: radial-gradient(circle, #2563eb 0%, transparent 70%);
+      background: radial-gradient(circle, #0e4491 0%, transparent 70%);
       animation: auth-hero-drift-two 26s ease-in-out infinite;
     }
 
@@ -71,7 +71,7 @@
       right: -8%;
       width: 26rem;
       height: 26rem;
-      background: radial-gradient(circle, #db2777 0%, transparent 70%);
+      background: radial-gradient(circle, #4f7cc6 0%, transparent 70%);
       opacity: 0.3;
       animation: auth-hero-drift-three 30s ease-in-out infinite;
     }
@@ -132,7 +132,7 @@
     line-height: 1.15;
     letter-spacing: -0.02em;
     text-wrap: balance;
-    background: linear-gradient(135deg, #f5f3ff 0%, #c4b5fd 55%, #93c5fd 100%);
+    background: linear-gradient(135deg, #ffffff 0%, #d9e4f5 55%, #85a6dc 100%);
     background-clip: text;
     -webkit-background-clip: text;
     color: transparent;
@@ -166,7 +166,7 @@
 
     i {
       font-size: 0.9rem;
-      color: #a78bfa;
+      color: #85a6dc;
     }
   }
 
@@ -188,7 +188,7 @@
 
     i {
       font-size: 1.05rem;
-      color: #a78bfa;
+      color: #85a6dc;
       margin: 0.15rem 0 0.1rem;
     }
   }
@@ -243,7 +243,7 @@
     gap: 0.5rem;
     padding: 2.5rem 2.25rem;
     border-radius: 1.25rem;
-    background: rgb(20 21 41 / 70%);
+    background: rgb(7 22 48 / 72%);
     backdrop-filter: blur(20px);
     border: 1px solid rgb(255 255 255 / 10%);
     box-shadow:
@@ -268,7 +268,7 @@
     font-size: 1.35rem;
     font-weight: 700;
     letter-spacing: -0.01em;
-    color: #f5f3ff;
+    color: #eef3fb;
   }
 
   &__subtitle {
@@ -291,30 +291,48 @@
       color: rgb(255 255 255 / 75%);
     }
 
-    p-iconfield {
-      width: 100%;
+    .auth-hero__input-wrap {
+      position: relative;
       display: block;
+      width: 100%;
+
+      i {
+        position: absolute;
+        top: 50%;
+        left: 0.875rem;
+        transform: translateY(-50%);
+        font-size: 0.9rem;
+        color: rgb(255 255 255 / 40%);
+        pointer-events: none;
+      }
+
+      &:focus-within i {
+        color: #85a6dc;
+      }
     }
   }
 
   &__error {
-    color: #f87171;
+    color: #f2877e;
   }
 
   &__submit {
     width: 100%;
     margin-top: 0.25rem;
     justify-content: center;
-    background: var(--p-primary-color);
+    // The dark-mode primary (--primary under .app-dark): brand navy #0E4491
+    // would sink into this navy backdrop.
+    background: #3366c2;
     border: none;
-    box-shadow: 0 8px 24px -8px color-mix(in srgb, var(--p-primary-color) 65%, transparent);
+    box-shadow: 0 8px 24px -8px rgb(51 102 194 / 65%);
     transition:
       transform 0.15s ease,
       box-shadow 0.15s ease;
 
     &:hover:not(:disabled) {
       transform: translateY(-1px);
-      box-shadow: 0 12px 28px -8px color-mix(in srgb, var(--p-primary-color) 80%, transparent);
+      background: #2a5daf;
+      box-shadow: 0 12px 28px -8px rgb(51 102 194 / 80%);
     }
 
     &:disabled {
@@ -331,38 +349,31 @@
     font-size: 0.75rem;
   }
 
-  // ---- Dark-themed PrimeNG inputs for the glass card ----
-  .p-inputtext,
-  .p-password {
-    width: 100%;
+  // ---- Glass-card inputs (helm hlmInput, restyled for the dark hero) ----
+  .auth-hero__input {
+    height: 2.75rem;
+    padding-left: 2.5rem;
     background: rgb(255 255 255 / 5%);
     border: 1px solid rgb(255 255 255 / 12%);
-    color: #f5f3ff;
+    color: #eef3fb;
 
     &::placeholder {
       color: rgb(255 255 255 / 35%);
     }
 
-    &:enabled:hover {
+    &:hover {
       border-color: rgb(255 255 255 / 20%);
     }
 
-    &:enabled:focus {
-      border-color: var(--p-primary-color);
-      box-shadow: 0 0 0 3px color-mix(in srgb, var(--p-primary-color) 25%, transparent);
+    &:focus-visible {
+      border-color: #4f7cc6;
+      box-shadow: 0 0 0 3px rgb(79 124 198 / 30%);
     }
 
-    &.p-invalid {
-      border-color: #f87171;
+    &[aria-invalid='true'] {
+      border-color: #f2877e;
+      box-shadow: none;
     }
-  }
-
-  .p-inputicon {
-    color: rgb(255 255 255 / 40%);
-  }
-
-  p-iconfield:focus-within .p-inputicon {
-    color: var(--p-primary-color);
   }
 }
 

@@ -1,5 +1,4 @@
 import { Component, computed, inject, input, signal } from '@angular/core';
-import { ButtonDirective } from 'primeng/button';
 
 import { CountryService } from '../../../../core/data-access/country.service';
 import { StateService } from '../../../../core/data-access/state.service';
@@ -10,10 +9,11 @@ import { DataTableAction, DataTableColumn } from '../../../../shared/data-table/
 import { FormDrawer } from '../../../../shared/form-drawer/form-drawer';
 import { TableSettings } from '../../../../shared/table-settings/table-settings';
 import { StateForm } from '../state-form/state-form';
+import { HlmButton } from '../../../../shared/ui/button';
 
 @Component({
   selector: 'app-state-list',
-  imports: [ButtonDirective, PageHeader, DataTable, FormDrawer, TableSettings, StateForm],
+  imports: [HlmButton, PageHeader, DataTable, FormDrawer, TableSettings, StateForm],
   templateUrl: './state-list.html',
   styleUrl: './state-list.scss',
 })

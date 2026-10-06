@@ -1,14 +1,14 @@
 import { Component, effect, inject, input, output, signal, viewChild } from '@angular/core';
-import { ButtonDirective } from 'primeng/button';
-import { Popover } from 'primeng/popover';
+import { BrnPopover, BrnPopoverContent, BrnPopoverTrigger } from '@spartan-ng/brain/popover';
 
 import { TablePreferenceService } from '../../core/data-access/table-preference.service';
 import { DataTableColumn } from '../data-table/data-table.model';
 import { FormDrawer } from '../form-drawer/form-drawer';
+import { HlmButton } from '../ui/button';
 
 @Component({
   selector: 'app-table-settings',
-  imports: [ButtonDirective, Popover, FormDrawer],
+  imports: [BrnPopover, BrnPopoverContent, BrnPopoverTrigger, FormDrawer, HlmButton],
   templateUrl: './table-settings.html',
   styleUrl: './table-settings.scss',
 })
@@ -20,7 +20,7 @@ export class TableSettings<T extends object = Record<string, unknown>> {
   readonly columns = input.required<DataTableColumn<T>[]>();
   readonly visibleFieldsChange = output<Set<string>>();
 
-  protected readonly popoverRef = viewChild(Popover);
+  private readonly popoverRef = viewChild(BrnPopover);
 
   protected readonly drawerVisible = signal(false);
   protected readonly visibleFields = signal<Set<string>>(new Set());
@@ -39,12 +39,8 @@ export class TableSettings<T extends object = Record<string, unknown>> {
     });
   }
 
-  protected togglePopover(event: Event): void {
-    this.popoverRef()?.toggle(event);
-  }
-
   protected openCustomize(): void {
-    this.popoverRef()?.hide();
+    this.popoverRef()?.close();
     this.drawerVisible.set(true);
   }
 

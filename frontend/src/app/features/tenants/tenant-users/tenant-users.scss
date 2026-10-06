@@ -11,7 +11,7 @@
   justify-content: space-between;
   gap: 0.75rem;
   padding: 0.5rem;
-  border-bottom: 1px solid var(--p-content-border-color);
+  border-bottom: 1px solid var(--border);
 }
 
 .tenant-users__form {
@@ -37,7 +37,7 @@
 }
 
 .tenant-users__error {
-  color: var(--p-red-500);
+  color: var(--danger);
 }
 
 .tenant-users__actions {
@@ -46,5 +46,5 @@
   gap: 0.5rem;
   margin-top: auto;
   padding-top: 1rem;
-  border-top: 1px solid var(--p-content-border-color);
+  border-top: 1px solid var(--border);
 }

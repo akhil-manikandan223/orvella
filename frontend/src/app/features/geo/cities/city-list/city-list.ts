@@ -1,5 +1,4 @@
 import { Component, computed, inject, input, signal } from '@angular/core';
-import { ButtonDirective } from 'primeng/button';
 
 import { CityService } from '../../../../core/data-access/city.service';
 import { DistrictService } from '../../../../core/data-access/district.service';
@@ -11,10 +10,11 @@ import { DataTableAction, DataTableColumn } from '../../../../shared/data-table/
 import { FormDrawer } from '../../../../shared/form-drawer/form-drawer';
 import { TableSettings } from '../../../../shared/table-settings/table-settings';
 import { CityForm } from '../city-form/city-form';
+import { HlmButton } from '../../../../shared/ui/button';
 
 @Component({
   selector: 'app-city-list',
-  imports: [ButtonDirective, PageHeader, DataTable, FormDrawer, TableSettings, CityForm],
+  imports: [HlmButton, PageHeader, DataTable, FormDrawer, TableSettings, CityForm],
   templateUrl: './city-list.html',
   styleUrl: './city-list.scss',
 })

@@ -1,12 +1,12 @@
 import { Component, OnInit, inject, input, output, signal } from '@angular/core';
 import { FormField, form, required } from '@angular/forms/signals';
-import { ButtonDirective } from 'primeng/button';
-import { InputText } from 'primeng/inputtext';
-import { MessageService } from 'primeng/api';
 
 import { OrganizationCategoryService } from '../../../core/data-access/organization-category.service';
 import { OrganizationCategoryRead } from '../../../core/models/organization-taxonomy.model';
 import { slugPattern } from '../../../shared/validators/slug.validator';
+import { ToastService } from '../../../core/feedback/toast.service';
+import { HlmButton } from '../../../shared/ui/button';
+import { HlmInput } from '../../../shared/ui/input';
 
 interface CategoryFormValue {
   name: string;
@@ -15,13 +15,13 @@ interface CategoryFormValue {
 
 @Component({
   selector: 'app-category-form',
-  imports: [ButtonDirective, InputText, FormField],
+  imports: [HlmButton, HlmInput, FormField],
   templateUrl: './category-form.html',
   styleUrl: './category-form.scss',
 })
 export class CategoryForm implements OnInit {
   private readonly categoryService = inject(OrganizationCategoryService);
-  private readonly messageService = inject(MessageService);
+  private readonly toast = inject(ToastService);
 
   readonly category = input<OrganizationCategoryRead | null>(null);
   readonly saved = output<void>();
@@ -60,7 +60,7 @@ export class CategoryForm implements OnInit {
 
     request.subscribe({
       next: () => {
-        this.messageService.add({
+        this.toast.show({
           severity: 'success',
           summary: 'Saved',
           detail: `Category "${value.name}" saved.`,

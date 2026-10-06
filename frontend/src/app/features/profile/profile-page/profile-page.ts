@@ -2,18 +2,7 @@ import { Component, input } from '@angular/core';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 
 import { PageHeader } from '../../../shared/page-header/page-header';
-
-export interface ProfileNavItem {
-  label: string;
-  icon: string;
-  path: string;
-}
-
-export const PLATFORM_ADMIN_PROFILE_NAV_ITEMS: ProfileNavItem[] = [
-  { label: 'General', icon: 'pi pi-user', path: 'general' },
-  { label: 'Appearance', icon: 'pi pi-palette', path: 'appearance' },
-  { label: 'Privacy & Security', icon: 'pi pi-lock', path: 'security' },
-];
+import { ProfileNavItem } from './profile-nav';
 
 @Component({
   selector: 'app-profile-page',

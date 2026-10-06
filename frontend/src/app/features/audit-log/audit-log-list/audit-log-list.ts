@@ -1,7 +1,6 @@
 import { Component, TemplateRef, computed, effect, inject, signal, viewChild } from '@angular/core';
 import { DatePipe, JsonPipe } from '@angular/common';
 import { FormField, form } from '@angular/forms/signals';
-import { InputText } from 'primeng/inputtext';
 
 import { AuditLogService } from '../../../core/data-access/audit-log.service';
 import { AuditLogRead } from '../../../core/models/audit-log.model';
@@ -9,10 +8,11 @@ import { PageHeader } from '../../../shared/page-header/page-header';
 import { DataTable } from '../../../shared/data-table/data-table';
 import { DataTableColumn } from '../../../shared/data-table/data-table.model';
 import { TableSettings } from '../../../shared/table-settings/table-settings';
+import { HlmInput } from '../../../shared/ui/input';
 
 @Component({
   selector: 'app-audit-log-list',
-  imports: [InputText, FormField, JsonPipe, PageHeader, DataTable, TableSettings],
+  imports: [HlmInput, FormField, JsonPipe, PageHeader, DataTable, TableSettings],
   providers: [DatePipe],
   templateUrl: './audit-log-list.html',
   styleUrl: './audit-log-list.scss',

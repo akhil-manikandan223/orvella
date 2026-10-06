@@ -1,15 +1,13 @@
-<form class="state-form" (submit)="onSubmit($event)">
+<form class="state-form" novalidate (submit)="onSubmit($event)">
   <div class="state-form__field">
     <label for="state-country">Country</label>
-    <p-select
+    <app-select
       inputId="state-country"
       [formField]="$any(stateForm.country_id)"
       [options]="countries()"
       optionLabel="name"
       optionValue="id"
-      [filter]="true"
       placeholder="Select a country"
-      [class.p-invalid]="stateForm.country_id().touched() && stateForm.country_id().invalid()"
     />
     @if (stateForm.country_id().touched()) {
       @for (error of stateForm.country_id().errors(); track error.kind) {
@@ -22,9 +20,9 @@
     <label for="state-name">Name</label>
     <input
       id="state-name"
-      pInputText
+      hlmInput
       [formField]="stateForm.name"
-      [class.p-invalid]="stateForm.name().touched() && stateForm.name().invalid()"
+      [attr.aria-invalid]="(stateForm.name().touched() && stateForm.name().invalid()) || null"
     />
     @if (stateForm.name().touched()) {
       @for (error of stateForm.name().errors(); track error.kind) {
@@ -37,9 +35,9 @@
     <label for="state-slug">Slug</label>
     <input
       id="state-slug"
-      pInputText
+      hlmInput
       [formField]="stateForm.slug"
-      [class.p-invalid]="stateForm.slug().touched() && stateForm.slug().invalid()"
+      [attr.aria-invalid]="(stateForm.slug().touched() && stateForm.slug().invalid()) || null"
     />
     @if (stateForm.slug().touched()) {
       @for (error of stateForm.slug().errors(); track error.kind) {
@@ -49,10 +47,8 @@
   </div>
 
   <div class="state-form__actions">
-    <button pButton type="button" [text]="true" severity="secondary" (click)="cancelled.emit()">
-      Cancel
-    </button>
-    <button pButton type="submit" [disabled]="submitting()">
+    <button hlmBtn variant="ghost" type="button" (click)="cancelled.emit()">Cancel</button>
+    <button hlmBtn type="submit" [disabled]="submitting()">
       @if (submitting()) {
         <i class="pi pi-spin pi-spinner" aria-hidden="true"></i>
       }

@@ -1,18 +1,17 @@
 import { Component, OnInit, computed, inject, input, signal } from '@angular/core';
-import { FormsModule } from '@angular/forms';
 import { FormField, email, form, required } from '@angular/forms/signals';
-import { ButtonDirective } from 'primeng/button';
-import { InputText } from 'primeng/inputtext';
-import { InputPassword } from 'primeng/inputpassword';
-import { Select } from 'primeng/select';
-import { SelectButton } from 'primeng/selectbutton';
-import { ConfirmationService, MessageService } from 'primeng/api';
+import { BrnToggleGroup, BrnToggleGroupItem } from '@spartan-ng/brain/toggle-group';
 
 import { TenantUserService } from '../../../core/data-access/tenant-user.service';
 import { TenantUserRead, TenantUserRole } from '../../../core/models/tenant-user.model';
 import { DataTable } from '../../../shared/data-table/data-table';
 import { DataTableAction, DataTableColumn } from '../../../shared/data-table/data-table.model';
 import { FormDrawer } from '../../../shared/form-drawer/form-drawer';
+import { ToastService } from '../../../core/feedback/toast.service';
+import { ConfirmService } from '../../../core/feedback/confirm.service';
+import { HlmButton } from '../../../shared/ui/button';
+import { HlmInput } from '../../../shared/ui/input';
+import { AppSelect } from '../../../shared/ui/select';
 
 interface TenantUserFormValue {
   email: string;
@@ -48,12 +47,11 @@ const COLUMNS: DataTableColumn<TenantUserRead>[] = [
 @Component({
   selector: 'app-tenant-users',
   imports: [
-    ButtonDirective,
-    InputText,
-    InputPassword,
-    Select,
-    SelectButton,
-    FormsModule,
+    HlmButton,
+    HlmInput,
+    AppSelect,
+    BrnToggleGroup,
+    BrnToggleGroupItem,
     FormField,
     DataTable,
     FormDrawer,
@@ -63,8 +61,8 @@ const COLUMNS: DataTableColumn<TenantUserRead>[] = [
 })
 export class TenantUsers implements OnInit {
   private readonly tenantUserService = inject(TenantUserService);
-  private readonly messageService = inject(MessageService);
-  private readonly confirmationService = inject(ConfirmationService);
+  private readonly toast = inject(ToastService);
+  private readonly confirmService = inject(ConfirmService);
 
   readonly tenantId = input.required<string>();
 
@@ -165,7 +163,7 @@ export class TenantUsers implements OnInit {
       next: () => {
         this.submitting.set(false);
         this.drawerVisible.set(false);
-        this.messageService.add({
+        this.toast.show({
           severity: 'success',
           summary: editing ? 'User updated' : 'User created',
           detail: editing
@@ -190,11 +188,10 @@ export class TenantUsers implements OnInit {
   }
 
   protected confirmDeactivate(user: TenantUserRead): void {
-    this.confirmationService.confirm({
+    this.confirmService.confirm({
       header: 'Deactivate User',
       message: `Deactivate "${user.email}"? They will immediately lose access to this tenant's workspace.`,
-      icon: 'pi pi-exclamation-triangle',
-      acceptButtonProps: { severity: 'danger' },
+      destructive: true,
       accept: () => this.setActive(user, false),
     });
   }
@@ -207,7 +204,7 @@ export class TenantUsers implements OnInit {
     this.tenantUserService
       .update(this.tenantId(), user.id, { is_active: isActive })
       .subscribe(() => {
-        this.messageService.add({
+        this.toast.show({
           severity: 'success',
           summary: isActive ? 'User activated' : 'User deactivated',
           detail: isActive

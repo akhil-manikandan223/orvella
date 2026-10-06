@@ -1,13 +1,15 @@
-<form class="person-form" (submit)="onSubmit($event)">
+<form class="person-form" novalidate (submit)="onSubmit($event)">
   <div class="person-form__row">
     <div class="person-form__field">
       <label for="person-first-name">First name</label>
       <input
         id="person-first-name"
-        pInputText
+        hlmInput
         fluid
         [formField]="personForm.first_name"
-        [class.p-invalid]="personForm.first_name().touched() && personForm.first_name().invalid()"
+        [attr.aria-invalid]="
+          (personForm.first_name().touched() && personForm.first_name().invalid()) || null
+        "
       />
       @if (personForm.first_name().touched()) {
         @for (error of personForm.first_name().errors(); track error.kind) {
@@ -20,10 +22,12 @@
       <label for="person-last-name">Last name</label>
       <input
         id="person-last-name"
-        pInputText
+        hlmInput
         fluid
         [formField]="personForm.last_name"
-        [class.p-invalid]="personForm.last_name().touched() && personForm.last_name().invalid()"
+        [attr.aria-invalid]="
+          (personForm.last_name().touched() && personForm.last_name().invalid()) || null
+        "
       />
       @if (personForm.last_name().touched()) {
         @for (error of personForm.last_name().errors(); track error.kind) {
@@ -37,11 +41,13 @@
     <label for="person-category">Category</label>
     <input
       id="person-category"
-      pInputText
+      hlmInput
       fluid
       placeholder="e.g. Student, Staff, Member, Patient"
       [formField]="personForm.category"
-      [class.p-invalid]="personForm.category().touched() && personForm.category().invalid()"
+      [attr.aria-invalid]="
+        (personForm.category().touched() && personForm.category().invalid()) || null
+      "
     />
     @if (personForm.category().touched()) {
       @for (error of personForm.category().errors(); track error.kind) {
@@ -56,10 +62,10 @@
       <input
         id="person-email"
         type="email"
-        pInputText
+        hlmInput
         fluid
         [formField]="personForm.email"
-        [class.p-invalid]="personForm.email().touched() && personForm.email().invalid()"
+        [attr.aria-invalid]="(personForm.email().touched() && personForm.email().invalid()) || null"
       />
       @if (personForm.email().touched()) {
         @for (error of personForm.email().errors(); track error.kind) {
@@ -70,45 +76,41 @@
 
     <div class="person-form__field">
       <label for="person-phone">Phone (optional)</label>
-      <input id="person-phone" pInputText fluid [formField]="personForm.phone" />
+      <input id="person-phone" hlmInput fluid [formField]="personForm.phone" />
     </div>
   </div>
 
   <div class="person-form__row">
     <div class="person-form__field">
       <label for="person-department">Department (optional)</label>
-      <p-select
+      <app-select
         inputId="person-department"
         [formField]="$any(personForm.department_id)"
         [options]="departments()"
         optionLabel="name"
         optionValue="id"
-        [filter]="true"
-        [showClear]="true"
+        showClear
         placeholder="No department"
       />
     </div>
 
     <div class="person-form__field">
       <label for="person-location">Location (optional)</label>
-      <p-select
+      <app-select
         inputId="person-location"
         [formField]="$any(personForm.location_id)"
         [options]="locations()"
         optionLabel="name"
         optionValue="id"
-        [filter]="true"
-        [showClear]="true"
+        showClear
         placeholder="No location"
       />
     </div>
   </div>
 
   <div class="person-form__actions">
-    <button pButton type="button" [text]="true" severity="secondary" (click)="cancelled.emit()">
-      Cancel
-    </button>
-    <button pButton type="submit" [disabled]="submitting()">
+    <button hlmBtn variant="ghost" type="button" (click)="cancelled.emit()">Cancel</button>
+    <button hlmBtn type="submit" [disabled]="submitting()">
       @if (submitting()) {
         <i class="pi pi-spin pi-spinner" aria-hidden="true"></i>
       }

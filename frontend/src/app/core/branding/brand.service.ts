@@ -1,5 +1,4 @@
-import { Service, computed, signal } from '@angular/core';
-import { updatePrimaryPalette } from '@primeuix/themes';
+import { DOCUMENT, Service, computed, inject, signal } from '@angular/core';
 
 import { buildPrimaryPalette } from './brand-palette';
 
@@ -15,6 +14,7 @@ const ORVELLA_LOGO_DARK = 'assets/logos/orvella-header-dark-logo.png';
  */
 @Service()
 export class BrandService {
+  private readonly document = inject(DOCUMENT);
   private readonly _logoUrl = signal<string | null>(null);
 
   /** The tenant's own logo, or null when they haven't set one. */
@@ -29,8 +29,14 @@ export class BrandService {
       return;
     }
     const palette = buildPrimaryPalette(brandColor);
-    if (palette) {
-      updatePrimaryPalette(palette);
+    if (!palette) {
+      return;
+    }
+    // Inline on <html>, so it beats the :root defaults in tokens.css; every
+    // semantic token (--primary, --accent, --topbar ...) derives from these.
+    const root = this.document.documentElement.style;
+    for (const [step, color] of Object.entries(palette)) {
+      root.setProperty(`--orv-primary-${step}`, color);
     }
   }
 

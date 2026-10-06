@@ -1,13 +1,10 @@
 import { Component, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormField, form, required } from '@angular/forms/signals';
-import { ButtonDirective } from 'primeng/button';
-import { InputText } from 'primeng/inputtext';
-import { InputPassword } from 'primeng/inputpassword';
-import { IconField } from 'primeng/iconfield';
-import { InputIcon } from 'primeng/inputicon';
 
 import { AuthService } from '../../../core/auth/auth.service';
+import { HlmButton } from '../../../shared/ui/button';
+import { HlmInput } from '../../../shared/ui/input';
 
 interface LoginFormValue {
   email: string;
@@ -36,7 +33,7 @@ const MODULES: ModuleTile[] = [
 
 @Component({
   selector: 'app-login-page',
-  imports: [ButtonDirective, InputText, InputPassword, IconField, InputIcon, FormField],
+  imports: [HlmButton, HlmInput, FormField],
   templateUrl: './login-page.html',
   styleUrl: './login-page.scss',
 })

@@ -1,9 +1,7 @@
 import { Component, computed, inject, input, OnInit, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { forkJoin } from 'rxjs';
-import { ButtonDirective } from 'primeng/button';
-import { ConfirmationService, MessageService } from 'primeng/api';
-import { Tab, TabList, TabPanel, TabPanels, Tabs } from 'primeng/tabs';
+import { BrnTabs, BrnTabsContent, BrnTabsList, BrnTabsTrigger } from '@spartan-ng/brain/tabs';
 
 import { CityService } from '../../../core/data-access/city.service';
 import { CountryService } from '../../../core/data-access/country.service';
@@ -17,19 +15,21 @@ import { PageHeader } from '../../../shared/page-header/page-header';
 import { StatusBadge } from '../../../shared/status-badge/status-badge';
 import { TenantFeatureToggles } from '../tenant-feature-toggles/tenant-feature-toggles';
 import { TenantUsers } from '../tenant-users/tenant-users';
+import { ToastService } from '../../../core/feedback/toast.service';
+import { ConfirmService } from '../../../core/feedback/confirm.service';
+import { HlmButton } from '../../../shared/ui/button';
 
 @Component({
   selector: 'app-tenant-detail',
   imports: [
-    ButtonDirective,
+    BrnTabs,
+    BrnTabsList,
+    BrnTabsTrigger,
+    BrnTabsContent,
+    HlmButton,
     PageHeader,
     RouterLink,
     StatusBadge,
-    Tab,
-    TabList,
-    TabPanel,
-    TabPanels,
-    Tabs,
     TenantFeatureToggles,
     TenantUsers,
   ],
@@ -42,8 +42,8 @@ export class TenantDetail implements OnInit {
   private readonly countryService = inject(CountryService);
   private readonly stateService = inject(StateService);
   private readonly cityService = inject(CityService);
-  private readonly confirmationService = inject(ConfirmationService);
-  private readonly messageService = inject(MessageService);
+  private readonly confirmService = inject(ConfirmService);
+  private readonly toast = inject(ToastService);
 
   readonly id = input.required<string>();
 
@@ -128,11 +128,10 @@ export class TenantDetail implements OnInit {
     if (!tenant) {
       return;
     }
-    this.confirmationService.confirm({
+    this.confirmService.confirm({
       header: 'Deactivate Tenant',
       message: `Deactivate "${tenant.name}"? Its users will immediately lose access to the platform.`,
-      icon: 'pi pi-exclamation-triangle',
-      acceptButtonProps: { severity: 'danger' },
+      destructive: true,
       accept: () => this.setActive(false),
     });
   }
@@ -143,7 +142,7 @@ export class TenantDetail implements OnInit {
 
   private setActive(isActive: boolean): void {
     this.tenantService.update(this.id(), { is_active: isActive }).subscribe(() => {
-      this.messageService.add({
+      this.toast.show({
         severity: 'success',
         summary: isActive ? 'Tenant activated' : 'Tenant deactivated',
         detail: isActive

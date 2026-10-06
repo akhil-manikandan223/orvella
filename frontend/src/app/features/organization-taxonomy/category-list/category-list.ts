@@ -1,5 +1,4 @@
 import { Component, computed, inject, signal } from '@angular/core';
-import { ButtonDirective } from 'primeng/button';
 
 import { OrganizationCategoryService } from '../../../core/data-access/organization-category.service';
 import { OrganizationCategoryRead } from '../../../core/models/organization-taxonomy.model';
@@ -9,6 +8,7 @@ import { DataTableAction, DataTableColumn } from '../../../shared/data-table/dat
 import { FormDrawer } from '../../../shared/form-drawer/form-drawer';
 import { TableSettings } from '../../../shared/table-settings/table-settings';
 import { CategoryForm } from '../category-form/category-form';
+import { HlmButton } from '../../../shared/ui/button';
 
 const COLUMNS: DataTableColumn<OrganizationCategoryRead>[] = [
   { field: 'name', header: 'Name', sortable: true },
@@ -17,7 +17,7 @@ const COLUMNS: DataTableColumn<OrganizationCategoryRead>[] = [
 
 @Component({
   selector: 'app-category-list',
-  imports: [ButtonDirective, PageHeader, DataTable, FormDrawer, TableSettings, CategoryForm],
+  imports: [HlmButton, PageHeader, DataTable, FormDrawer, TableSettings, CategoryForm],
   templateUrl: './category-list.html',
   styleUrl: './category-list.scss',
 })

@@ -1,9 +1,5 @@
 import { Component, OnInit, inject, input, output, signal } from '@angular/core';
 import { FormField, disabled, form, required } from '@angular/forms/signals';
-import { ButtonDirective } from 'primeng/button';
-import { InputText } from 'primeng/inputtext';
-import { Select } from 'primeng/select';
-import { MessageService } from 'primeng/api';
 
 import { OrganizationTypeService } from '../../../core/data-access/organization-type.service';
 import {
@@ -11,6 +7,10 @@ import {
   OrganizationTypeRead,
 } from '../../../core/models/organization-taxonomy.model';
 import { slugPattern } from '../../../shared/validators/slug.validator';
+import { ToastService } from '../../../core/feedback/toast.service';
+import { HlmButton } from '../../../shared/ui/button';
+import { HlmInput } from '../../../shared/ui/input';
+import { AppSelect } from '../../../shared/ui/select';
 
 interface TypeFormValue {
   organization_category_id: string;
@@ -20,13 +20,13 @@ interface TypeFormValue {
 
 @Component({
   selector: 'app-type-form',
-  imports: [ButtonDirective, InputText, Select, FormField],
+  imports: [HlmButton, HlmInput, AppSelect, FormField],
   templateUrl: './type-form.html',
   styleUrl: './type-form.scss',
 })
 export class TypeForm implements OnInit {
   private readonly typeService = inject(OrganizationTypeService);
-  private readonly messageService = inject(MessageService);
+  private readonly toast = inject(ToastService);
 
   readonly type = input<OrganizationTypeRead | null>(null);
   readonly categories = input.required<OrganizationCategoryRead[]>();
@@ -78,7 +78,7 @@ export class TypeForm implements OnInit {
 
     request.subscribe({
       next: () => {
-        this.messageService.add({
+        this.toast.show({
           severity: 'success',
           summary: 'Saved',
           detail: `Type "${value.name}" saved.`,

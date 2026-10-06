@@ -1,8 +1,7 @@
 import { PathKind, SchemaPath, SchemaPathRules, pattern } from '@angular/forms/signals';
 
-// Exported for forms that fall back to Reactive Forms (e.g. Validators.pattern(SLUG_PATTERN))
-// because they contain a PrimeNG component incompatible with Signal Forms' [formField] — see
-// slugPattern() below for the Signal Forms equivalent.
+// The raw pattern, for any non-Signal-Forms use (e.g. Validators.pattern(SLUG_PATTERN));
+// Signal Forms code should use slugPattern() below.
 export const SLUG_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 
 export function slugPattern<TPathKind extends PathKind = PathKind.Root>(

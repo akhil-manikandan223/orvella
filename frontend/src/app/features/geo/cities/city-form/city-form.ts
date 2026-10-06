@@ -1,13 +1,13 @@
 import { Component, OnInit, computed, effect, inject, input, output, signal } from '@angular/core';
 import { FormField, disabled, form, required } from '@angular/forms/signals';
-import { ButtonDirective } from 'primeng/button';
-import { InputText } from 'primeng/inputtext';
-import { Select } from 'primeng/select';
-import { MessageService } from 'primeng/api';
 
 import { CityService } from '../../../../core/data-access/city.service';
 import { CityRead, DistrictRead, StateRead } from '../../../../core/models/geo.model';
 import { slugPattern } from '../../../../shared/validators/slug.validator';
+import { ToastService } from '../../../../core/feedback/toast.service';
+import { HlmButton } from '../../../../shared/ui/button';
+import { HlmInput } from '../../../../shared/ui/input';
+import { AppSelect } from '../../../../shared/ui/select';
 
 interface CityFormValue {
   state_id: string;
@@ -18,13 +18,13 @@ interface CityFormValue {
 
 @Component({
   selector: 'app-city-form',
-  imports: [ButtonDirective, InputText, Select, FormField],
+  imports: [HlmButton, HlmInput, AppSelect, FormField],
   templateUrl: './city-form.html',
   styleUrl: './city-form.scss',
 })
 export class CityForm implements OnInit {
   private readonly cityService = inject(CityService);
-  private readonly messageService = inject(MessageService);
+  private readonly toast = inject(ToastService);
 
   readonly city = input<CityRead | null>(null);
   readonly states = input.required<StateRead[]>();
@@ -99,7 +99,7 @@ export class CityForm implements OnInit {
 
     request.subscribe({
       next: () => {
-        this.messageService.add({
+        this.toast.show({
           severity: 'success',
           summary: 'Saved',
           detail: `City "${value.name}" saved.`,

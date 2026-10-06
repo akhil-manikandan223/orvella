@@ -6,10 +6,6 @@ import {
 } from '@angular/core';
 import { provideRouter, withComponentInputBinding } from '@angular/router';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
-import { ConfirmationService, MessageService } from 'primeng/api';
-import { providePrimeNG } from 'primeng/config';
-import { definePreset } from '@primeuix/themes';
-import Aura from '@primeuix/themes/aura';
 
 import { routes } from './app.routes';
 import { AuthService } from './core/auth/auth.service';
@@ -18,47 +14,16 @@ import { TenantAuthService } from './core/tenant-auth/tenant-auth.service';
 import { tenantAuthInterceptor } from './core/tenant-auth/tenant-auth.interceptor';
 import { isTenantHost } from './core/tenancy/host-context';
 import { apiErrorInterceptor } from './core/interceptors/api-error.interceptor';
-import { environment } from '../environments/environment';
 
 const tenantMode = isTenantHost();
-
-const OrvellaPreset = definePreset(Aura, {
-  semantic: {
-    primary: {
-      50: '#f4f2fd',
-      100: '#e9e5fb',
-      200: '#cfc5f6',
-      300: '#b0a0f0',
-      400: '#8f79e8',
-      500: '#6d5ce0',
-      600: '#5847c4',
-      700: '#4636a0',
-      800: '#35277b',
-      900: '#241a57',
-      950: '#160f35',
-    },
-  },
-});
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes, withComponentInputBinding()),
     provideHttpClient(
-      withInterceptors([
-        tenantMode ? tenantAuthInterceptor : authInterceptor,
-        apiErrorInterceptor,
-      ]),
+      withInterceptors([tenantMode ? tenantAuthInterceptor : authInterceptor, apiErrorInterceptor]),
     ),
-    providePrimeNG({
-      theme: {
-        preset: OrvellaPreset,
-        options: { darkModeSelector: '.app-dark' },
-      },
-      license: environment.primeNgLicenseKey,
-    }),
-    MessageService,
-    ConfirmationService,
     provideAppInitializer(() => {
       if (tenantMode) {
         inject(TenantAuthService);

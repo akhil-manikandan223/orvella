@@ -1,6 +1,5 @@
 import { Component, TemplateRef, computed, inject, signal, viewChild } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { ButtonDirective } from 'primeng/button';
 
 import { TenantService } from '../../../core/data-access/tenant.service';
 import { TenantRead } from '../../../core/models/tenant.model';
@@ -9,10 +8,11 @@ import { StatusBadge } from '../../../shared/status-badge/status-badge';
 import { DataTable } from '../../../shared/data-table/data-table';
 import { DataTableAction, DataTableColumn } from '../../../shared/data-table/data-table.model';
 import { TableSettings } from '../../../shared/table-settings/table-settings';
+import { HlmButton } from '../../../shared/ui/button';
 
 @Component({
   selector: 'app-tenant-list',
-  imports: [ButtonDirective, RouterLink, PageHeader, StatusBadge, DataTable, TableSettings],
+  imports: [HlmButton, RouterLink, PageHeader, StatusBadge, DataTable, TableSettings],
   templateUrl: './tenant-list.html',
   styleUrl: './tenant-list.scss',
 })

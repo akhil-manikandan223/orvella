@@ -1,4 +1,4 @@
-<form class="tenant-edit-form" (submit)="submit($event)">
+<form class="tenant-edit-form" novalidate (submit)="submit($event)">
   <section class="tenant-edit-form__section">
     <div class="tenant-edit-form__section-title">
       <i class="pi pi-info-circle" aria-hidden="true"></i>
@@ -7,7 +7,7 @@
     <div class="tenant-edit-form__grid">
       <div class="tenant-edit-form__field">
         <label for="edit-max-users">Max Users (optional)</label>
-        <input id="edit-max-users" type="number" pInputText [formField]="tenantForm.max_users" />
+        <input id="edit-max-users" type="number" hlmInput [formField]="tenantForm.max_users" />
       </div>
     </div>
   </section>
@@ -20,12 +20,13 @@
     <div class="tenant-edit-form__grid">
       <div class="tenant-edit-form__field tenant-edit-form__field--wide">
         <label for="edit-login-hero-mode">Display features on login</label>
-        <p-select
+        <app-select
           inputId="edit-login-hero-mode"
           [formField]="$any(tenantForm.login_hero_mode)"
           [options]="loginHeroModeOptions"
           optionLabel="label"
           optionValue="value"
+          [filter]="false"
         />
       </div>
     </div>
@@ -41,10 +42,10 @@
         <label for="edit-address-1">Address Line 1</label>
         <input
           id="edit-address-1"
-          pInputText
+          hlmInput
           [formField]="tenantForm.address_line_1"
-          [class.p-invalid]="
-            tenantForm.address_line_1().touched() && tenantForm.address_line_1().invalid()
+          [attr.aria-invalid]="
+            (tenantForm.address_line_1().touched() && tenantForm.address_line_1().invalid()) || null
           "
         />
         @if (tenantForm.address_line_1().touched()) {
@@ -56,20 +57,18 @@
 
       <div class="tenant-edit-form__field tenant-edit-form__field--wide">
         <label for="edit-address-2">Address Line 2 (optional)</label>
-        <input id="edit-address-2" pInputText [formField]="tenantForm.address_line_2" />
+        <input id="edit-address-2" hlmInput [formField]="tenantForm.address_line_2" />
       </div>
 
       <div class="tenant-edit-form__field">
         <label for="edit-country">Country</label>
-        <p-select
+        <app-select
           inputId="edit-country"
           [formField]="$any(tenantForm.country_id)"
           [options]="countries()"
           optionLabel="name"
           optionValue="id"
-          [filter]="true"
-          (onChange)="onCountryChanged($event.value)"
-          [class.p-invalid]="tenantForm.country_id().touched() && tenantForm.country_id().invalid()"
+          (valueChange)="onCountryChanged($event)"
         />
         @if (tenantForm.country_id().touched()) {
           @for (error of tenantForm.country_id().errors(); track error.kind) {
@@ -80,28 +79,25 @@
 
       <div class="tenant-edit-form__field">
         <label for="edit-state">State (optional)</label>
-        <p-select
+        <app-select
           inputId="edit-state"
           [formField]="$any(tenantForm.state_id)"
           [options]="states()"
           optionLabel="name"
           optionValue="id"
-          [filter]="true"
-          [showClear]="true"
-          (onChange)="onStateChanged($event.value)"
+          showClear
+          (valueChange)="onStateChanged($event)"
         />
       </div>
 
       <div class="tenant-edit-form__field">
         <label for="edit-city">City</label>
-        <p-select
+        <app-select
           inputId="edit-city"
           [formField]="$any(tenantForm.city_id)"
           [options]="cities()"
           optionLabel="name"
           optionValue="id"
-          [filter]="true"
-          [class.p-invalid]="tenantForm.city_id().touched() && tenantForm.city_id().invalid()"
         />
         @if (tenantForm.city_id().touched()) {
           @for (error of tenantForm.city_id().errors(); track error.kind) {
@@ -112,7 +108,7 @@
 
       <div class="tenant-edit-form__field">
         <label for="edit-postal-code">Postal Code (optional)</label>
-        <input id="edit-postal-code" pInputText [formField]="tenantForm.postal_code" />
+        <input id="edit-postal-code" hlmInput [formField]="tenantForm.postal_code" />
       </div>
     </div>
   </section>
@@ -127,10 +123,10 @@
         <label for="edit-license">License Number</label>
         <input
           id="edit-license"
-          pInputText
+          hlmInput
           [formField]="tenantForm.license_number"
-          [class.p-invalid]="
-            tenantForm.license_number().touched() && tenantForm.license_number().invalid()
+          [attr.aria-invalid]="
+            (tenantForm.license_number().touched() && tenantForm.license_number().invalid()) || null
           "
         />
         @if (tenantForm.license_number().touched()) {
@@ -142,18 +138,18 @@
 
       <div class="tenant-edit-form__field">
         <label for="edit-logo-url">Logo URL (optional)</label>
-        <input id="edit-logo-url" pInputText [formField]="tenantForm.logo_url" />
+        <input id="edit-logo-url" hlmInput [formField]="tenantForm.logo_url" />
       </div>
 
       <div class="tenant-edit-form__field">
         <label for="edit-brand-color">Brand Colour (optional)</label>
         <input
           id="edit-brand-color"
-          pInputText
-          placeholder="#6d5ce0"
+          hlmInput
+          placeholder="#0e4491"
           [formField]="tenantForm.brand_color"
-          [class.p-invalid]="
-            tenantForm.brand_color().touched() && tenantForm.brand_color().invalid()
+          [attr.aria-invalid]="
+            (tenantForm.brand_color().touched() && tenantForm.brand_color().invalid()) || null
           "
         />
         @if (tenantForm.brand_color().touched()) {
@@ -167,10 +163,11 @@
         <label for="edit-contact-name">Key Contact Name</label>
         <input
           id="edit-contact-name"
-          pInputText
+          hlmInput
           [formField]="tenantForm.key_contact_name"
-          [class.p-invalid]="
-            tenantForm.key_contact_name().touched() && tenantForm.key_contact_name().invalid()
+          [attr.aria-invalid]="
+            (tenantForm.key_contact_name().touched() && tenantForm.key_contact_name().invalid()) ||
+            null
           "
         />
         @if (tenantForm.key_contact_name().touched()) {
@@ -185,10 +182,12 @@
         <input
           id="edit-contact-email"
           type="email"
-          pInputText
+          hlmInput
           [formField]="tenantForm.key_contact_email"
-          [class.p-invalid]="
-            tenantForm.key_contact_email().touched() && tenantForm.key_contact_email().invalid()
+          [attr.aria-invalid]="
+            (tenantForm.key_contact_email().touched() &&
+              tenantForm.key_contact_email().invalid()) ||
+            null
           "
         />
         @if (tenantForm.key_contact_email().touched()) {
@@ -202,10 +201,12 @@
         <label for="edit-contact-phone">Key Contact Phone</label>
         <input
           id="edit-contact-phone"
-          pInputText
+          hlmInput
           [formField]="tenantForm.key_contact_phone"
-          [class.p-invalid]="
-            tenantForm.key_contact_phone().touched() && tenantForm.key_contact_phone().invalid()
+          [attr.aria-invalid]="
+            (tenantForm.key_contact_phone().touched() &&
+              tenantForm.key_contact_phone().invalid()) ||
+            null
           "
         />
         @if (tenantForm.key_contact_phone().touched()) {

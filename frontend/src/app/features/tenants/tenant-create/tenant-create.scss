@@ -5,7 +5,7 @@
 
   &__section {
     padding-top: 1.5rem;
-    border-top: 1px solid var(--p-content-border-color);
+    border-top: 1px solid var(--border);
 
     &:first-child {
       padding-top: 0;
@@ -22,7 +22,7 @@
     margin-bottom: 1rem;
 
     i {
-      color: var(--p-text-muted-color);
+      color: var(--muted-foreground);
     }
   }
 
@@ -40,7 +40,7 @@
     label {
       font-size: 0.8rem;
       font-weight: 600;
-      color: var(--p-primary-color);
+      color: var(--primary);
     }
 
     input,
@@ -54,6 +54,6 @@
   }
 
   &__error {
-    color: var(--p-red-500);
+    color: var(--danger);
   }
 }

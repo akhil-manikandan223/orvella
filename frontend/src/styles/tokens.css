@@ -1,0 +1,118 @@
+/* Orvella design tokens - the source of truth for color, type and radius.
+
+   Semantic names follow Spartan UI's convention (--background, --primary,
+   --muted, --border ...) so helm components use them unchanged. The raw
+   ramps (--orv-*) back them.
+
+   Dark mode keys off .app-dark, the class ThemeService toggles. color-scheme
+   is set here too, so native controls (checkboxes, scrollbars, date inputs)
+   and AG Grid (browserColorScheme: inherit) follow the theme.
+   Dark values are separate steps, not inversions: navy #0E4491 disappears on
+   a near-black page, so the dark primary is lifted and the topbar deepened. */
+
+:root {
+  color-scheme: light;
+
+  --orv-primary-50: #eef3fb;
+  --orv-primary-100: #d9e4f5;
+  --orv-primary-200: #b3c8eb;
+  --orv-primary-300: #85a6dc;
+  --orv-primary-400: #4f7cc6;
+  --orv-primary-500: #2a5daf;
+  --orv-primary-600: #0e4491;
+  --orv-primary-700: #0b3878;
+  --orv-primary-800: #092c5e;
+  --orv-primary-900: #071f43;
+  /* Lifted primary for dark surfaces; BrandService derives it per tenant. */
+  --orv-primary-dark: #3366c2;
+
+  --orv-neutral-0: #ffffff;
+  --orv-neutral-25: #fbfcfd;
+  --orv-neutral-50: #f6f7f9;
+  --orv-neutral-100: #eef0f3;
+  --orv-neutral-200: #e1e4ea;
+  --orv-neutral-300: #cbd1da;
+  --orv-neutral-400: #9aa3b2;
+  --orv-neutral-500: #6b7587;
+  --orv-neutral-600: #4d5668;
+  --orv-neutral-700: #363e4e;
+  --orv-neutral-800: #222937;
+  --orv-neutral-900: #131824;
+
+  --background: var(--orv-neutral-50);
+  --foreground: var(--orv-neutral-900);
+  --card: var(--orv-neutral-0);
+  --card-foreground: var(--orv-neutral-900);
+  --popover: var(--orv-neutral-0);
+  --popover-foreground: var(--orv-neutral-900);
+  --primary: var(--orv-primary-600);
+  --primary-foreground: #ffffff;
+  --secondary: var(--orv-neutral-0);
+  --secondary-foreground: var(--orv-neutral-800);
+  --muted: var(--orv-neutral-50);
+  --muted-foreground: var(--orv-neutral-600);
+  --accent: var(--orv-primary-50);
+  --accent-foreground: var(--orv-primary-600);
+  --destructive: #c0352b;
+  --destructive-foreground: #ffffff;
+  --border: var(--orv-neutral-200);
+  --input: var(--orv-neutral-300);
+  --ring: var(--orv-primary-400);
+
+  --success: #177a45;
+  --success-surface: #ecf8f1;
+  --warning: #9a5b00;
+  --warning-surface: #fff6e5;
+  --danger: #c0352b;
+  --danger-surface: #fdeeee;
+  --info: var(--orv-primary-600);
+  --info-surface: var(--orv-primary-50);
+
+  --topbar: var(--orv-primary-600);
+  --topbar-foreground: #ffffff;
+  --sidebar: var(--orv-neutral-0);
+  --grid-row-hover: var(--orv-primary-50);
+  --grid-row-selected: var(--orv-primary-100);
+
+  --radius: 0.375rem;
+  --orv-font-sans: 'IBM Plex Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --orv-font-mono: 'IBM Plex Mono', ui-monospace, monospace;
+}
+
+.app-dark {
+  color-scheme: dark;
+
+  --background: #0d121b;
+  --foreground: #e8ecf2;
+  --card: #151b26;
+  --card-foreground: #e8ecf2;
+  --popover: #1b2230;
+  --popover-foreground: #e8ecf2;
+  --primary: var(--orv-primary-dark);
+  --primary-foreground: #ffffff;
+  --secondary: #1b2230;
+  --secondary-foreground: #d5dbe5;
+  --muted: #1b2230;
+  --muted-foreground: #9aa4b5;
+  --accent: #16284a;
+  --accent-foreground: var(--orv-primary-300);
+  --destructive: #f2877e;
+  --destructive-foreground: #151b26;
+  --border: #2a3342;
+  --input: #3a4456;
+  --ring: var(--orv-primary-400);
+
+  --success: #5cc98c;
+  --success-surface: #0f2e1f;
+  --warning: #f0b44c;
+  --warning-surface: #33240a;
+  --danger: #f2877e;
+  --danger-surface: #3a1614;
+  --info: var(--orv-primary-300);
+  --info-surface: #16284a;
+
+  --topbar: var(--orv-primary-800);
+  --sidebar: #151b26;
+  --grid-row-hover: #16284a;
+  --grid-row-selected: #1e3866;
+}

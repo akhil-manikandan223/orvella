@@ -1,10 +1,10 @@
 @if (tenant(); as t) {
   <app-page-header [title]="t.name" icon="pi pi-building" [showBack]="true">
-    <a pButton [text]="true" severity="secondary" [routerLink]="['/tenants', t.id]">
+    <a hlmBtn variant="ghost" [routerLink]="['/tenants', t.id]">
       <i class="pi pi-times" aria-hidden="true"></i>
       Cancel
     </a>
-    <button pButton [disabled]="formRef()?.submitting() ?? false" (click)="save()">
+    <button type="button" hlmBtn [disabled]="formRef()?.submitting() ?? false" (click)="save()">
       <i
         class="pi"
         [class.pi-spin]="formRef()?.submitting()"
