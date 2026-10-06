@@ -1,0 +1,146 @@
+// Navy topbar shared by the platform-admin Topbar and the tenant TenantShell
+// header - two components, one look (see frontend/DESIGN.md, Layout).
+// Colors come from the --topbar tokens, so dark mode deepens the bar to
+// primary/800 without any rule here.
+
+.app-topbar {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  height: 60px;
+  padding: 0 1rem;
+  background: var(--topbar);
+  color: var(--topbar-foreground);
+  border-bottom: 1px solid rgb(0 0 0 / 15%);
+
+  &__start,
+  &__end {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-width: 0;
+  }
+
+  &__start img {
+    height: 32px;
+    width: auto;
+    flex-shrink: 0;
+  }
+
+  &__icon-btn,
+  &__account {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    border: none;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+
+    &:hover {
+      background: rgb(255 255 255 / 12%);
+    }
+
+    &:focus-visible {
+      outline: 2px solid #fff;
+      outline-offset: 2px;
+    }
+  }
+
+  &__icon-btn {
+    width: 2.25rem;
+    height: 2.25rem;
+    flex-shrink: 0;
+    border-radius: var(--radius);
+
+    i {
+      font-size: 1rem;
+    }
+  }
+
+  &__account {
+    gap: 0.5rem;
+    min-width: 0;
+    padding: 0.25rem 0.625rem 0.25rem 0.25rem;
+    border-radius: 999px;
+  }
+
+  &__avatar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 1.875rem;
+    height: 1.875rem;
+    border-radius: 50%;
+    background: #fff;
+    color: var(--topbar);
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+
+  &__email {
+    font-size: 0.875rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  // Unread count on an icon button (notifications).
+  &__badge {
+    position: absolute;
+    top: 0.125rem;
+    right: 0.125rem;
+    min-width: 1.05rem;
+    height: 1.05rem;
+    padding: 0 0.25rem;
+    border-radius: 999px;
+    background: #ffb4ab;
+    color: #5a1b14;
+    font-size: 0.65rem;
+    font-weight: 700;
+    line-height: 1.05rem;
+    text-align: center;
+  }
+}
+
+// Account / notification popover rows (rendered in a body-level overlay).
+.app-topbar-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  width: 100%;
+  min-width: 8rem;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.9rem;
+  color: inherit;
+  text-decoration: none;
+  border-radius: var(--radius);
+  cursor: pointer;
+
+  &:hover {
+    background: var(--muted);
+  }
+}
+
+@media (max-width: 900px) {
+  .app-topbar__email {
+    display: none;
+  }
+}
+
+@media (max-width: 600px) {
+  .app-topbar {
+    padding: 0 0.5rem;
+    gap: 0.5rem;
+  }
+
+  .app-topbar__start img {
+    height: 26px;
+  }
+}

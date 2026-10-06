@@ -79,3 +79,11 @@
   align-items: center;
   gap: 0.5rem;
 }
+
+// Phone widths: AG Grid's paging panel doesn't wrap, so drop the page-size
+// picker rather than clip the page navigation off the right edge.
+@media (max-width: 600px) {
+  :host ::ng-deep .ag-paging-page-size {
+    display: none;
+  }
+}

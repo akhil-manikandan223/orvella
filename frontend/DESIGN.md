@@ -25,7 +25,9 @@ Enterprise license.
    page follows. _(done)_ Expandable rows (audit log) are synthetic
    full-width rows, because AG Grid master/detail is Enterprise-only; an
    open expansion counts as one row in the paging summary.
-3. **Shell** - navy topbar, white sidebar, page headers, login.
+3. **Shell** - navy topbar, white sidebar, page headers, login. _(done)_
+   Sidebar is persistent from 1024px and a drawer below. The login pages
+   keep their dark plexus layout, recolored from purple to navy.
 4. **Spartan by feature folder** - tenants, geo, taxonomy, features, audit,
    profile, tenant workspace. Thin toast/confirm services replace PrimeNG's
    `MessageService` / `ConfirmationService`.
@@ -68,6 +70,10 @@ Surfaces: page `#0D121B`, card `#151B26`, raised `#1B2230`, border `#2A3342`.
 - Controls: 36px default height (30 small, 42 large).
 
 ## Open decisions
+
+- **Logo** - the Orvella mark (and the login plexus artwork) is a
+  purple-to-blue gradient, which now sits on a navy UI. Recoloring it is a
+  brand-asset decision, not a code change.
 
 - **People status** - the design shows Active / On leave / Probation /
   Inactive, but `PersonRead` has no status field. Add it in the backend or

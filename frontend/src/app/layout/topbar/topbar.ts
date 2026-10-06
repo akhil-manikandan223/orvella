@@ -1,22 +1,18 @@
 import { Component, computed, inject, output, viewChild } from '@angular/core';
 import { NgOptimizedImage } from '@angular/common';
 import { RouterLink } from '@angular/router';
-import { ButtonDirective } from 'primeng/button';
-import { Avatar } from 'primeng/avatar';
 import { Popover } from 'primeng/popover';
 
 import { AuthService } from '../../core/auth/auth.service';
-import { ThemeService } from '../../core/theme/theme.service';
 
+/** Platform-admin topbar. Styles: shared/styles/_app-topbar.scss (shared with TenantShell). */
 @Component({
   selector: 'app-topbar',
-  imports: [NgOptimizedImage, ButtonDirective, Avatar, Popover, RouterLink],
+  imports: [NgOptimizedImage, Popover, RouterLink],
   templateUrl: './topbar.html',
-  styleUrl: './topbar.scss',
 })
 export class Topbar {
   protected readonly authService = inject(AuthService);
-  protected readonly themeService = inject(ThemeService);
 
   readonly menuToggle = output<void>();
 

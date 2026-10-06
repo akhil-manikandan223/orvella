@@ -1,14 +1,11 @@
 import { Component, OnDestroy, OnInit, computed, inject, signal, viewChild } from '@angular/core';
 import { NgOptimizedImage } from '@angular/common';
 import { RouterLink, RouterOutlet } from '@angular/router';
-import { Avatar } from 'primeng/avatar';
 import { ButtonDirective } from 'primeng/button';
-import { OverlayBadge } from 'primeng/overlaybadge';
 import { Popover } from 'primeng/popover';
 
 import { NotificationService } from '../../../core/notifications/notification.service';
 import { TenantAuthService } from '../../../core/tenant-auth/tenant-auth.service';
-import { ThemeService } from '../../../core/theme/theme.service';
 import { NavGroup, SidebarNav } from '../../../layout/sidebar-nav/sidebar-nav';
 
 const TENANT_NAV_GROUPS: NavGroup[] = [
@@ -25,24 +22,13 @@ const TENANT_NAV_GROUPS: NavGroup[] = [
 
 @Component({
   selector: 'app-tenant-shell',
-  imports: [
-    RouterOutlet,
-    RouterLink,
-    Avatar,
-    ButtonDirective,
-    NgOptimizedImage,
-    OverlayBadge,
-    Popover,
-    SidebarNav,
-  ],
+  imports: [RouterOutlet, RouterLink, ButtonDirective, NgOptimizedImage, Popover, SidebarNav],
   templateUrl: './tenant-shell.html',
   styleUrl: './tenant-shell.scss',
 })
 export class TenantShell implements OnInit, OnDestroy {
   protected readonly tenantAuthService = inject(TenantAuthService);
   protected readonly notificationService = inject(NotificationService);
-  // Drives the light/dark logo swap, same as the platform-admin topbar.
-  protected readonly themeService = inject(ThemeService);
 
   protected readonly navGroups = TENANT_NAV_GROUPS;
   protected readonly sidebarOpen = signal(false);

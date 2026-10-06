@@ -1,26 +1,32 @@
-// Shared off-canvas sidebar-drawer chrome for both app shells (platform
-// admin's Shell and the tenant-side TenantShell) - loaded once globally
-// (see src/styles.scss) rather than duplicated per shell. Each shell keeps
-// its own topbar markup (they genuinely differ); only the drawer mechanics
-// below are identical between the two.
+// Shared shell chrome for both app shells (platform admin's Shell and the
+// tenant-side TenantShell) - loaded once globally (see src/styles.scss)
+// rather than duplicated per shell. Each shell keeps its own topbar markup
+// (they genuinely differ); the topbar look lives in _app-topbar.scss and the
+// sidebar/content mechanics below are identical between the two.
+//
+// Desktop (>= 1024px): the sidebar is a persistent column and the menu
+// toggle is hidden. Below that it becomes an off-canvas drawer over a scrim.
+
+$app-shell-desktop: 1024px;
 
 .app-shell-body {
   display: flex;
   flex: 1;
   min-height: 0;
   position: relative;
+  background: var(--background);
 }
 
 .app-shell-sidebar {
-  width: 240px;
+  width: 248px;
   flex-shrink: 0;
   overflow-y: auto;
   position: absolute;
   inset-block: 0;
   inset-inline-start: 0;
   z-index: 1000;
-  background: var(--p-content-background);
-  border-right: 1px solid var(--p-content-border-color);
+  background: var(--sidebar);
+  border-right: 1px solid var(--border);
   transform: translateX(-100%);
   transition: transform 0.2s ease;
 }
@@ -47,7 +53,30 @@
 .app-shell-content {
   flex: 1;
   min-width: 0;
-  padding: 0.5rem;
+  padding: 1rem;
   overflow-y: auto;
   overflow-x: auto;
+}
+
+@media (min-width: $app-shell-desktop) {
+  .app-shell-sidebar {
+    position: static;
+    transform: none;
+    transition: none;
+  }
+
+  .app-shell-body--sidebar-open .app-shell-scrim,
+  .app-shell-menu-toggle {
+    display: none !important;
+  }
+
+  .app-shell-content {
+    padding: 1.75rem 2rem 2rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .app-shell-sidebar {
+    transition: none;
+  }
 }
