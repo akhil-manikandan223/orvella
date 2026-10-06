@@ -1,6 +1,10 @@
-<app-page-header title="Locations" subtitle="Sites within your organization" icon="pi pi-map-marker">
+<app-page-header
+  title="Locations"
+  subtitle="Sites within your organization"
+  icon="pi pi-map-marker"
+>
   @if (canManage()) {
-    <button pButton (click)="openCreate()">
+    <button type="button" hlmBtn (click)="openCreate()">
       <i class="pi pi-plus" aria-hidden="true"></i>
       New
     </button>

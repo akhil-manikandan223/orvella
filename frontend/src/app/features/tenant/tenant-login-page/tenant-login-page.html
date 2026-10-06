@@ -60,19 +60,21 @@
 
       <div class="auth-hero__field">
         <label for="email">Email</label>
-        <p-iconfield>
-          <p-inputicon class="pi pi-envelope" />
+        <span class="auth-hero__input-wrap">
+          <i class="pi pi-envelope" aria-hidden="true"></i>
           <input
             id="email"
             type="email"
-            pInputText
-            fluid
+            hlmInput
+            class="auth-hero__input"
             [formField]="loginForm.email"
-            [class.p-invalid]="loginForm.email().touched() && loginForm.email().invalid()"
+            [attr.aria-invalid]="
+              (loginForm.email().touched() && loginForm.email().invalid()) || null
+            "
             autocomplete="email"
             placeholder="you@company.com"
           />
-        </p-iconfield>
+        </span>
         @if (loginForm.email().touched()) {
           @for (error of loginForm.email().errors(); track error.kind) {
             <small class="auth-hero__error">{{ error.message }}</small>
@@ -82,19 +84,21 @@
 
       <div class="auth-hero__field">
         <label for="password">Password</label>
-        <p-iconfield>
-          <p-inputicon class="pi pi-lock" />
+        <span class="auth-hero__input-wrap">
+          <i class="pi pi-lock" aria-hidden="true"></i>
           <input
             id="password"
             type="password"
-            pInputPassword
-            fluid
+            hlmInput
+            class="auth-hero__input"
             [formField]="loginForm.password"
-            [class.p-invalid]="loginForm.password().touched() && loginForm.password().invalid()"
+            [attr.aria-invalid]="
+              (loginForm.password().touched() && loginForm.password().invalid()) || null
+            "
             autocomplete="current-password"
             placeholder="••••••••"
           />
-        </p-iconfield>
+        </span>
         @if (loginForm.password().touched()) {
           @for (error of loginForm.password().errors(); track error.kind) {
             <small class="auth-hero__error">{{ error.message }}</small>
@@ -102,7 +106,7 @@
         }
       </div>
 
-      <button pButton type="submit" [disabled]="submitting()" class="auth-hero__submit">
+      <button hlmBtn type="submit" [disabled]="submitting()" class="auth-hero__submit">
         @if (submitting()) {
           <i class="pi pi-spin pi-spinner" aria-hidden="true"></i>
         } @else {

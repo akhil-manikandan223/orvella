@@ -23,22 +23,28 @@
       <i class="pi pi-mobile" aria-hidden="true"></i>
     </button>
     @if (authService.admin(); as admin) {
-      <button
-        type="button"
-        class="app-topbar__account"
-        (click)="toggleAccountMenu($event)"
-        aria-haspopup="true"
-        [attr.aria-label]="'Account menu for ' + admin.email"
-      >
-        <span class="app-topbar__avatar" aria-hidden="true">{{ avatarLabel() }}</span>
-        <span class="app-topbar__email">{{ admin.email }}</span>
-      </button>
-      <p-popover appendTo="body">
-        <a routerLink="/profile" class="app-topbar-menu-item" (click)="closeAccountMenu()">
-          <i class="pi pi-user" aria-hidden="true"></i>
-          Profile
-        </a>
-      </p-popover>
+      <div brnPopover align="end" [sideOffset]="6">
+        <button
+          type="button"
+          class="app-topbar__account"
+          brnPopoverTrigger
+          aria-haspopup="true"
+          [attr.aria-label]="'Account menu for ' + admin.email"
+        >
+          <span class="app-topbar__avatar" aria-hidden="true">{{ avatarLabel() }}</span>
+          <span class="app-topbar__email">{{ admin.email }}</span>
+        </button>
+        <ng-template brnPopoverContent>
+          <div
+            class="rounded-md border border-border bg-popover text-popover-foreground shadow-lg animate-in fade-in-0 min-w-40 p-1"
+          >
+            <a routerLink="/profile" class="app-topbar-menu-item" (click)="closeAccountMenu()">
+              <i class="pi pi-user" aria-hidden="true"></i>
+              Profile
+            </a>
+          </div>
+        </ng-template>
+      </div>
     }
     <button
       type="button"

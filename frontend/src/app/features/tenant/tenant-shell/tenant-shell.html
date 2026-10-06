@@ -20,69 +20,87 @@
       <span class="tenant-shell__tenant-name">{{ tenantAuthService.tenant()?.name }}</span>
     </div>
     <div class="app-topbar__end">
-      <button
-        type="button"
-        class="app-topbar__icon-btn"
-        aria-haspopup="true"
-        [attr.aria-label]="
-          notificationService.unreadCount() > 0
-            ? notificationService.unreadCount() + ' unread notifications'
-            : 'Notifications'
-        "
-        (click)="toggleNotifications($event)"
-      >
-        <i class="pi pi-bell" aria-hidden="true"></i>
-        @if (notificationService.unreadCount() > 0) {
-          <span class="app-topbar__badge" aria-hidden="true">{{
-            notificationService.unreadCount()
-          }}</span>
-        }
-      </button>
-      <p-popover #notificationsPopover appendTo="body">
-        <div class="tenant-shell__notifications">
-          <div class="tenant-shell__notifications-header">
-            <span>Notifications</span>
-            @if (notificationService.unreadCount() > 0) {
-              <button pButton [text]="true" size="small" (click)="markAllNotificationsRead()">
-                Mark all read
-              </button>
-            }
-          </div>
-          @if (notificationService.notifications().length === 0) {
-            <p class="tenant-shell__notifications-empty">You're all caught up.</p>
-          } @else {
-            <ul class="tenant-shell__notifications-list">
-              @for (notification of notificationService.notifications(); track notification.id) {
-                <li
-                  class="tenant-shell__notification"
-                  [class.tenant-shell__notification--unread]="!notification.read_at"
-                  (click)="markNotificationRead(notification.id)"
-                >
-                  <span class="tenant-shell__notification-title">{{ notification.title }}</span>
-                  <span class="tenant-shell__notification-message">{{ notification.message }}</span>
-                </li>
-              }
-            </ul>
-          }
-        </div>
-      </p-popover>
-      @if (tenantAuthService.user(); as user) {
+      <div brnPopover #notificationsPopover align="end" [sideOffset]="6">
         <button
           type="button"
-          class="app-topbar__account"
+          class="app-topbar__icon-btn"
           aria-haspopup="true"
-          [attr.aria-label]="'Account menu for ' + user.email"
-          (click)="toggleAccountMenu($event)"
+          [attr.aria-label]="
+            notificationService.unreadCount() > 0
+              ? notificationService.unreadCount() + ' unread notifications'
+              : 'Notifications'
+          "
+          brnPopoverTrigger
         >
-          <span class="app-topbar__avatar" aria-hidden="true">{{ avatarLabel() }}</span>
-          <span class="app-topbar__email">{{ user.email }}</span>
+          <i class="pi pi-bell" aria-hidden="true"></i>
+          @if (notificationService.unreadCount() > 0) {
+            <span class="app-topbar__badge" aria-hidden="true">{{
+              notificationService.unreadCount()
+            }}</span>
+          }
         </button>
-        <p-popover #accountPopover appendTo="body">
-          <a routerLink="/profile" class="app-topbar-menu-item" (click)="closeAccountMenu()">
-            <i class="pi pi-user" aria-hidden="true"></i>
-            Profile
-          </a>
-        </p-popover>
+        <ng-template brnPopoverContent>
+          <div
+            class="tenant-shell__notifications rounded-md border border-border bg-popover text-popover-foreground shadow-lg animate-in fade-in-0"
+          >
+            <div class="tenant-shell__notifications-header">
+              <span>Notifications</span>
+              @if (notificationService.unreadCount() > 0) {
+                <button
+                  type="button"
+                  hlmBtn
+                  variant="ghost"
+                  size="sm"
+                  (click)="markAllNotificationsRead()"
+                >
+                  Mark all read
+                </button>
+              }
+            </div>
+            @if (notificationService.notifications().length === 0) {
+              <p class="tenant-shell__notifications-empty">You're all caught up.</p>
+            } @else {
+              <ul class="tenant-shell__notifications-list">
+                @for (notification of notificationService.notifications(); track notification.id) {
+                  <li
+                    class="tenant-shell__notification"
+                    [class.tenant-shell__notification--unread]="!notification.read_at"
+                    (click)="markNotificationRead(notification.id)"
+                  >
+                    <span class="tenant-shell__notification-title">{{ notification.title }}</span>
+                    <span class="tenant-shell__notification-message">{{
+                      notification.message
+                    }}</span>
+                  </li>
+                }
+              </ul>
+            }
+          </div>
+        </ng-template>
+      </div>
+      @if (tenantAuthService.user(); as user) {
+        <div brnPopover #accountPopover align="end" [sideOffset]="6">
+          <button
+            type="button"
+            class="app-topbar__account"
+            aria-haspopup="true"
+            [attr.aria-label]="'Account menu for ' + user.email"
+            brnPopoverTrigger
+          >
+            <span class="app-topbar__avatar" aria-hidden="true">{{ avatarLabel() }}</span>
+            <span class="app-topbar__email">{{ user.email }}</span>
+          </button>
+          <ng-template brnPopoverContent>
+            <div
+              class="rounded-md border border-border bg-popover text-popover-foreground shadow-lg animate-in fade-in-0 min-w-40 p-1"
+            >
+              <a routerLink="/profile" class="app-topbar-menu-item" (click)="closeAccountMenu()">
+                <i class="pi pi-user" aria-hidden="true"></i>
+                Profile
+              </a>
+            </div>
+          </ng-template>
+        </div>
       }
       <button type="button" class="app-topbar__icon-btn" aria-label="Sign out" (click)="logout()">
         <i class="pi pi-sign-out" aria-hidden="true"></i>

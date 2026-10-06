@@ -285,9 +285,24 @@
       color: rgb(255 255 255 / 75%);
     }
 
-    p-iconfield {
-      width: 100%;
+    .auth-hero__input-wrap {
+      position: relative;
       display: block;
+      width: 100%;
+
+      i {
+        position: absolute;
+        top: 50%;
+        left: 0.875rem;
+        transform: translateY(-50%);
+        font-size: 0.9rem;
+        color: rgb(255 255 255 / 40%);
+        pointer-events: none;
+      }
+
+      &:focus-within i {
+        color: #85a6dc;
+      }
     }
   }
 
@@ -328,10 +343,10 @@
     font-size: 0.75rem;
   }
 
-  // ---- Dark-themed PrimeNG inputs for the glass card ----
-  .p-inputtext,
-  .p-password {
-    width: 100%;
+  // ---- Glass-card inputs (helm hlmInput, restyled for the dark hero) ----
+  .auth-hero__input {
+    height: 2.75rem;
+    padding-left: 2.5rem;
     background: rgb(255 255 255 / 5%);
     border: 1px solid rgb(255 255 255 / 12%);
     color: #eef3fb;
@@ -340,26 +355,19 @@
       color: rgb(255 255 255 / 35%);
     }
 
-    &:enabled:hover {
+    &:hover {
       border-color: rgb(255 255 255 / 20%);
     }
 
-    &:enabled:focus {
+    &:focus-visible {
       border-color: #4f7cc6;
       box-shadow: 0 0 0 3px rgb(79 124 198 / 30%);
     }
 
-    &.p-invalid {
+    &[aria-invalid='true'] {
       border-color: #f2877e;
+      box-shadow: none;
     }
-  }
-
-  .p-inputicon {
-    color: rgb(255 255 255 / 40%);
-  }
-
-  p-iconfield:focus-within .p-inputicon {
-    color: #85a6dc;
   }
 }
 

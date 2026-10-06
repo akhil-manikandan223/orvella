@@ -1,14 +1,14 @@
 import { Component, computed, inject, output, viewChild } from '@angular/core';
 import { NgOptimizedImage } from '@angular/common';
 import { RouterLink } from '@angular/router';
-import { Popover } from 'primeng/popover';
+import { BrnPopover, BrnPopoverContent, BrnPopoverTrigger } from '@spartan-ng/brain/popover';
 
 import { AuthService } from '../../core/auth/auth.service';
 
 /** Platform-admin topbar. Styles: shared/styles/_app-topbar.scss (shared with TenantShell). */
 @Component({
   selector: 'app-topbar',
-  imports: [NgOptimizedImage, Popover, RouterLink],
+  imports: [NgOptimizedImage, BrnPopover, BrnPopoverContent, BrnPopoverTrigger, RouterLink],
   templateUrl: './topbar.html',
 })
 export class Topbar {
@@ -16,18 +16,14 @@ export class Topbar {
 
   readonly menuToggle = output<void>();
 
-  protected readonly accountPopoverRef = viewChild(Popover);
+  private readonly accountPopoverRef = viewChild(BrnPopover);
 
   protected readonly avatarLabel = computed(() => {
     const email = this.authService.admin()?.email;
     return email ? email[0].toUpperCase() : '?';
   });
 
-  protected toggleAccountMenu(event: Event): void {
-    this.accountPopoverRef()?.toggle(event);
-  }
-
   protected closeAccountMenu(): void {
-    this.accountPopoverRef()?.hide();
+    this.accountPopoverRef()?.close();
   }
 }

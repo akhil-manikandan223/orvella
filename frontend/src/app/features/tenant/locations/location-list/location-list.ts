@@ -1,6 +1,5 @@
 import { Component, computed, inject, signal } from '@angular/core';
 import { forkJoin } from 'rxjs';
-import { ButtonDirective } from 'primeng/button';
 
 import { LocationService } from '../../../../core/data-access/location.service';
 import { TenantAuthService } from '../../../../core/tenant-auth/tenant-auth.service';
@@ -16,6 +15,7 @@ import { FormDrawer } from '../../../../shared/form-drawer/form-drawer';
 import { LocationForm } from '../location-form/location-form';
 import { ToastService } from '../../../../core/feedback/toast.service';
 import { ConfirmService } from '../../../../core/feedback/confirm.service';
+import { HlmButton } from '../../../../shared/ui/button';
 
 const COLUMNS: DataTableColumn<LocationRead>[] = [
   { field: 'name', header: 'Name', sortable: true },
@@ -24,7 +24,7 @@ const COLUMNS: DataTableColumn<LocationRead>[] = [
 
 @Component({
   selector: 'app-location-list',
-  imports: [ButtonDirective, PageHeader, DataTable, FormDrawer, LocationForm],
+  imports: [HlmButton, PageHeader, DataTable, FormDrawer, LocationForm],
   templateUrl: './location-list.html',
   styleUrl: './location-list.scss',
 })
@@ -119,14 +119,16 @@ export class LocationList {
   }
 
   private deleteLocations(locations: LocationRead[]): void {
-    forkJoin(locations.map((location) => this.locationService.delete(location.id))).subscribe(() => {
-      this.toast.show({
-        severity: 'success',
-        summary: 'Deleted',
-        detail: `${locations.length} location${locations.length === 1 ? '' : 's'} deleted.`,
-      });
-      this.load();
-    });
+    forkJoin(locations.map((location) => this.locationService.delete(location.id))).subscribe(
+      () => {
+        this.toast.show({
+          severity: 'success',
+          summary: 'Deleted',
+          detail: `${locations.length} location${locations.length === 1 ? '' : 's'} deleted.`,
+        });
+        this.load();
+      },
+    );
   }
 
   protected load(): void {

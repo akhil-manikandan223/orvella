@@ -1,14 +1,11 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormField, form, required } from '@angular/forms/signals';
-import { ButtonDirective } from 'primeng/button';
-import { InputText } from 'primeng/inputtext';
-import { InputPassword } from 'primeng/inputpassword';
-import { IconField } from 'primeng/iconfield';
-import { InputIcon } from 'primeng/inputicon';
 
 import { TenantAuthService } from '../../../core/tenant-auth/tenant-auth.service';
 import { HeroFeatureRead } from '../../../core/models/tenant-user.model';
+import { HlmButton } from '../../../shared/ui/button';
+import { HlmInput } from '../../../shared/ui/input';
 
 interface LoginFormValue {
   email: string;
@@ -56,7 +53,7 @@ function toHeroTiles(features: HeroFeatureRead[]): HeroTile[] {
 
 @Component({
   selector: 'app-tenant-login-page',
-  imports: [ButtonDirective, InputText, InputPassword, IconField, InputIcon, FormField],
+  imports: [HlmButton, HlmInput, FormField],
   templateUrl: './tenant-login-page.html',
   styleUrl: './tenant-login-page.scss',
 })

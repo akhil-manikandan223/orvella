@@ -1,5 +1,4 @@
 import { Component, computed, inject, signal } from '@angular/core';
-import { ButtonDirective } from 'primeng/button';
 import { forkJoin } from 'rxjs';
 
 import { DepartmentService } from '../../../../core/data-access/department.service';
@@ -18,10 +17,11 @@ import { FormDrawer } from '../../../../shared/form-drawer/form-drawer';
 import { PersonForm } from '../person-form/person-form';
 import { ToastService } from '../../../../core/feedback/toast.service';
 import { ConfirmService } from '../../../../core/feedback/confirm.service';
+import { HlmButton } from '../../../../shared/ui/button';
 
 @Component({
   selector: 'app-person-list',
-  imports: [ButtonDirective, PageHeader, DataTable, FormDrawer, PersonForm],
+  imports: [HlmButton, PageHeader, DataTable, FormDrawer, PersonForm],
   templateUrl: './person-list.html',
   styleUrl: './person-list.scss',
 })

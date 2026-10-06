@@ -1,6 +1,5 @@
 import { Component, computed, inject, signal } from '@angular/core';
 import { forkJoin } from 'rxjs';
-import { ButtonDirective } from 'primeng/button';
 
 import { DepartmentService } from '../../../../core/data-access/department.service';
 import { TenantAuthService } from '../../../../core/tenant-auth/tenant-auth.service';
@@ -16,6 +15,7 @@ import { FormDrawer } from '../../../../shared/form-drawer/form-drawer';
 import { DepartmentForm } from '../department-form/department-form';
 import { ToastService } from '../../../../core/feedback/toast.service';
 import { ConfirmService } from '../../../../core/feedback/confirm.service';
+import { HlmButton } from '../../../../shared/ui/button';
 
 const COLUMNS: DataTableColumn<DepartmentRead>[] = [
   { field: 'name', header: 'Name', sortable: true },
@@ -24,7 +24,7 @@ const COLUMNS: DataTableColumn<DepartmentRead>[] = [
 
 @Component({
   selector: 'app-department-list',
-  imports: [ButtonDirective, PageHeader, DataTable, FormDrawer, DepartmentForm],
+  imports: [HlmButton, PageHeader, DataTable, FormDrawer, DepartmentForm],
   templateUrl: './department-list.html',
   styleUrl: './department-list.scss',
 })
@@ -123,16 +123,16 @@ export class DepartmentList {
   }
 
   private deleteDepartments(departments: DepartmentRead[]): void {
-    forkJoin(departments.map((department) => this.departmentService.delete(department.id))).subscribe(
-      () => {
-        this.toast.show({
-          severity: 'success',
-          summary: 'Deleted',
-          detail: `${departments.length} department${departments.length === 1 ? '' : 's'} deleted.`,
-        });
-        this.load();
-      },
-    );
+    forkJoin(
+      departments.map((department) => this.departmentService.delete(department.id)),
+    ).subscribe(() => {
+      this.toast.show({
+        severity: 'success',
+        summary: 'Deleted',
+        detail: `${departments.length} department${departments.length === 1 ? '' : 's'} deleted.`,
+      });
+      this.load();
+    });
   }
 
   protected load(): void {

@@ -1,12 +1,11 @@
 import { Component, OnInit, inject, input, output, signal } from '@angular/core';
 import { FormField, form, required } from '@angular/forms/signals';
-import { ButtonDirective } from 'primeng/button';
-import { InputText } from 'primeng/inputtext';
-import { Textarea } from 'primeng/textarea';
 
 import { DepartmentService } from '../../../../core/data-access/department.service';
 import { DepartmentRead } from '../../../../core/models/organization.model';
 import { ToastService } from '../../../../core/feedback/toast.service';
+import { HlmButton } from '../../../../shared/ui/button';
+import { HlmInput } from '../../../../shared/ui/input';
 
 interface DepartmentFormValue {
   name: string;
@@ -15,7 +14,7 @@ interface DepartmentFormValue {
 
 @Component({
   selector: 'app-department-form',
-  imports: [ButtonDirective, InputText, Textarea, FormField],
+  imports: [HlmButton, HlmInput, FormField],
   templateUrl: './department-form.html',
   styleUrl: './department-form.scss',
 })
