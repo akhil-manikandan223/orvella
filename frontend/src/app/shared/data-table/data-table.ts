@@ -1,6 +1,7 @@
 import {
   Component,
   TemplateRef,
+  booleanAttribute,
   computed,
   effect,
   input,
@@ -73,6 +74,7 @@ type GridRow<T> = T | DetailRow<T>;
   imports: [AgGridAngular, HlmButton],
   templateUrl: './data-table.html',
   styleUrl: './data-table.scss',
+  host: { '[class.data-table--flush]': 'flush()' },
 })
 export class DataTable<T extends object = Record<string, unknown>> {
   readonly columns = input.required<DataTableColumn<T>[]>();
@@ -84,6 +86,12 @@ export class DataTable<T extends object = Record<string, unknown>> {
   readonly rowsPerPageOptions = input<number[]>([25, 50, 100]);
   readonly emptyMessage = input('No records found.');
   readonly emptyIcon = input('pi pi-inbox');
+
+  /**
+   * Drops the table's own card chrome (border, radius, shadow) for a table
+   * that sits inside another card, so the outer card draws the only frame.
+   */
+  readonly flush = input(false, { transform: booleanAttribute });
 
   /** Adds the leading checkbox column. Opt-in: only worth it where `bulkActions` do something. */
   readonly selectable = input(false);

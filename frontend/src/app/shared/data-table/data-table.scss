@@ -25,6 +25,14 @@
 // AG Grid needs a definite height. It fills the page's flex column; the
 // min-height stops it collapsing to nothing on a page whose layout does not
 // constrain height.
+// Inside another card (e.g. a tenant detail tab): the outer card owns the
+// frame, and a second rounded border inset under a toolbar looks broken.
+:host(.data-table--flush) .data-table__wrapper {
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+}
+
 .data-table__grid {
   flex: 1;
   min-height: 320px;
