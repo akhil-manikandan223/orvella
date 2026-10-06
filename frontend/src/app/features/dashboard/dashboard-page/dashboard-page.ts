@@ -2,7 +2,6 @@ import { Component, computed, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { DatePipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
-import { ButtonDirective } from 'primeng/button';
 
 import { AuditLogService } from '../../../core/data-access/audit-log.service';
 import { CityService } from '../../../core/data-access/city.service';
@@ -15,6 +14,7 @@ import { StateService } from '../../../core/data-access/state.service';
 import { TenantService } from '../../../core/data-access/tenant.service';
 import { AuditLogRead } from '../../../core/models/audit-log.model';
 import { EmptyState } from '../../../shared/empty-state/empty-state';
+import { HlmButton } from '../../../shared/ui/button';
 
 interface CalendarCell {
   day: number | null;
@@ -73,10 +73,7 @@ function humanizeEntityType(entityType: string): string {
   return ENTITY_TYPE_LABELS[entityType] ?? entityType.replace(/_/g, ' ');
 }
 
-function resolveEntityName(
-  entry: AuditLogRead,
-  lookup: EntityNameLookup,
-): string {
+function resolveEntityName(entry: AuditLogRead, lookup: EntityNameLookup): string {
   const nameFromChanges = readChangedId(entry.changes, 'name');
   if (nameFromChanges) {
     return nameFromChanges;
@@ -104,7 +101,8 @@ function describeActivity(entry: AuditLogRead, lookup: EntityNameLookup): Activi
     const tenantName = (tenantId && lookup.tenants.get(tenantId)) || 'a tenant';
 
     const enabledChange = entry.changes['enabled'];
-    const wasRemoved = entry.action === 'delete' || (isUpdateDiff(enabledChange) && enabledChange.new === false);
+    const wasRemoved =
+      entry.action === 'delete' || (isUpdateDiff(enabledChange) && enabledChange.new === false);
 
     return wasRemoved
       ? { entry, kind: 'removed', verb: 'Removed', detail: `${featureName} from ${tenantName}` }
@@ -172,7 +170,7 @@ function buildCalendarWeeks(today: Date): CalendarCell[][] {
 
 @Component({
   selector: 'app-dashboard-page',
-  imports: [EmptyState, DatePipe, RouterLink, ButtonDirective],
+  imports: [EmptyState, DatePipe, RouterLink, HlmButton],
   templateUrl: './dashboard-page.html',
   styleUrl: './dashboard-page.scss',
 })
@@ -210,7 +208,9 @@ export class DashboardPage {
   );
 
   protected readonly organizationTypeCount = computed(() => this.organizationTypes().length);
-  protected readonly organizationCategoryCount = computed(() => this.organizationCategories().length);
+  protected readonly organizationCategoryCount = computed(
+    () => this.organizationCategories().length,
+  );
 
   protected readonly featureCount = computed(() => this.features().length);
   protected readonly deprecatedFeatureCount = computed(

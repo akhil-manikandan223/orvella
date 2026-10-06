@@ -1,12 +1,10 @@
 import { Component, inject, signal } from '@angular/core';
 import { FormField, form, required } from '@angular/forms/signals';
-import { InputPassword } from 'primeng/inputpassword';
-import { IconField } from 'primeng/iconfield';
-import { InputIcon } from 'primeng/inputicon';
-import { ButtonDirective } from 'primeng/button';
 
 import { PASSWORD_CHANGER } from '../../../core/auth/password-changer';
 import { ToastService } from '../../../core/feedback/toast.service';
+import { HlmButton } from '../../../shared/ui/button';
+import { HlmInput } from '../../../shared/ui/input';
 
 interface ChangePasswordFormValue {
   current_password: string;
@@ -16,7 +14,7 @@ interface ChangePasswordFormValue {
 
 @Component({
   selector: 'app-profile-security',
-  imports: [InputPassword, IconField, InputIcon, ButtonDirective, FormField],
+  imports: [HlmInput, HlmButton, FormField],
   templateUrl: './profile-security.html',
   styleUrl: './profile-security.scss',
 })

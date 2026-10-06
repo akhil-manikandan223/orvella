@@ -6,22 +6,23 @@
   <form class="profile-section__card" novalidate (submit)="onSubmit($event)">
     <div class="profile-section__field">
       <label for="current-password">Current password</label>
-      <p-iconfield>
-        <p-inputicon class="pi pi-lock" />
+      <span class="profile-section__input-wrap">
+        <i class="pi pi-lock" aria-hidden="true"></i>
         <input
           id="current-password"
           type="password"
-          pInputPassword
-          fluid
+          hlmInput
+          class="pl-9"
           [formField]="passwordForm.current_password"
-          [class.p-invalid]="
-            passwordForm.current_password().touched() &&
-            passwordForm.current_password().invalid() &&
-            !justSucceeded()
+          [attr.aria-invalid]="
+            (passwordForm.current_password().touched() &&
+              passwordForm.current_password().invalid() &&
+              !justSucceeded()) ||
+            null
           "
           autocomplete="current-password"
         />
-      </p-iconfield>
+      </span>
       @if (passwordForm.current_password().touched() && !justSucceeded()) {
         @for (error of passwordForm.current_password().errors(); track error.kind) {
           <small class="profile-section__error">{{ error.message }}</small>
@@ -31,22 +32,23 @@
 
     <div class="profile-section__field">
       <label for="new-password">New password</label>
-      <p-iconfield>
-        <p-inputicon class="pi pi-key" />
+      <span class="profile-section__input-wrap">
+        <i class="pi pi-key" aria-hidden="true"></i>
         <input
           id="new-password"
           type="password"
-          pInputPassword
-          fluid
+          hlmInput
+          class="pl-9"
           [formField]="passwordForm.new_password"
-          [class.p-invalid]="
-            passwordForm.new_password().touched() &&
-            passwordForm.new_password().invalid() &&
-            !justSucceeded()
+          [attr.aria-invalid]="
+            (passwordForm.new_password().touched() &&
+              passwordForm.new_password().invalid() &&
+              !justSucceeded()) ||
+            null
           "
           autocomplete="new-password"
         />
-      </p-iconfield>
+      </span>
       @if (passwordForm.new_password().touched() && !justSucceeded()) {
         @for (error of passwordForm.new_password().errors(); track error.kind) {
           <small class="profile-section__error">{{ error.message }}</small>
@@ -56,22 +58,23 @@
 
     <div class="profile-section__field">
       <label for="confirm-password">Confirm new password</label>
-      <p-iconfield>
-        <p-inputicon class="pi pi-key" />
+      <span class="profile-section__input-wrap">
+        <i class="pi pi-key" aria-hidden="true"></i>
         <input
           id="confirm-password"
           type="password"
-          pInputPassword
-          fluid
+          hlmInput
+          class="pl-9"
           [formField]="passwordForm.confirm_password"
-          [class.p-invalid]="
-            passwordForm.confirm_password().touched() &&
-            passwordForm.confirm_password().invalid() &&
-            !justSucceeded()
+          [attr.aria-invalid]="
+            (passwordForm.confirm_password().touched() &&
+              passwordForm.confirm_password().invalid() &&
+              !justSucceeded()) ||
+            null
           "
           autocomplete="new-password"
         />
-      </p-iconfield>
+      </span>
       @if (passwordForm.confirm_password().touched() && !justSucceeded()) {
         @for (error of passwordForm.confirm_password().errors(); track error.kind) {
           <small class="profile-section__error">{{ error.message }}</small>
@@ -79,7 +82,7 @@
       }
     </div>
 
-    <button pButton type="submit" [disabled]="submitting()">
+    <button hlmBtn type="submit" [disabled]="submitting()">
       @if (submitting()) {
         <i class="pi pi-spin pi-spinner" aria-hidden="true"></i>
       } @else {
