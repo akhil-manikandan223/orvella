@@ -1,8 +1,5 @@
 import { Component, OnInit, inject, input, output, signal } from '@angular/core';
 import { FormField, disabled, form, required } from '@angular/forms/signals';
-import { ButtonDirective } from 'primeng/button';
-import { InputText } from 'primeng/inputtext';
-import { Select } from 'primeng/select';
 
 import { OrganizationTypeService } from '../../../core/data-access/organization-type.service';
 import {
@@ -11,6 +8,9 @@ import {
 } from '../../../core/models/organization-taxonomy.model';
 import { slugPattern } from '../../../shared/validators/slug.validator';
 import { ToastService } from '../../../core/feedback/toast.service';
+import { HlmButton } from '../../../shared/ui/button';
+import { HlmInput } from '../../../shared/ui/input';
+import { AppSelect } from '../../../shared/ui/select';
 
 interface TypeFormValue {
   organization_category_id: string;
@@ -20,7 +20,7 @@ interface TypeFormValue {
 
 @Component({
   selector: 'app-type-form',
-  imports: [ButtonDirective, InputText, Select, FormField],
+  imports: [HlmButton, HlmInput, AppSelect, FormField],
   templateUrl: './type-form.html',
   styleUrl: './type-form.scss',
 })

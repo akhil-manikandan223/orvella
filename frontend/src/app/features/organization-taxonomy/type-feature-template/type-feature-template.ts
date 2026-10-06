@@ -1,8 +1,6 @@
-import { Component, computed, inject, input, signal } from '@angular/core';
+import { Component, computed, effect, inject, input, signal, untracked } from '@angular/core';
 import { FormField, form } from '@angular/forms/signals';
 import { forkJoin } from 'rxjs';
-import { ButtonDirective } from 'primeng/button';
-import { Select } from 'primeng/select';
 
 import { FeatureService } from '../../../core/data-access/feature.service';
 import { OrganizationTypeService } from '../../../core/data-access/organization-type.service';
@@ -12,10 +10,12 @@ import { PageHeader } from '../../../shared/page-header/page-header';
 import { EmptyState } from '../../../shared/empty-state/empty-state';
 import { ToastService } from '../../../core/feedback/toast.service';
 import { ConfirmService } from '../../../core/feedback/confirm.service';
+import { HlmButton } from '../../../shared/ui/button';
+import { AppSelect } from '../../../shared/ui/select';
 
 @Component({
   selector: 'app-type-feature-template',
-  imports: [ButtonDirective, Select, FormField, PageHeader, EmptyState],
+  imports: [HlmButton, AppSelect, FormField, PageHeader, EmptyState],
   templateUrl: './type-feature-template.html',
   styleUrl: './type-feature-template.scss',
 })
@@ -41,7 +41,14 @@ export class TypeFeatureTemplate {
   });
 
   constructor() {
-    this.load();
+    // Not a plain this.load(): `id` is a required input bound from the route
+    // (withComponentInputBinding), and reading it in the constructor throws
+    // NG0950 before the router has set it. The effect runs once it is set,
+    // and again if the route param changes.
+    effect(() => {
+      this.id();
+      untracked(() => this.load());
+    });
   }
 
   protected addFeature(): void {

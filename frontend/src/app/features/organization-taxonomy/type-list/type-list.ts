@@ -1,5 +1,4 @@
 import { Component, computed, inject, signal } from '@angular/core';
-import { ButtonDirective } from 'primeng/button';
 
 import { OrganizationCategoryService } from '../../../core/data-access/organization-category.service';
 import { OrganizationTypeService } from '../../../core/data-access/organization-type.service';
@@ -13,10 +12,11 @@ import { DataTableAction, DataTableColumn } from '../../../shared/data-table/dat
 import { FormDrawer } from '../../../shared/form-drawer/form-drawer';
 import { TableSettings } from '../../../shared/table-settings/table-settings';
 import { TypeForm } from '../type-form/type-form';
+import { HlmButton } from '../../../shared/ui/button';
 
 @Component({
   selector: 'app-type-list',
-  imports: [ButtonDirective, PageHeader, DataTable, FormDrawer, TableSettings, TypeForm],
+  imports: [HlmButton, PageHeader, DataTable, FormDrawer, TableSettings, TypeForm],
   templateUrl: './type-list.html',
   styleUrl: './type-list.scss',
 })
@@ -51,7 +51,9 @@ export class TypeList {
   protected readonly visibleFields = signal<Set<string>>(new Set());
   protected readonly columns = computed(() => {
     const visible = this.visibleFields();
-    return visible.size === 0 ? this.allColumns : this.allColumns.filter((c) => visible.has(c.field));
+    return visible.size === 0
+      ? this.allColumns
+      : this.allColumns.filter((c) => visible.has(c.field));
   });
 
   protected readonly actions: DataTableAction<OrganizationTypeRead>[] = [

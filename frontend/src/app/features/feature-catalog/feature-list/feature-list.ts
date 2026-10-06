@@ -1,5 +1,4 @@
 import { Component, TemplateRef, computed, inject, signal, viewChild } from '@angular/core';
-import { ButtonDirective } from 'primeng/button';
 
 import { FeatureService } from '../../../core/data-access/feature.service';
 import { FeatureRead } from '../../../core/models/feature.model';
@@ -10,10 +9,11 @@ import { DataTableAction, DataTableColumn } from '../../../shared/data-table/dat
 import { FormDrawer } from '../../../shared/form-drawer/form-drawer';
 import { TableSettings } from '../../../shared/table-settings/table-settings';
 import { FeatureForm } from '../feature-form/feature-form';
+import { HlmButton } from '../../../shared/ui/button';
 
 @Component({
   selector: 'app-feature-list',
-  imports: [ButtonDirective, PageHeader, StatusBadge, DataTable, FormDrawer, TableSettings, FeatureForm],
+  imports: [HlmButton, PageHeader, StatusBadge, DataTable, FormDrawer, TableSettings, FeatureForm],
   templateUrl: './feature-list.html',
   styleUrl: './feature-list.scss',
 })

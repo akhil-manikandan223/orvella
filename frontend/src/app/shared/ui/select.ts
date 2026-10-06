@@ -62,9 +62,10 @@ let nextId = 0;
           [closeOnTriggerClick]="false"
           [id]="inputId()"
           [placeholder]="placeholder()"
+          [attr.aria-label]="ariaLabel()"
           [readOnly]="!filter()"
           [aria-invalid]="showInvalid()"
-          class="h-full w-full min-w-0 cursor-default appearance-none border-0 bg-transparent p-0 pl-3 font-sans text-sm text-foreground outline-none placeholder:text-muted-foreground read-only:cursor-pointer disabled:cursor-not-allowed"
+          class="h-full w-full min-w-0 cursor-default appearance-none border-0 bg-transparent p-0 pl-3 font-sans text-sm text-foreground outline-none placeholder:text-muted-foreground read-only:cursor-pointer disabled:cursor-not-allowed disabled:text-muted-foreground"
         />
         @if (showClear() && value() !== null && !disabled()) {
           <button
@@ -137,6 +138,8 @@ export class AppSelect implements FormValueControl<SelectValue> {
   readonly optionValue = input('value');
   readonly placeholder = input('');
   readonly inputId = input(`app-select-${nextId++}`);
+  /** Accessible name when there is no <label for=inputId> (placeholder text is not a name). */
+  readonly ariaLabel = input<string | null>(null);
   /** Type-to-search, on by default (p-select's `filter`). Off makes the input read-only. */
   readonly filter = input(true, { transform: booleanAttribute });
   readonly showClear = input(false, { transform: booleanAttribute });

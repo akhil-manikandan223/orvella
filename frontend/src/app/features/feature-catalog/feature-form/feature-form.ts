@@ -1,14 +1,13 @@
 import { Component, OnInit, inject, input, output, signal } from '@angular/core';
 import { FormField, disabled, form, required } from '@angular/forms/signals';
-import { ButtonDirective } from 'primeng/button';
-import { InputText } from 'primeng/inputtext';
-import { Textarea } from 'primeng/textarea';
-import { Select } from 'primeng/select';
 
 import { FeatureService } from '../../../core/data-access/feature.service';
 import { FeatureRead, FeatureStatus } from '../../../core/models/feature.model';
 import { slugPattern } from '../../../shared/validators/slug.validator';
 import { ToastService } from '../../../core/feedback/toast.service';
+import { HlmButton } from '../../../shared/ui/button';
+import { HlmInput } from '../../../shared/ui/input';
+import { AppSelect } from '../../../shared/ui/select';
 
 const STATUS_OPTIONS: { label: string; value: FeatureStatus }[] = [
   { label: 'Active', value: 'active' },
@@ -24,7 +23,7 @@ interface FeatureFormValue {
 
 @Component({
   selector: 'app-feature-form',
-  imports: [ButtonDirective, InputText, Textarea, Select, FormField],
+  imports: [HlmButton, HlmInput, AppSelect, FormField],
   templateUrl: './feature-form.html',
   styleUrl: './feature-form.scss',
 })
