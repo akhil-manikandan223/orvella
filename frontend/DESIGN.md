@@ -1,16 +1,23 @@
 # Orvella UI design
 
-Source of truth for the visual language while the UI moves from PrimeNG to
-Spartan UI + AG Grid. Token values live in `src/styles/tokens.css`; this file
-explains the decisions behind them.
+Source of truth for the visual language of the Spartan UI + AG Grid frontend
+(migrated from PrimeNG in Oct 2026). Token values live in
+`src/styles/tokens.css`; this file explains the decisions behind them.
 
 ## Stack direction
 
-| Concern    | Today                                | Target                                              |
-| ---------- | ------------------------------------ | --------------------------------------------------- |
-| Components | PrimeNG (Aura preset)                | Spartan UI (`@spartan-ng/brain` + helm, Tailwind)   |
-| Data grids | `p-table` inside `shared/data-table` | AG Grid Community (`ag-grid-angular`), Quartz theme |
-| Styling    | Component SCSS + PrimeNG tokens      | Tailwind v4 utilities over the tokens below         |
+| Concern    | Stack                                                                                 |
+| ---------- | ------------------------------------------------------------------------------------- |
+| Components | Spartan UI: `@spartan-ng/brain` behavior + in-repo helm layer in `src/app/shared/ui/` |
+| Data grids | AG Grid Community (`ag-grid-angular`), Quartz theme, inside `shared/data-table`       |
+| Styling    | Tailwind v4 (with preflight) + component SCSS, both over the tokens below             |
+| Icons      | `primeicons` (`pi pi-*`) - the icon font only; PrimeNG itself is gone                 |
+
+The helm components were written in-repo from Spartan's published helm source
+rather than generated with its CLI, which would have pulled Nx into a plain
+Angular CLI project. `shared/ui/`: `HlmButton`, `HlmInput`, `AppSelect`
+(searchable combobox, a signal-forms `FormValueControl`), plus `FormDrawer`
+(sheet), and `ToastService` / `ConfirmService` in `core/feedback/`.
 
 Verified compatibility (Oct 2026): `@spartan-ng/brain@1.5` peers on
 `@angular/core >=21 <23`; `ag-grid-angular@36` on `>=20`. Every grid today
@@ -30,13 +37,16 @@ Enterprise license.
    keep their dark plexus layout, recolored from purple to navy.
 4. **Spartan by feature folder** - tenants, geo, taxonomy, features, audit,
    profile, tenant workspace. Thin toast/confirm services replace PrimeNG's
-   `MessageService` / `ConfirmationService`.
+   `MessageService` / `ConfirmationService`. _(done)_
 5. **Remove PrimeNG** - then enable Tailwind preflight in `src/tailwind.css`.
+   _(done)_ `tokens.css` now also owns `color-scheme` per theme.
+
+Possible follow-ups: swap `primeicons` for an icon set Spartan pairs with
+(e.g. `@ng-icons/lucide`); add component tests for `shared/ui/`.
 
 ## Color
 
-- Brand: `primary/600` **#0E4491**. Scale 50-900 in `--orv-primary-*`,
-  mirrored in the PrimeNG preset in `app.config.ts` until step 5.
+- Brand: `primary/600` **#0E4491**. Scale 50-900 in `--orv-primary-*`.
 - Semantic names follow Spartan (`--background`, `--primary`, `--muted`,
   `--border`, `--ring` ...) so helm components need no remapping.
 - Status pairs (text on tint): success `#177A45/#ECF8F1`, warning

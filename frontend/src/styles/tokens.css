@@ -1,16 +1,18 @@
 /* Orvella design tokens - the source of truth for color, type and radius.
 
    Semantic names follow Spartan UI's convention (--background, --primary,
-   --muted, --border ...) so its helm components pick them up unchanged once
-   they land. The raw ramps (--orv-*) back them and are mirrored in the
-   PrimeNG preset in app.config.ts until PrimeNG is retired.
+   --muted, --border ...) so helm components use them unchanged. The raw
+   ramps (--orv-*) back them.
 
-   Dark mode keys off .app-dark - the same class ThemeService toggles and
-   PrimeNG's darkModeSelector already uses - so both libraries flip together.
+   Dark mode keys off .app-dark, the class ThemeService toggles. color-scheme
+   is set here too, so native controls (checkboxes, scrollbars, date inputs)
+   and AG Grid (browserColorScheme: inherit) follow the theme.
    Dark values are separate steps, not inversions: navy #0E4491 disappears on
    a near-black page, so the dark primary is lifted and the topbar deepened. */
 
 :root {
+  color-scheme: light;
+
   --orv-primary-50: #eef3fb;
   --orv-primary-100: #d9e4f5;
   --orv-primary-200: #b3c8eb;
@@ -76,6 +78,8 @@
 }
 
 .app-dark {
+  color-scheme: dark;
+
   --background: #0d121b;
   --foreground: #e8ecf2;
   --card: #151b26;

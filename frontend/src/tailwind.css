@@ -1,12 +1,9 @@
 /* Tailwind v4 entry. Kept as plain CSS (not part of styles.scss) because Sass
-   would try to resolve these @imports itself.
-
-   Preflight (Tailwind's reset) is deliberately left out while PrimeNG and
-   Spartan coexist: it would restyle every existing heading, list and button
-   at once. Only the theme variables and utilities are loaded; add
-   "tailwindcss/preflight.css" layer(base) once PrimeNG is gone. */
+   would try to resolve these @imports itself. Component SCSS is unlayered, so
+   it always wins over preflight (layer base) and utilities. */
 @layer theme, base, components, utilities;
 @import 'tailwindcss/theme.css' layer(theme);
+@import 'tailwindcss/preflight.css' layer(base);
 @import 'tailwindcss/utilities.css' layer(utilities);
 @import './styles/tokens.css';
 /* Spartan brain overlays (dialogs, popovers) are CDK overlays; tw-animate-css

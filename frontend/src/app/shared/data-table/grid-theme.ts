@@ -22,10 +22,9 @@ export const orvellaGridTheme = themeQuartz.withParams({
   rowHoverColor: 'var(--grid-row-hover)',
   selectedRowBackgroundColor: 'var(--grid-row-selected)',
   checkboxCheckedBackgroundColor: 'var(--primary)',
-  // Inherit, never force light: PrimeNG resolves its tokens with CSS
-  // light-dark(), so a forced color-scheme here would render PrimeNG content
-  // inside the grid (action buttons, expansion templates) in light mode on a
-  // dark page.
+  // Inherit, never force light: tokens.css sets color-scheme per theme, and a
+  // forced value here would render native controls and light-dark() colors
+  // inside the grid (checkboxes, expansion templates) light on a dark page.
   browserColorScheme: 'inherit',
   // The surrounding .data-table__wrapper card draws the border and radius.
   wrapperBorder: false,
