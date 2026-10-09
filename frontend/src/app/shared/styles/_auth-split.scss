@@ -5,6 +5,12 @@
 // --orv-primary-* ramp, so on a tenant subdomain it takes the tenant's
 // brand colour (BrandService).
 
+@mixin hide-autofill {
+  -webkit-text-fill-color: var(--foreground);
+  caret-color: var(--foreground);
+  box-shadow: 0 0 0 1000px var(--card) inset;
+}
+
 .auth-split {
   display: flex;
   flex-wrap: wrap;
@@ -122,6 +128,19 @@
 
     &::placeholder {
       color: var(--muted-foreground);
+    }
+
+    // Browsers paint autofilled fields light blue, and no background rule
+    // can override that. A large inset shadow in the card colour covers it,
+    // so a saved email or password looks like any other entry. Two rules,
+    // not one selector list: a browser that doesn't know one pseudo-class
+    // would drop the whole list.
+    &:-webkit-autofill {
+      @include hide-autofill;
+    }
+
+    &:autofill {
+      @include hide-autofill;
     }
   }
 
