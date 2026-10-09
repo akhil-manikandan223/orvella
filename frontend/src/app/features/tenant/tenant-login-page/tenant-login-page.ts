@@ -6,9 +6,6 @@ import { BrandService } from '../../../core/branding/brand.service';
 import { TenantAuthService } from '../../../core/tenant-auth/tenant-auth.service';
 import { HeroFeatureRead } from '../../../core/models/tenant-user.model';
 import { HlmButton } from '../../../shared/ui/button';
-import { HlmInput } from '../../../shared/ui/input';
-
-const ORVELLA_MARK = 'assets/logos/Orvella-logo.png';
 
 interface LoginFormValue {
   email: string;
@@ -56,7 +53,7 @@ function toHeroTiles(features: HeroFeatureRead[]): HeroTile[] {
 
 @Component({
   selector: 'app-tenant-login-page',
-  imports: [HlmButton, HlmInput, FormField],
+  imports: [HlmButton, FormField],
   templateUrl: './tenant-login-page.html',
   styleUrl: './tenant-login-page.scss',
 })
@@ -67,15 +64,20 @@ export class TenantLoginPage implements OnInit {
 
   protected readonly submitting = signal(false);
 
-  /** The tenant's own mark on the sign-in card when they have one; the
-   * Orvella wordmark above it stays put either way, as platform attribution. */
-  protected readonly cardLogo = computed(() => this.brandService.logoUrl() ?? ORVELLA_MARK);
+  protected readonly showPassword = signal(false);
+
+  /** The tenant's own logo in the corner when they have one; otherwise their
+   * initial and name, with "Powered by Orvella" below as attribution. */
+  protected readonly logoUrl = this.brandService.logoUrl;
 
   // Best-effort greeting derived purely from the subdomain, shown until the
   // real tenant name loads - the actual tenant identity is resolved and
   // enforced server-side on every request, never trusted from this.
   protected readonly tenantGreeting = signal(
     titleCaseFromSlug(window.location.hostname) || 'your organization',
+  );
+  protected readonly tenantInitial = computed(
+    () => this.tenantGreeting().trim().charAt(0).toUpperCase() || 'O',
   );
   protected readonly heroTiles = signal<HeroTile[]>([]);
 
@@ -94,7 +96,7 @@ export class TenantLoginPage implements OnInit {
       // reached before there's any session to read it from.
       this.brandService.apply(context.tenant);
     } catch {
-      // Login still works without this - the hero tiles are decorative,
+      // Login still works without this - the feature list is decorative,
       // and the subdomain-derived greeting above already covers this case.
     }
   }
