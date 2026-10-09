@@ -1,6 +1,6 @@
 // Split sign-in: form on the page surface, a primary panel on the right.
-// Colors come from src/styles/tokens.css, so the form side follows the
-// app theme; the panel is primary in both themes. The tenant login page
+// Colors come from src/styles/tokens.css; the template pins the page to the
+// light tokens with .theme-light, so it matches the prototype in any theme. The tenant login page
 // still uses the shared .auth-hero styles.
 :host {
   display: block;
