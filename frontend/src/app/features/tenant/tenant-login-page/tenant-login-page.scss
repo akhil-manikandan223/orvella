@@ -1,7 +1,6 @@
-// Visual styling shared with the platform-admin login page (backdrop,
-// layout, card, etc.) lives in src/app/shared/styles/_auth-hero.scss under
-// the .auth-hero class this template uses, loaded once globally rather
-// than duplicated per component. Nothing page-specific remains here.
+// The layout (.auth-split) is shared with the platform-admin login page and
+// lives in src/app/shared/styles/_auth-split.scss, loaded once from
+// styles.scss.
 :host {
   display: block;
 }

@@ -1,27 +1,27 @@
 <!-- Light by design, like the approved prototype: nobody is signed in yet,
      so there is no account theme to follow. -->
-<div class="login theme-light">
-  <main class="login__main">
-    <div class="login__wordmark">
-      <span class="login__mark" aria-hidden="true">O</span>
+<div class="auth-split theme-light">
+  <main class="auth-split__main">
+    <div class="auth-split__wordmark">
+      <span class="auth-split__mark" aria-hidden="true">O</span>
       <span>Orvella</span>
     </div>
 
-    <div class="login__center">
-      <form class="login__form" novalidate (submit)="onSubmit($event)">
+    <div class="auth-split__center">
+      <form class="auth-split__form" novalidate (submit)="onSubmit($event)">
         <div>
-          <h1 class="login__title">Welcome back</h1>
-          <p class="login__subtitle">Sign in to your platform admin account</p>
+          <h1 class="auth-split__title">Welcome back</h1>
+          <p class="auth-split__subtitle">Sign in to your platform admin account</p>
         </div>
 
-        <div class="login__field">
+        <div class="auth-split__field">
           <label for="email">Email</label>
-          <span class="login__input-wrap">
+          <span class="auth-split__input-wrap">
             <i class="pi pi-envelope" aria-hidden="true"></i>
             <input
               id="email"
               type="email"
-              class="login__input"
+              class="auth-split__input"
               [formField]="loginForm.email"
               [attr.aria-invalid]="
                 (loginForm.email().touched() && loginForm.email().invalid()) || null
@@ -32,18 +32,18 @@
           </span>
           @if (loginForm.email().touched()) {
             @for (error of loginForm.email().errors(); track error.kind) {
-              <small class="login__error">{{ error.message }}</small>
+              <small class="auth-split__error">{{ error.message }}</small>
             }
           }
         </div>
 
-        <div class="login__field">
+        <div class="auth-split__field">
           <label for="password">Password</label>
-          <span class="login__input-wrap">
+          <span class="auth-split__input-wrap">
             <i class="pi pi-lock" aria-hidden="true"></i>
             <input
               id="password"
-              class="login__input"
+              class="auth-split__input"
               [type]="showPassword() ? 'text' : 'password'"
               [formField]="loginForm.password"
               [attr.aria-invalid]="
@@ -54,7 +54,7 @@
             />
             <button
               type="button"
-              class="login__reveal"
+              class="auth-split__reveal"
               [attr.aria-label]="showPassword() ? 'Hide password' : 'Show password'"
               [attr.aria-pressed]="showPassword()"
               (click)="showPassword.set(!showPassword())"
@@ -69,39 +69,38 @@
           </span>
           @if (loginForm.password().touched()) {
             @for (error of loginForm.password().errors(); track error.kind) {
-              <small class="login__error">{{ error.message }}</small>
+              <small class="auth-split__error">{{ error.message }}</small>
             }
           }
         </div>
 
-        <button hlmBtn size="lg" type="submit" class="login__submit" [disabled]="submitting()">
+        <button hlmBtn size="lg" type="submit" class="auth-split__submit" [disabled]="submitting()">
           @if (submitting()) {
             <i class="pi pi-spin pi-spinner" aria-hidden="true"></i>
           }
           Sign in
         </button>
 
-        <p class="login__footnote">
+        <p class="auth-split__footnote">
           <i class="pi pi-shield" aria-hidden="true"></i>
           Access is restricted to platform administrators.
         </p>
       </form>
     </div>
 
-    <p class="login__copyright">© Orvella</p>
+    <p class="auth-split__copyright">© Orvella</p>
   </main>
 
-  <aside class="login__aside">
-    <div class="login__grid-lines" aria-hidden="true"></div>
-    <div class="login__tiles" aria-hidden="true">
-      @for (tile of tiles; track $index) {
-        <span [class]="'login__tile login__tile--' + tile"></span>
-      }
+  <aside class="auth-split__aside">
+    <div class="auth-split__grid-lines" aria-hidden="true"></div>
+    <div class="auth-split__tiles" aria-hidden="true">
+      <span></span><span></span><span></span> <span></span><span></span><span></span> <span></span
+      ><span></span><span></span>
     </div>
-    <div class="login__pitch">
-      <span class="login__eyebrow">Orvella platform</span>
-      <p class="login__headline">One Platform.<br />Every Organization.</p>
-      <p class="login__lede">
+    <div class="auth-split__pitch">
+      <span class="auth-split__eyebrow">Orvella platform</span>
+      <p class="auth-split__headline">One Platform.<br />Every Organization.</p>
+      <p class="auth-split__lede">
         Provision tenants, govern features and keep every organization's people, departments and
         locations in one place.
       </p>

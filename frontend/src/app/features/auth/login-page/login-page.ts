@@ -10,9 +10,6 @@ interface LoginFormValue {
   password: string;
 }
 
-/** The panel's 3x3 mosaic, as primary scale steps (see .login__tile--*). */
-const TILES = ['600', '500', '800', '800', 'white', '600', '500', '800', '400'];
-
 @Component({
   selector: 'app-login-page',
   imports: [HlmButton, FormField],
@@ -26,7 +23,6 @@ export class LoginPage {
 
   protected readonly submitting = signal(false);
   protected readonly showPassword = signal(false);
-  protected readonly tiles = TILES;
 
   protected readonly model = signal<LoginFormValue>({ email: '', password: '' });
   protected readonly loginForm = form(this.model, (path) => {
