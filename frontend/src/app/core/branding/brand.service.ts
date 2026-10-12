@@ -2,8 +2,9 @@ import { DOCUMENT, Service, computed, inject, signal } from '@angular/core';
 
 import { buildPrimaryPalette } from './brand-palette';
 
-const ORVELLA_LOGO_LIGHT = 'assets/logos/orvella-header-light-logo.png';
-const ORVELLA_LOGO_DARK = 'assets/logos/orvella-header-dark-logo.png';
+/** The same white wordmark the platform-admin topbar uses - both bars are
+ * primary-coloured in light and dark alike, so one asset covers both. */
+const ORVELLA_LOCKUP = 'assets/logos/orvella-lockup-on-dark.png';
 
 /**
  * Applies a tenant's branding to the running app.
@@ -40,9 +41,10 @@ export class BrandService {
     }
   }
 
-  /** Falls back to the Orvella mark for the current theme when the tenant
-   * has no logo of their own. */
-  resolveLogo(mode: 'light' | 'dark'): string {
-    return this._logoUrl() ?? (mode === 'dark' ? ORVELLA_LOGO_DARK : ORVELLA_LOGO_LIGHT);
+  /** The tenant's own logo when they've set one, otherwise Orvella's lockup.
+   * No light/dark variant to choose between any more: the topbar is
+   * primary-coloured in both themes, so the white wordmark is always right. */
+  resolveLogo(): string {
+    return this._logoUrl() ?? ORVELLA_LOCKUP;
   }
 }

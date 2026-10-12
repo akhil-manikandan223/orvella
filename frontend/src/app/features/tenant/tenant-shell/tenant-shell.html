@@ -13,7 +13,7 @@
            logo in both themes, since the bar is primary in light and dark. -->
       <img
         class="tenant-shell__logo"
-        [src]="brandService.resolveLogo('dark')"
+        [src]="brandService.resolveLogo()"
         [alt]="tenantAuthService.tenant()?.name ?? 'Orvella'"
       />
       <span class="tenant-shell__tenant-name">{{ tenantAuthService.tenant()?.name }}</span>
