@@ -11,8 +11,6 @@
    a near-black page, so the dark primary is lifted and the topbar deepened. */
 
 :root {
-  color-scheme: light;
-
   --orv-primary-50: #eef3fb;
   --orv-primary-100: #d9e4f5;
   --orv-primary-200: #b3c8eb;
@@ -38,6 +36,16 @@
   --orv-neutral-700: #363e4e;
   --orv-neutral-800: #222937;
   --orv-neutral-900: #131824;
+}
+
+/* Light semantic tokens. .theme-light re-applies them to one subtree, for a
+   page that is light by design whatever the app theme (the admin sign-in).
+   Set on the element itself, they win over the values inherited from
+   .app-dark on <html>. The raw ramps above stay on :root only, so
+   BrandService's inline overrides still reach a .theme-light subtree. */
+:root,
+.theme-light {
+  color-scheme: light;
 
   --background: var(--orv-neutral-50);
   --foreground: var(--orv-neutral-900);
