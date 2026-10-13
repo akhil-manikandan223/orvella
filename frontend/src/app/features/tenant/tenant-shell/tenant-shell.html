@@ -109,7 +109,7 @@
 
   <div class="app-shell-body" [class.app-shell-body--sidebar-open]="sidebarOpen()">
     <aside class="app-shell-sidebar">
-      <app-sidebar-nav [groups]="navGroups" (navigated)="closeSidebar()" />
+      <app-sidebar-nav [groups]="navGroups()" (navigated)="closeSidebar()" />
     </aside>
 
     @if (sidebarOpen()) {

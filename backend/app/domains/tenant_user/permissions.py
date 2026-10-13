@@ -21,20 +21,42 @@ class TenantPermission(StrEnum):
     PEOPLE_VIEW = 'People.View'
     PEOPLE_MANAGE = 'People.Manage'
 
+    ATTENDANCE_VIEW = 'Attendance.View'
+    ATTENDANCE_MANAGE = 'Attendance.Manage'
+    # The difference between a homeroom teacher and an office admin:
+    # ATTENDANCE_MANAGE marks the people you supervise, ATTENDANCE_MANAGE_ALL
+    # marks anyone in the tenant. Without the second permission the roster is
+    # narrowed to group supervision server-side.
+    ATTENDANCE_MANAGE_ALL = 'Attendance.ManageAll'
+
+    GROUPS_VIEW = 'Groups.View'
+    GROUPS_MANAGE = 'Groups.Manage'
+
 
 # A small fixed role set, not a tenant-customizable role builder - see
 # TenantUser.role. Every tenant user can view their tenant's own data;
 # only admins can create/update/delete it.
+#
+# 'staff' is the homeroom-teacher role: it may mark attendance, but only for
+# the groups it supervises. The permission grants the capability; the scope
+# is enforced separately from group supervision (see
+# group.service.list_supervised_person_ids) - a role alone would let any
+# teacher mark any other teacher's class.
+_VIEWER_PERMISSIONS = frozenset(
+    {
+        TenantPermission.TENANT_USERS_VIEW,
+        TenantPermission.DEPARTMENTS_VIEW,
+        TenantPermission.LOCATIONS_VIEW,
+        TenantPermission.PEOPLE_VIEW,
+        TenantPermission.ATTENDANCE_VIEW,
+        TenantPermission.GROUPS_VIEW,
+    }
+)
+
 ROLE_PERMISSIONS: dict[str, frozenset[TenantPermission]] = {
     'admin': frozenset(TenantPermission),
-    'member': frozenset(
-        {
-            TenantPermission.TENANT_USERS_VIEW,
-            TenantPermission.DEPARTMENTS_VIEW,
-            TenantPermission.LOCATIONS_VIEW,
-            TenantPermission.PEOPLE_VIEW,
-        }
-    ),
+    'staff': _VIEWER_PERMISSIONS | frozenset({TenantPermission.ATTENDANCE_MANAGE}),
+    'member': _VIEWER_PERMISSIONS,
 }
 
 

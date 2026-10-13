@@ -15,6 +15,10 @@ class FeatureRepository:
         result = await self._session.execute(select(Feature).where(Feature.id == feature_id))
         return result.scalar_one_or_none()
 
+    async def get_by_key(self, key: str) -> Feature | None:
+        result = await self._session.execute(select(Feature).where(Feature.key == key))
+        return result.scalar_one_or_none()
+
     async def list_by_ids(self, feature_ids: Sequence[uuid.UUID]) -> list[Feature]:
         if not feature_ids:
             return []

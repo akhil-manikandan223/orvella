@@ -1,8 +1,16 @@
+// The table fills whatever space is left, but never shrinks below a usable
+// height - see &__card--table for the floor and why it matters.
+//
+// Note the absence of `min-height: 0` anywhere down this chain. It is the
+// conventional fix for "flex item won't shrink", and it was the original
+// bug: it lets every item collapse past its own content, so the floor on
+// the table was unreachable and the grid's paging panel - the bottom-most
+// thing in the card - was quietly clipped away on tenants whose profile
+// card happened to be tall.
 :host {
   display: flex;
   flex-direction: column;
   height: 100%;
-  min-height: 0;
 }
 
 .tenant-detail {
@@ -14,7 +22,6 @@
       flex: 1;
       display: flex;
       flex-direction: column;
-      min-height: 0;
       margin-bottom: 0;
     }
   }
@@ -41,20 +48,29 @@
       0 1px 2px rgb(0 0 0 / 5%);
   }
 
+  // flex: 1 so it takes up the slack on a tall screen and leaves no gap -
+  // and a floor so it can't be squeezed into clipping its own paging panel
+  // when the profile card above is tall. The floor tracks the viewport
+  // because the grid inside has a smaller minimum on short screens: it has
+  // to stay above toolbar + grid minimum, or the card clips what it
+  // contains instead of overflowing the page.
+  //
+  // When the floor can't be met, this overflows and .app-shell-content
+  // scrolls. That is the intended outcome: a scrollbar, never missing
+  // controls.
   &__card--table {
     padding: 0;
     overflow: hidden;
     flex: 1;
     display: flex;
     flex-direction: column;
-    min-height: 0;
+    min-height: clamp(260px, 45vh, 420px);
   }
 
   &__tabs {
     flex: 1;
     display: flex;
     flex-direction: column;
-    min-height: 0;
   }
 
   &__tablist {
@@ -99,13 +115,16 @@
     flex: 1;
     display: flex;
     flex-direction: column;
-    min-height: 0;
   }
 
   &__grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 1.5rem;
+    // Tighter between rows than between columns. A grid row is as tall as
+    // its tallest cell, so a long address already leaves the short fields
+    // beside it mostly empty - a full 1.5rem on top of that is height the
+    // table below can't spare.
+    gap: 1rem 1.5rem;
     margin: 0;
     padding: 1.25rem;
 

@@ -1,6 +1,8 @@
 import { ThemePreference } from './theme.model';
 
-export type TenantUserRole = 'admin' | 'member';
+/** 'staff' is the homeroom-teacher role: it may mark attendance, but only
+ * for the groups it supervises. The scope is enforced server-side. */
+export type TenantUserRole = 'admin' | 'staff' | 'member';
 
 export interface TenantUserRead {
   id: string;
@@ -44,6 +46,9 @@ export interface TenantContextRead {
 export interface TenantMeRead {
   user: TenantUserRead;
   tenant: TenantContextRead;
+  /** Module keys enabled for this tenant. Drives nav visibility only - every
+   * module route is enforced server-side regardless. */
+  features: string[];
 }
 
 export interface HeroFeatureRead {

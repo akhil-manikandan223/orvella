@@ -124,6 +124,46 @@ async def update_tenant(repository: TenantRepository, tenant: Tenant, **fields: 
     return await repository.update(tenant, **fields)
 
 
+async def list_enabled_feature_keys(
+    feature_repository: FeatureRepository,
+    tenant_feature_repository: TenantFeatureRepository,
+    *,
+    tenant_id: uuid.UUID,
+) -> list[str]:
+    """The keys of every module switched on for this tenant."""
+    enabled_ids = [
+        row.feature_id
+        for row in await tenant_feature_repository.list_for_tenant(tenant_id)
+        if row.enabled
+    ]
+    features = await feature_repository.list_by_ids(enabled_ids)
+    return sorted(feature.key for feature in features)
+
+
+async def is_feature_enabled_for_tenant(
+    feature_repository: FeatureRepository,
+    tenant_feature_repository: TenantFeatureRepository,
+    *,
+    tenant_id: uuid.UUID,
+    feature_key: str,
+) -> bool:
+    """Whether a module is actually available to this tenant.
+
+    Fails closed at every step: a feature key that isn't in the catalog at
+    all, or a tenant with no row for it, both count as disabled. A module
+    should be unreachable until someone deliberately turns it on, not
+    reachable until someone remembers to turn it off.
+    """
+    feature = await feature_repository.get_by_key(feature_key)
+    if feature is None:
+        return False
+
+    tenant_feature = await tenant_feature_repository.get(
+        tenant_id=tenant_id, feature_id=feature.id
+    )
+    return tenant_feature is not None and tenant_feature.enabled
+
+
 async def set_tenant_feature_enabled(
     tenant_repository: TenantRepository,
     feature_repository: FeatureRepository,

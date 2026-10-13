@@ -25,6 +25,7 @@ interface StoredTenantSession {
   token: string;
   user: TenantUserRead;
   tenant: TenantContextRead;
+  features: string[];
 }
 
 @Service()
@@ -37,11 +38,19 @@ export class TenantAuthService {
   private readonly _token = signal<string | null>(null);
   private readonly _user = signal<TenantUserRead | null>(null);
   private readonly _tenant = signal<TenantContextRead | null>(null);
+  private readonly _features = signal<string[]>([]);
 
   readonly token = this._token.asReadonly();
   readonly user = this._user.asReadonly();
   readonly tenant = this._tenant.asReadonly();
+  readonly features = this._features.asReadonly();
   readonly isAuthenticated = computed(() => this._token() !== null);
+
+  /** Whether this tenant has a module. Nav/UI only - the backend enforces
+   * the same check on every route of that module. */
+  hasFeature(key: string): boolean {
+    return this._features().includes(key);
+  }
 
   constructor() {
     this.restoreSession();
@@ -70,6 +79,7 @@ export class TenantAuthService {
     );
     this._user.set(me.user);
     this._tenant.set(me.tenant);
+    this._features.set(me.features);
     // This account's own preference wins over whatever the previous user of
     // this browser left cached.
     this.themeService.applyFromAccount(me.user.theme_preference);
@@ -129,6 +139,7 @@ export class TenantAuthService {
     this._token.set(null);
     this._user.set(null);
     this._tenant.set(null);
+    this._features.set([]);
     // Otherwise the next account to sign in on this browser inherits this
     // user's theme until their own preference loads.
     this.themeService.resetToSystemDefault();
@@ -146,6 +157,7 @@ export class TenantAuthService {
       this._token.set(stored.token);
       this._user.set(stored.user);
       this._tenant.set(stored.tenant);
+      this._features.set(stored.features ?? []);
       this.themeService.applyFromAccount(stored.user?.theme_preference);
       this.brandService.apply(stored.tenant);
     } catch {
@@ -160,7 +172,7 @@ export class TenantAuthService {
     if (!token || !user || !tenant) {
       return;
     }
-    const stored: StoredTenantSession = { token, user, tenant };
+    const stored: StoredTenantSession = { token, user, tenant, features: this._features() };
     sessionStorage.setItem(SESSION_STORAGE_KEY, JSON.stringify(stored));
   }
 }

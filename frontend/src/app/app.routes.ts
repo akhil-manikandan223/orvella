@@ -177,6 +177,11 @@ const tenantRoutes: Routes = [
           ),
       },
       {
+        path: 'groups',
+        loadComponent: () =>
+          import('./features/tenant/groups/group-list/group-list').then((m) => m.GroupList),
+      },
+      {
         path: 'locations',
         loadComponent: () =>
           import('./features/tenant/locations/location-list/location-list').then(
@@ -187,6 +192,15 @@ const tenantRoutes: Routes = [
         path: 'people',
         loadComponent: () =>
           import('./features/tenant/people/person-list/person-list').then((m) => m.PersonList),
+      },
+      {
+        // Reachable even with the feature off - the nav hides it, and every
+        // attendance API call 403s server-side regardless.
+        path: 'attendance',
+        loadComponent: () =>
+          import('./features/tenant/attendance/attendance-page/attendance-page').then(
+            (m) => m.AttendancePage,
+          ),
       },
       {
         path: 'profile',

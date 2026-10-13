@@ -1,0 +1,163 @@
+<form class="group-form" novalidate (submit)="onSubmit($event)">
+  <div class="group-form__sections" role="tablist">
+    <button
+      type="button"
+      role="tab"
+      class="group-form__section"
+      [class.group-form__section--active]="section() === 'details'"
+      [attr.aria-selected]="section() === 'details'"
+      (click)="section.set('details')"
+    >
+      Details
+    </button>
+    <button
+      type="button"
+      role="tab"
+      class="group-form__section"
+      [class.group-form__section--active]="section() === 'members'"
+      [attr.aria-selected]="section() === 'members'"
+      (click)="section.set('members')"
+    >
+      Members ({{ memberIds().size }})
+    </button>
+    <button
+      type="button"
+      role="tab"
+      class="group-form__section"
+      [class.group-form__section--active]="section() === 'supervisors'"
+      [attr.aria-selected]="section() === 'supervisors'"
+      (click)="section.set('supervisors')"
+    >
+      Supervisors ({{ supervisorIds().size }})
+    </button>
+  </div>
+
+  @if (section() === 'details') {
+    <div class="group-form__field">
+      <label for="group-name">Name</label>
+      <input
+        id="group-name"
+        hlmInput
+        fluid
+        [formField]="groupForm.name"
+        [attr.aria-invalid]="(groupForm.name().touched() && groupForm.name().invalid()) || null"
+      />
+      @if (groupForm.name().touched()) {
+        @for (error of groupForm.name().errors(); track error.kind) {
+          <small class="group-form__error">{{ error.message }}</small>
+        }
+      }
+    </div>
+
+    <div class="group-form__field">
+      <label for="group-description">Description (optional)</label>
+      <textarea
+        id="group-description"
+        hlmInput
+        fluid
+        rows="3"
+        [formField]="groupForm.description"
+      ></textarea>
+    </div>
+
+    <div class="group-form__field">
+      <label for="group-department">Department (optional)</label>
+      <select
+        id="group-department"
+        hlmInput
+        fluid
+        [value]="departmentId()"
+        (change)="departmentId.set($any($event.target).value)"
+      >
+        <option value="">No department</option>
+        @for (department of departments(); track department.id) {
+          <option [value]="department.id">{{ department.name }}</option>
+        }
+      </select>
+      <small class="group-form__hint">
+        Only a label — a group's roster is set on the Members tab, not by the department.
+      </small>
+    </div>
+  } @else if (section() === 'members') {
+    <div class="group-form__field">
+      <label for="group-people-search">Search people</label>
+      <input
+        id="group-people-search"
+        hlmInput
+        fluid
+        type="search"
+        [value]="peopleSearch()"
+        (input)="peopleSearch.set($any($event.target).value)"
+      />
+    </div>
+
+    <div class="group-form__bulk">
+      <button hlmBtn variant="ghost" size="sm" type="button" (click)="selectAllVisible()">
+        Select all shown
+      </button>
+      <button hlmBtn variant="ghost" size="sm" type="button" (click)="clearMembers()">Clear</button>
+    </div>
+
+    <ul class="group-form__picklist">
+      @for (person of visiblePeople(); track person.id) {
+        <li>
+          <label class="group-form__check">
+            <input
+              type="checkbox"
+              [checked]="memberIds().has(person.id)"
+              (change)="toggleMember(person.id)"
+            />
+            <span>{{ personName(person) }}</span>
+            <small>{{ person.category }}</small>
+          </label>
+        </li>
+      } @empty {
+        <li class="group-form__empty">
+          @if (loading()) {
+            Loading people…
+          } @else {
+            No people match.
+          }
+        </li>
+      }
+    </ul>
+  } @else {
+    <p class="group-form__hint">
+      Supervisors may mark this group's attendance — and only this group's.
+    </p>
+
+    <ul class="group-form__picklist">
+      @for (user of eligibleSupervisors(); track user.id) {
+        <li>
+          <label class="group-form__check">
+            <input
+              type="checkbox"
+              [checked]="supervisorIds().has(user.id)"
+              (change)="toggleSupervisor(user.id)"
+            />
+            <span>{{ user.email }}</span>
+            <small>{{ user.role }}</small>
+          </label>
+        </li>
+      } @empty {
+        <li class="group-form__empty">
+          @if (loading()) {
+            Loading users…
+          } @else {
+            No staff or admin users yet. Create one first, then assign them here.
+          }
+        </li>
+      }
+    </ul>
+  }
+
+  <div class="group-form__actions">
+    <button hlmBtn variant="ghost" type="button" (click)="cancelled.emit()">Cancel</button>
+    <button hlmBtn type="submit" [disabled]="submitting()">
+      @if (submitting()) {
+        <i class="pi pi-spin pi-spinner" aria-hidden="true"></i>
+      }
+      Save
+    </button>
+  </div>
+</form>

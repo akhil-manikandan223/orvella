@@ -1,0 +1,119 @@
+.group-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  height: 100%;
+
+  &__sections {
+    display: flex;
+    gap: 0.25rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  &__section {
+    appearance: none;
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    padding: 0.5rem 0.75rem;
+    font: inherit;
+    font-size: 0.875rem;
+    color: var(--muted-foreground);
+    cursor: pointer;
+
+    &--active {
+      color: var(--primary);
+      border-bottom-color: var(--primary);
+      font-weight: 600;
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--primary);
+      outline-offset: -2px;
+    }
+  }
+
+  &__field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
+
+    label {
+      font-size: 0.875rem;
+      font-weight: 600;
+    }
+
+    input,
+    textarea,
+    select {
+      width: 100%;
+    }
+  }
+
+  &__hint {
+    font-size: 0.8125rem;
+    color: var(--muted-foreground);
+  }
+
+  &__error {
+    color: var(--danger);
+  }
+
+  &__bulk {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  &__picklist {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    // Scrolls on its own so the Save button stays reachable on a roster of
+    // hundreds.
+    overflow-y: auto;
+    flex: 1;
+    min-height: 8rem;
+    border: 1px solid var(--border);
+    border-radius: 0.5rem;
+  }
+
+  &__check {
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+    padding: 0.5rem 0.75rem;
+    cursor: pointer;
+    border-bottom: 1px solid var(--border);
+
+    &:hover {
+      background: var(--muted);
+    }
+
+    small {
+      margin-left: auto;
+      color: var(--muted-foreground);
+      font-size: 0.75rem;
+      text-transform: capitalize;
+    }
+  }
+
+  &__picklist li:last-child &__check {
+    border-bottom: none;
+  }
+
+  &__empty {
+    padding: 1rem 0.75rem;
+    color: var(--muted-foreground);
+    font-size: 0.875rem;
+    text-align: center;
+  }
+
+  &__actions {
+    display: flex;
+    justify-content: flex-start;
+    gap: 0.5rem;
+    margin-top: auto;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border);
+  }
+}

@@ -1,8 +1,13 @@
+// No min-height: 0 on the host or the wrapper below. It would let them
+// collapse to nothing, which silently defeats the grid's own min-height -
+// the ancestors shrink, the wrapper clips, and the paging panel at the
+// grid's bottom is the first thing to disappear. Leaving the automatic
+// minimum in place makes that floor real: the table keeps a usable height
+// and the page scrolls when there genuinely isn't room.
 :host {
   display: flex;
   flex-direction: column;
   flex: 1;
-  min-height: 0;
 }
 
 // The grid sits in its own raised card, separated from the page toolbar
@@ -12,7 +17,6 @@
   display: flex;
   flex-direction: column;
   flex: 1;
-  min-height: 0;
   border: 1px solid var(--border);
   border-radius: 10px;
   background: var(--card);
@@ -36,6 +40,17 @@
 .data-table__grid {
   flex: 1;
   min-height: 320px;
+}
+
+// Laptop-height viewports (a 1080p panel at 150% scaling is ~750 CSS px). A
+// detail page can put a tall card above its table, and an unyielding 320px
+// floor then pushes AG Grid's paging panel past the wrapper's clipped edge -
+// the page controls vanish rather than shrink. Showing fewer rows is the
+// right trade; losing the pager is not.
+@media (max-height: 820px) {
+  .data-table__grid {
+    min-height: 200px;
+  }
 }
 
 :host ::ng-deep {

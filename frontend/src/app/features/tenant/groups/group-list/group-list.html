@@ -1,0 +1,35 @@
+<app-page-header
+  title="Groups"
+  subtitle="Classes, batches and teams — and who may mark their attendance"
+  icon="pi pi-th-large"
+>
+  @if (canManage()) {
+    <button type="button" hlmBtn (click)="openCreate()">
+      <i class="pi pi-plus" aria-hidden="true"></i>
+      New
+    </button>
+  }
+</app-page-header>
+
+<app-data-table
+  [columns]="columns"
+  [value]="rows()"
+  [actions]="actions()"
+  [loading]="loading()"
+  emptyMessage="No groups yet. Create one to give a teacher their own class."
+  emptyIcon="pi pi-th-large"
+/>
+
+<app-form-drawer
+  [visible]="drawerVisible()"
+  (visibleChange)="drawerVisible.set($event)"
+  [header]="editingGroup() ? 'Edit Group' : 'New Group'"
+>
+  @if (drawerVisible()) {
+    <app-group-form
+      [group]="editingGroup()"
+      (saved)="onSaved()"
+      (cancelled)="drawerVisible.set(false)"
+    />
+  }
+</app-form-drawer>

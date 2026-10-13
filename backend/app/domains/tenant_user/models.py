@@ -29,7 +29,9 @@ class TenantUser(Base):
     __tablename__ = 'tenant_users'
     __table_args__ = (
         UniqueConstraint('tenant_id', 'email', name='uq_tenant_users_tenant_email'),
-        CheckConstraint("role IN ('admin', 'member')", name='ck_tenant_users_role'),
+        CheckConstraint(
+            "role IN ('admin', 'staff', 'member')", name='ck_tenant_users_role'
+        ),
         CheckConstraint(
             "theme_preference IN ('light', 'dark', 'system')",
             name='ck_tenant_users_theme_preference',

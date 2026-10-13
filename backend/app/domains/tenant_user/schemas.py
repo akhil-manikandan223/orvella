@@ -3,7 +3,7 @@ from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, EmailStr
 
-TenantUserRole = Literal['admin', 'member']
+TenantUserRole = Literal['admin', 'staff', 'member']
 ThemePreference = Literal['light', 'dark', 'system']
 
 
@@ -63,6 +63,10 @@ class TenantContextRead(BaseModel):
 class TenantMeRead(BaseModel):
     user: TenantUserRead
     tenant: TenantContextRead
+    # Keys of the modules this tenant actually has, so the app can hide nav
+    # for what it doesn't. Purely a UX signal - every module route enforces
+    # the same thing server-side via require_tenant_feature.
+    features: list[str]
 
 
 class HeroFeatureRead(BaseModel):

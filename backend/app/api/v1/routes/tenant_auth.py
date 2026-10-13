@@ -17,6 +17,7 @@ from app.domains.auth_session.service import (
 )
 from app.domains.feature.repository import FeatureRepository
 from app.domains.tenant.repository import TenantFeatureRepository
+from app.domains.tenant.service import list_enabled_feature_keys
 from app.domains.tenant_user.repository import TenantUserRepository
 from app.domains.tenant_user.schemas import (
     HeroFeatureRead,
@@ -149,7 +150,7 @@ async def tenant_logout(request: Request, response: Response, db: DbSessionDep) 
 
 @router.get('/me', response_model=TenantMeRead)
 async def read_current_tenant_user(
-    user: CurrentTenantUserDep, tenant: CurrentTenantDep
+    user: CurrentTenantUserDep, tenant: CurrentTenantDep, db: DbSessionDep
 ) -> TenantMeRead:
     return TenantMeRead(
         user=TenantUserRead.model_validate(user),
@@ -159,6 +160,9 @@ async def read_current_tenant_user(
             slug=tenant.slug,
             logo_url=tenant.logo_url,
             brand_color=tenant.brand_color,
+        ),
+        features=await list_enabled_feature_keys(
+            FeatureRepository(db), TenantFeatureRepository(db), tenant_id=tenant.id
         ),
     )
 

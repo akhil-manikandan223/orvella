@@ -1,0 +1,173 @@
+<app-page-header
+  title="Attendance"
+  subtitle="Mark and review daily attendance"
+  icon="pi pi-check-square"
+/>
+
+<div class="attendance__tabs" role="tablist">
+  <button
+    type="button"
+    role="tab"
+    class="attendance__tab"
+    [class.attendance__tab--active]="activeTab() === 'mark'"
+    [attr.aria-selected]="activeTab() === 'mark'"
+    (click)="selectTab('mark')"
+  >
+    Mark
+  </button>
+  <button
+    type="button"
+    role="tab"
+    class="attendance__tab"
+    [class.attendance__tab--active]="activeTab() === 'summary'"
+    [attr.aria-selected]="activeTab() === 'summary'"
+    (click)="selectTab('summary')"
+  >
+    Summary
+  </button>
+</div>
+
+@if (activeTab() === 'mark') {
+  <div class="attendance__toolbar">
+    <div class="attendance__field">
+      <label for="attendance-date">Date</label>
+      <input
+        id="attendance-date"
+        type="date"
+        class="attendance__input"
+        [value]="date()"
+        (change)="onDateChange($any($event.target).value)"
+      />
+    </div>
+
+    <div class="attendance__field">
+      <label for="attendance-department">Department</label>
+      <select
+        id="attendance-department"
+        class="attendance__input"
+        [value]="departmentFilter()"
+        (change)="departmentFilter.set($any($event.target).value)"
+      >
+        <option value="">All departments</option>
+        @for (department of departments(); track department.id) {
+          <option [value]="department.id">{{ department.name }}</option>
+        }
+      </select>
+    </div>
+
+    @if (groups().length > 0) {
+      <div class="attendance__field">
+        <label for="attendance-group">Group</label>
+        <select
+          id="attendance-group"
+          class="attendance__input"
+          [value]="groupFilter()"
+          (change)="onGroupChange($any($event.target).value)"
+        >
+          <option value="">All groups</option>
+          @for (group of groups(); track group.id) {
+            <option [value]="group.id">{{ group.name }}</option>
+          }
+        </select>
+      </div>
+    }
+
+    <span class="attendance__state">
+      @if (dayAlreadyMarked()) {
+        <i class="pi pi-check-circle" aria-hidden="true"></i> Already marked
+      } @else {
+        <i class="pi pi-info-circle" aria-hidden="true"></i> Not yet marked
+      }
+    </span>
+
+    @if (canMark()) {
+      <button type="button" class="attendance__ghost-btn" (click)="markAllPresent()">
+        Mark all present
+      </button>
+    }
+  </div>
+
+  <app-data-table
+    [columns]="markColumns()"
+    [value]="roster()"
+    [loading]="loading()"
+    dataKey="person_id"
+    [emptyMessage]="emptyRosterMessage()"
+    emptyIcon="pi pi-users"
+  />
+
+  <div class="attendance__footer">
+    <span class="attendance__tally">
+      <span class="attendance__chip attendance__chip--present">{{ tally().present }} present</span>
+      <span class="attendance__chip attendance__chip--absent">{{ tally().absent }} absent</span>
+      <span class="attendance__chip attendance__chip--late">{{ tally().late }} late</span>
+      <span class="attendance__chip attendance__chip--excused">{{ tally().excused }} excused</span>
+    </span>
+
+    @if (canMark()) {
+      <button
+        type="button"
+        class="attendance__save-btn"
+        [disabled]="saving() || roster().length === 0"
+        (click)="saveDay()"
+      >
+        {{ saving() ? 'Saving…' : 'Save day' }}
+      </button>
+    }
+  </div>
+} @else {
+  <div class="attendance__toolbar">
+    <div class="attendance__field">
+      <label for="summary-start">From</label>
+      <input
+        id="summary-start"
+        type="date"
+        class="attendance__input"
+        [value]="summaryStart()"
+        (change)="summaryStart.set($any($event.target).value)"
+      />
+    </div>
+    <div class="attendance__field">
+      <label for="summary-end">To</label>
+      <input
+        id="summary-end"
+        type="date"
+        class="attendance__input"
+        [value]="summaryEnd()"
+        (change)="summaryEnd.set($any($event.target).value)"
+      />
+    </div>
+    <button type="button" class="attendance__ghost-btn" (click)="loadSummary()">Apply</button>
+  </div>
+
+  <app-data-table
+    [columns]="summaryColumns"
+    [value]="summaryRows()"
+    [loading]="loading()"
+    dataKey="person_id"
+    emptyMessage="No attendance recorded in this range."
+    emptyIcon="pi pi-chart-bar"
+  />
+}
+
+<!-- Segmented P/A/L/E control: one click per change, which matters when a
+     roster runs to hundreds of rows. -->
+<ng-template #statusCell let-row>
+  <div class="attendance__status" role="group" [attr.aria-label]="'Status for ' + row.name">
+    @for (option of statusOptions; track option.value) {
+      <button
+        type="button"
+        class="attendance__status-btn"
+        [class]="'attendance__status-btn attendance__status-btn--' + option.value"
+        [class.attendance__status-btn--active]="row.status === option.value"
+        [disabled]="!canMark()"
+        [attr.aria-pressed]="row.status === option.value"
+        [attr.aria-label]="option.label"
+        [title]="option.label"
+        (click)="setStatus(row.person_id, option.value)"
+      >
+        {{ option.short }}
+      </button>
+    }
+  </div>
+</ng-template>

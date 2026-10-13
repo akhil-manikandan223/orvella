@@ -10,11 +10,12 @@ from app.core.audit import ActorContext, current_actor_ctx_var
 from app.core.config import Settings, get_settings
 from app.core.security import decode_access_token
 from app.db.session import get_db
+from app.domains.feature.repository import FeatureRepository
 from app.domains.platform_admin.models import PlatformAdmin
 from app.domains.platform_admin.repository import PlatformAdminRepository
 from app.domains.tenant.models import Tenant
-from app.domains.tenant.repository import TenantRepository
-from app.domains.tenant.service import resolve_tenant_by_host
+from app.domains.tenant.repository import TenantFeatureRepository, TenantRepository
+from app.domains.tenant.service import is_feature_enabled_for_tenant, resolve_tenant_by_host
 from app.domains.tenant_user.models import TenantUser
 from app.domains.tenant_user.permissions import TenantPermission, role_has_permission
 from app.domains.tenant_user.repository import TenantUserRepository
@@ -157,6 +158,32 @@ async def get_current_tenant_user(
 
 
 CurrentTenantUserDep = Annotated[TenantUser, Depends(get_current_tenant_user)]
+
+
+def require_tenant_feature(feature_key: str):
+    """Dependency factory: 403s unless this feature is enabled for the tenant.
+
+    Phase 7 modules are sold/enabled per tenant, and §28 is explicit that the
+    backend enforces that rather than trusting Angular to hide the nav item -
+    otherwise a tenant without the module could simply call its API.
+
+    Separate from require_tenant_permission: a feature says whether the
+    tenant HAS the module at all, a permission says whether this user may use
+    it. A module route generally wants both.
+    """
+
+    async def _check(tenant: CurrentTenantDep, db: DbSessionDep) -> Tenant:
+        enabled = await is_feature_enabled_for_tenant(
+            FeatureRepository(db),
+            TenantFeatureRepository(db),
+            tenant_id=tenant.id,
+            feature_key=feature_key,
+        )
+        if not enabled:
+            raise HTTPException(status.HTTP_403_FORBIDDEN, 'This feature is not enabled')
+        return tenant
+
+    return _check
 
 
 def require_tenant_permission(permission: TenantPermission):

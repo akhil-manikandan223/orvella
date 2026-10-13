@@ -23,10 +23,15 @@ type StatusFilter = 'active' | 'all' | 'inactive';
 
 const ROLE_OPTIONS: { label: string; value: TenantUserRole }[] = [
   { label: 'Admin', value: 'admin' },
+  { label: 'Staff', value: 'staff' },
   { label: 'Member', value: 'member' },
 ];
 
-const ROLE_LABELS: Record<TenantUserRole, string> = { admin: 'Admin', member: 'Member' };
+const ROLE_LABELS: Record<TenantUserRole, string> = {
+  admin: 'Admin',
+  staff: 'Staff',
+  member: 'Member',
+};
 
 const STATUS_FILTER_OPTIONS: { label: string; value: StatusFilter }[] = [
   { label: 'Active', value: 'active' },

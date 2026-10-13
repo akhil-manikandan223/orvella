@@ -7,9 +7,11 @@ from sqlalchemy.ext.asyncio import async_engine_from_config
 
 # Ensures every domain's models are registered on Base.metadata before
 # autogenerate/upgrade runs. Add new domain model imports here as they're added.
+import app.domains.attendance.models  # noqa: F401
 import app.domains.audit_log.models  # noqa: F401
 import app.domains.feature.models  # noqa: F401
 import app.domains.geo.models  # noqa: F401
+import app.domains.group.models  # noqa: F401
 import app.domains.organization_taxonomy.models  # noqa: F401
 import app.domains.platform_admin.models  # noqa: F401
 import app.domains.tenant.models  # noqa: F401
